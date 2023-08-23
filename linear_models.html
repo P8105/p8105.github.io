@@ -13,7 +13,7 @@
 
 <title>Linear models</title>
 
-<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -160,11 +160,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -193,8 +197,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -202,16 +206,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -557,11 +554,10 @@ summary of the model and for cleaning up the coefficient table.</p>
 <pre class="r"><code>fit %&gt;% 
   broom::glance()</code></pre>
 <pre><code>## # A tibble: 1 × 12
-##   r.squared adj.r.…¹ sigma stati…²   p.value    df  logLik    AIC    BIC devia…³
-##       &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1    0.0342   0.0341  182.    271. 6.73e-229     4 -2.02e5 4.04e5 4.04e5  1.01e9
-## # … with 2 more variables: df.residual &lt;int&gt;, nobs &lt;int&gt;, and abbreviated
-## #   variable names ¹​adj.r.squared, ²​statistic, ³​deviance</code></pre>
+##   r.squared adj.r.squared sigma statistic   p.value    df   logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1    0.0342        0.0341  182.      271. 6.73e-229     4 -202113. 4.04e5 4.04e5
+## # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 <pre class="r"><code>fit %&gt;% 
   broom::tidy()</code></pre>
 <pre><code>## # A tibble: 5 × 5
@@ -629,34 +625,26 @@ exercise.</p>
 fitted values to a dataframe.</p>
 <pre class="r"><code>modelr::add_residuals(nyc_airbnb, fit)</code></pre>
 <pre><code>## # A tibble: 40,492 × 6
-##    price stars borough neighborhood room_type        resid
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;            &lt;dbl&gt;
-##  1    99   5   Bronx   City Island  Private room      9.47
-##  2   200  NA   Bronx   City Island  Private room     NA   
-##  3   300  NA   Bronx   City Island  Entire home/apt  NA   
-##  4   125   5   Bronx   City Island  Entire home/apt  35.5 
-##  5    69   5   Bronx   City Island  Private room    -20.5 
-##  6   125   5   Bronx   City Island  Entire home/apt  35.5 
-##  7    85   5   Bronx   City Island  Entire home/apt  -4.53
-##  8    39   4.5 Bronx   Allerton     Private room    -34.5 
-##  9    95   5   Bronx   Allerton     Entire home/apt   5.47
-## 10   125   4.5 Bronx   Allerton     Entire home/apt  51.5 
-## # … with 40,482 more rows</code></pre>
+##   price stars borough neighborhood room_type        resid
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;            &lt;dbl&gt;
+## 1    99     5 Bronx   City Island  Private room      9.47
+## 2   200    NA Bronx   City Island  Private room     NA   
+## 3   300    NA Bronx   City Island  Entire home/apt  NA   
+## 4   125     5 Bronx   City Island  Entire home/apt  35.5 
+## 5    69     5 Bronx   City Island  Private room    -20.5 
+## 6   125     5 Bronx   City Island  Entire home/apt  35.5 
+## # ℹ 40,486 more rows</code></pre>
 <pre class="r"><code>modelr::add_predictions(nyc_airbnb, fit)</code></pre>
 <pre><code>## # A tibble: 40,492 × 6
-##    price stars borough neighborhood room_type        pred
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;           &lt;dbl&gt;
-##  1    99   5   Bronx   City Island  Private room     89.5
-##  2   200  NA   Bronx   City Island  Private room     NA  
-##  3   300  NA   Bronx   City Island  Entire home/apt  NA  
-##  4   125   5   Bronx   City Island  Entire home/apt  89.5
-##  5    69   5   Bronx   City Island  Private room     89.5
-##  6   125   5   Bronx   City Island  Entire home/apt  89.5
-##  7    85   5   Bronx   City Island  Entire home/apt  89.5
-##  8    39   4.5 Bronx   Allerton     Private room     73.5
-##  9    95   5   Bronx   Allerton     Entire home/apt  89.5
-## 10   125   4.5 Bronx   Allerton     Entire home/apt  73.5
-## # … with 40,482 more rows</code></pre>
+##   price stars borough neighborhood room_type        pred
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;           &lt;dbl&gt;
+## 1    99     5 Bronx   City Island  Private room     89.5
+## 2   200    NA Bronx   City Island  Private room     NA  
+## 3   300    NA Bronx   City Island  Entire home/apt  NA  
+## 4   125     5 Bronx   City Island  Entire home/apt  89.5
+## 5    69     5 Bronx   City Island  Private room     89.5
+## 6   125     5 Bronx   City Island  Entire home/apt  89.5
+## # ℹ 40,486 more rows</code></pre>
 <p>Like many things in the tidyverse, the first argument is a dataframe.
 That makes it easy to included steps adding residuals or predictions in
 pipeline of commands to conduct inspections and perform diagnostics.</p>
@@ -705,11 +693,11 @@ function which, of course, can be summarized using
 <code>broom::tidy</code>.</p>
 <pre class="r"><code>anova(fit_null, fit_alt) %&gt;% 
   broom::tidy()</code></pre>
-<pre><code>## # A tibble: 2 × 6
-##   res.df         rss    df     sumsq statistic p.value
-##    &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1  30525 1005601724.    NA       NA        NA       NA
-## 2  30523  921447496.     2 84154228.     1394.       0</code></pre>
+<pre><code>## # A tibble: 2 × 7
+##   term                        df.residual    rss    df   sumsq statistic p.value
+##   &lt;chr&gt;                             &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 price ~ stars + borough           30525 1.01e9    NA NA            NA       NA
+## 2 price ~ stars + borough + …       30523 9.21e8     2  8.42e7     1394.       0</code></pre>
 <p>Note that this works for <em>nested</em> models only. Comparing
 non-nested models is a common problem that requires other methods; we’ll
 see one approach in <a href="cross_validation.html">cross
@@ -976,20 +964,19 @@ using a mixed-model spinoff of the <code>broom</code> package.</p>
   broom.mixed::tidy()</code></pre>
 <pre><code>## boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
 <pre><code>## # A tibble: 11 × 6
-##    effect   group        term                           estimate std.e…¹ stati…²
-##    &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;                             &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1 fixed    &lt;NA&gt;         (Intercept)                     250.      26.6    9.41 
-##  2 fixed    &lt;NA&gt;         stars                            -3.16     5.00  -0.631
-##  3 fixed    &lt;NA&gt;         room_typePrivate room          -124.       7.80 -15.9  
-##  4 fixed    &lt;NA&gt;         room_typeShared room           -157.      12.9  -12.2  
-##  5 ran_pars neighborhood sd__(Intercept)                  59.3     NA     NA    
-##  6 ran_pars neighborhood cor__(Intercept).room_typePri…   -0.987   NA     NA    
-##  7 ran_pars neighborhood cor__(Intercept).room_typeSha…   -1.00    NA     NA    
-##  8 ran_pars neighborhood sd__room_typePrivate room        36.7     NA     NA    
-##  9 ran_pars neighborhood cor__room_typePrivate room.ro…    0.992   NA     NA    
-## 10 ran_pars neighborhood sd__room_typeShared room         43.6     NA     NA    
-## 11 ran_pars Residual     sd__Observation                 198.      NA     NA    
-## # … with abbreviated variable names ¹​std.error, ²​statistic</code></pre>
+##    effect   group        term                       estimate std.error statistic
+##    &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;                         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 fixed    &lt;NA&gt;         (Intercept)                 250.        26.6      9.41 
+##  2 fixed    &lt;NA&gt;         stars                        -3.16       5.00    -0.631
+##  3 fixed    &lt;NA&gt;         room_typePrivate room      -124.         7.80   -15.9  
+##  4 fixed    &lt;NA&gt;         room_typeShared room       -157.        12.9    -12.2  
+##  5 ran_pars neighborhood sd__(Intercept)              59.3       NA       NA    
+##  6 ran_pars neighborhood cor__(Intercept).room_typ…   -0.987     NA       NA    
+##  7 ran_pars neighborhood cor__(Intercept).room_typ…   -1.00      NA       NA    
+##  8 ran_pars neighborhood sd__room_typePrivate room    36.7       NA       NA    
+##  9 ran_pars neighborhood cor__room_typePrivate roo…    0.992     NA       NA    
+## 10 ran_pars neighborhood sd__room_typeShared room     43.6       NA       NA    
+## 11 ran_pars Residual     sd__Observation             198.        NA       NA</code></pre>
 <p>Mixed models are pretty great!</p>
 </div>
 <div id="binary-outcomes" class="section level3">
@@ -1107,19 +1094,15 @@ produce probabilities for each subject.</p>
   modelr::add_predictions(fit_logistic) %&gt;% 
   mutate(fitted_prob = boot::inv.logit(pred))</code></pre>
 <pre><code>## # A tibble: 2,827 × 6
-##    resolved victim_age victim_race victim_sex    pred fitted_prob
-##       &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;       &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;
-##  1        0         17 Black       Male       -0.654        0.342
-##  2        0         26 Black       Male       -0.720        0.327
-##  3        0         21 Black       Male       -0.683        0.335
-##  4        1         61 White       Male       -0.131        0.467
-##  5        1         46 Black       Male       -0.864        0.296
-##  6        1         27 Black       Male       -0.727        0.326
-##  7        1         21 Black       Male       -0.683        0.335
-##  8        1         16 Black       Male       -0.647        0.344
-##  9        1         21 Black       Male       -0.683        0.335
-## 10        1         44 Black       Female      0.0297       0.507
-## # … with 2,817 more rows</code></pre>
+##   resolved victim_age victim_race victim_sex   pred fitted_prob
+##      &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;       &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1        0         17 Black       Male       -0.654       0.342
+## 2        0         26 Black       Male       -0.720       0.327
+## 3        0         21 Black       Male       -0.683       0.335
+## 4        1         61 White       Male       -0.131       0.467
+## 5        1         46 Black       Male       -0.864       0.296
+## 6        1         27 Black       Male       -0.727       0.326
+## # ℹ 2,821 more rows</code></pre>
 </div>
 </div>
 <div id="other-materials" class="section level2">

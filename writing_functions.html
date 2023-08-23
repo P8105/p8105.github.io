@@ -13,7 +13,7 @@
 
 <title>Writing Functions</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -197,8 +197,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -206,16 +206,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -488,13 +481,9 @@ new R Markdown document called <code>writing_functions.Rmd</code>, and
 I’m going to load the usual packages. I’m also setting the seed so that
 the output on this page is fixed.</p>
 <pre class="r"><code>library(tidyverse)
-library(rvest)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;rvest&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:readr&#39;:
-## 
-##     guess_encoding</code></pre>
-<pre class="r"><code>set.seed(1)</code></pre>
+library(rvest)
+
+set.seed(1)</code></pre>
 <div id="my-first-function" class="section level3">
 <h3>My first function</h3>
 <p>The best way to build up a function is to start with code you’ve
@@ -762,20 +751,6 @@ dynamite_reviews = bind_rows(
 )
 
 dynamite_reviews</code></pre>
-<pre><code>## # A tibble: 50 × 3
-##    title                                stars text                              
-##    &lt;chr&gt;                                &lt;dbl&gt; &lt;chr&gt;                             
-##  1 70’s and 80’s Schtick Comedy             5 …especially funny if you have eve…
-##  2 Amazon Censorship                        5 I hope Amazon does not censor my …
-##  3 Watch to say you did                     3 I know it&#39;s supposed to be a cult…
-##  4 Best Movie Ever!                         5 We just love this movie and even …
-##  5 Quirky                                   5 Good family film                  
-##  6 Funny movie - can&#39;t play it !            1 Sony 4k player won&#39;t even recogni…
-##  7 A brilliant story about teenage life     5 Napoleon Dynamite delivers dry hu…
-##  8 HUHYAH                                   5 Spicy                             
-##  9 Cult Classic                             4 Takes a time or two to fully appr…
-## 10 Sweet                                    5 Timeless Movie. My Grandkids are …
-## # … with 40 more rows</code></pre>
 </div>
 <div id="loading-lotr-data" class="section level4">
 <h4>Loading LoTR data</h4>

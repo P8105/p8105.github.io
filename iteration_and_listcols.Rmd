@@ -381,12 +381,13 @@ library(rvest)
 
 read_page_reviews <- function(url) {
   
-  html = read_html(url)
+  html = read_html(urls[1])
   
   review_titles = 
     html %>%
     html_nodes(".a-text-bold span") %>%
-    html_text()
+    html_text() %>% 
+    magrittr::extract(3*(1:10))
   
   review_stars = 
     html %>%
@@ -437,7 +438,7 @@ As with previous examples, using a for loop is pretty okay but the `map_df` call
 
 We can also do this using data frames and list columns.
 
-```{r}
+```{r, eval = FALSE}
 dynamite_reviews = 
   tibble(
     page = 1:5,

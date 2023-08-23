@@ -290,7 +290,7 @@ read_page_reviews <- function(url) {
 
 Next we'll use this to read in reviews from a few pages and combine the results.
 
-```{r}
+```{r, eval = FALSE}
 url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
 vec_urls = str_c(url_base, 1:5)
 

@@ -13,7 +13,7 @@
 
 <title>What is Data Science?</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -75,6 +75,7 @@ if (window.hljs) {
 
 
 
+
 <link rel="stylesheet" href="styles.css" type="text/css" />
 
 
@@ -99,6 +100,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -156,11 +160,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -189,8 +197,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -198,16 +206,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -324,7 +325,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -340,7 +341,7 @@ div.tocify {
   <a href="schedule.html">Schedule</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Topics
      
     <span class="caret"></span>
@@ -376,7 +377,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Datasets
      
     <span class="caret"></span>
@@ -431,12 +432,15 @@ div.tocify {
 </div>
 
 
-<p>We have, by now, established some fundamental tools for doing data science. It’s important to revisit our definition, and especially our discussion of connotation, before moving forward.</p>
+<p>We have, by now, established some fundamental tools for doing data
+science. It’s important to revisit our definition, and especially our
+discussion of connotation, before moving forward.</p>
 <div id="overview" class="section level2 tabset tabset-pills">
 <h2 class="tabset tabset-pills">Overview</h2>
 <div id="learning-objectives" class="section level3">
 <h3>Learning Objectives</h3>
-<p>Pull together skills learned through this point to produce analytical summaries and reports.</p>
+<p>Pull together skills learned through this point to produce analytical
+summaries and reports.</p>
 </div>
 <div id="slide-deck" class="section level3">
 <h3>Slide Deck</h3>
@@ -448,7 +452,11 @@ div.tocify {
     class="video"> </iframe></p>
 </div>
 <div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/p8105-data-science-revisited" title="Writing with data" target="_blank">What is Data Science? Revisited</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
+<strong>
+<a href="https://speakerdeck.com/jeffgoldsmith/p8105-data-science-revisited" title="Writing with data" target="_blank">What
+is Data Science? Revisited</a> </strong> from
+<strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff
+Goldsmith</a></strong>.
 </div>
 <p><br></p>
 <hr />
@@ -456,17 +464,23 @@ div.tocify {
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>This example is based entirely on live-coding and uses the <a href="dataset_airbnb.html">NYC Airbnb data</a>. The data can be imported using the <a href="https://github.com/P8105/p8105.datasets">p8105.datasets</a> package:</p>
+<p>This example is based entirely on live-coding and uses the <a
+href="dataset_airbnb.html">NYC Airbnb data</a>. The data can be imported
+using the <a
+href="https://github.com/P8105/p8105.datasets">p8105.datasets</a>
+package:</p>
 <pre class="r"><code>library(p8105.datasets)
 
 data(nyc_airbnb)</code></pre>
-<p>As always, I’ll do today’s coding in a R Markdown file, sitting in an GitHub Repo / R Project.</p>
+<p>As always, I’ll do today’s coding in a R Markdown file, sitting in an
+GitHub Repo / R Project.</p>
 <div id="understanding-variables" class="section level3">
 <h3>Understanding variables</h3>
-<p>First, let’s take a few minutes to understand the dataset and the variables it contains.</p>
+<p>First, let’s take a few minutes to understand the dataset and the
+variables it contains.</p>
 <pre class="r"><code># View(nyc_airbnb)
 str(nyc_airbnb)
-## spec_tbl_df [40,753 × 17] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+## spc_tbl_ [40,753 × 17] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
 ##  $ id                            : num [1:40753] 7949480 16042478 1886820 6627449 5557381 ...
 ##  $ review_scores_location        : num [1:40753] 10 NA NA 10 10 10 10 9 10 9 ...
 ##  $ name                          : chr [1:40753] &quot;City Island Sanctuary relaxing BR &amp; Bath w Parking&quot; &quot;WATERFRONT STUDIO APARTMENT&quot; &quot;Quaint City Island Community.&quot; &quot;Large 1 BDRM in Great location&quot; ...
@@ -507,30 +521,43 @@ nyc_airbnb %&gt;%
 </div>
 <div id="brainstorming-questions" class="section level3">
 <h3>Brainstorming questions</h3>
-<p>A major element of data science is to ask questions, and this dataset provides some rich opportunities. For example, we might ask:</p>
+<p>A major element of data science is to ask questions, and this dataset
+provides some rich opportunities. For example, we might ask:</p>
 <ul>
 <li>Does rating vary by neighborhood, room type, or both?</li>
 <li>How is price related to other variables?</li>
 <li>Where are rentals located?</li>
 </ul>
-<p>We’ll take a few minutes as a class to brainstorm some additional questions, and then try to answer some of them.</p>
+<p>We’ll take a few minutes as a class to brainstorm some additional
+questions, and then try to answer some of them.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
 <h2>Other materials</h2>
 <p>Some additional links on <code>leaflet</code>:</p>
 <ul>
-<li>A quick introduction is <a href="https://teachdatascience.com/leaflet/">here</a></li>
-<li>A more thorough overview is <a href="https://rstudio.github.io/leaflet/">here</a></li>
+<li>A quick introduction is <a
+href="https://teachdatascience.com/leaflet/">here</a></li>
+<li>A more thorough overview is <a
+href="https://rstudio.github.io/leaflet/">here</a></li>
 </ul>
 <p>Some other reading on thinking like a data scientist:</p>
 <ul>
-<li>If you didn’t listen before, now’s the time for Chris Volinsky’s <a href="https://youtu.be/JLs01Z5baSU?t=1063">“How Industry Views Data Science Education in Statistics Departments”</a></li>
-<li>Jeff Leek’s <a href="https://simplystatistics.org/2013/05/29/what-statistics-should-do-about-big-data-problem-forward-not-solution-backward/">problem forward</a> blog post</li>
-<li>This (somewhat long) <a href="https://simplystatistics.org/2019/01/09/how-data-scientists-think-a-mini-case-study/">post</a> has great insights into a data science mindset</li>
-<li>Although we’re playing with public (scraped) data, you might be interested in <a href="https://peerj.com/preprints/3182/">How R Helps Airbnb Make the Most of Its Data</a></li>
+<li>If you didn’t listen before, now’s the time for Chris Volinsky’s <a
+href="https://youtu.be/JLs01Z5baSU?t=1063">“How Industry Views Data
+Science Education in Statistics Departments”</a></li>
+<li>Jeff Leek’s <a
+href="https://simplystatistics.org/2013/05/29/what-statistics-should-do-about-big-data-problem-forward-not-solution-backward/">problem
+forward</a> blog post</li>
+<li>This (somewhat long) <a
+href="https://simplystatistics.org/2019/01/09/how-data-scientists-think-a-mini-case-study/">post</a>
+has great insights into a data science mindset</li>
+<li>Although we’re playing with public (scraped) data, you might be
+interested in <a href="https://peerj.com/preprints/3182/">How R Helps
+Airbnb Make the Most of Its Data</a></li>
 </ul>
-<p>The code that I produced working examples in lecture is <a href="https://github.com/P8105/case_study">here</a>.</p>
+<p>The code that I produced working examples in lecture is <a
+href="https://github.com/P8105/case_study">here</a>.</p>
 </div>
 
 <br><br>
