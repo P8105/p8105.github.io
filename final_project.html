@@ -13,7 +13,7 @@
 
 <title>Final project</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -160,15 +160,11 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark the anchor link active (and if it's in a dropdown, also mark that active)
-  var dropdown = menuAnchor.closest('li.dropdown');
-  if (window.bootstrap) { // Bootstrap 4+
-    menuAnchor.addClass('active');
-    dropdown.find('> .dropdown-toggle').addClass('active');
-  } else { // Bootstrap 3
-    menuAnchor.parent().addClass('active');
-    dropdown.addClass('active');
-  }
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -197,8 +193,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -206,9 +202,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -469,34 +472,34 @@ commit histories).</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td>November 12 by 1:00 pm</td>
+<td>November 11 by 1:00 pm</td>
 <td>Form a team and submit a proposal</td>
 <td>Written proposal document</td>
 </tr>
 <tr class="even">
-<td>November 15-18</td>
+<td>November 13-17</td>
 <td>Project review meeting</td>
 <td>Zoom meeting – no “deliverable”</td>
 </tr>
 <tr class="odd">
-<td>December 10 by 11:59 pm</td>
+<td>December 9 by 11:59 pm</td>
 <td>Report</td>
 <td>Written report giving detailed project description</td>
 </tr>
 <tr class="even">
-<td>December 10 by 11:59 pm</td>
+<td>December 9 by 11:59 pm</td>
 <td>Webpage and screencast</td>
 <td>Webpage overview of project, with short explanatory video (published
 online)</td>
 </tr>
 <tr class="odd">
-<td>December 10 by 11:59 pm</td>
+<td>December 9 by 11:59 pm</td>
 <td>Peer assessment</td>
 <td>Brief assessment of your teammates contributions (as a short
 document)</td>
 </tr>
 <tr class="even">
-<td>December 15</td>
+<td>December 14</td>
 <td>“In class” discussion of projects</td>
 <td>Enjoy hearing about projects! (Also get hex stickers…)</td>
 </tr>
