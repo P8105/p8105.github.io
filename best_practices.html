@@ -13,7 +13,7 @@
 
 <title>Getting started and best practices</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -510,7 +510,7 @@ diagnostics.</p>
 short comment section describing what this is, and follow along with the
 code below!</p>
 <pre class="r"><code>##################################################################
-# Sept 5, 2020
+# Sept 5, 2023
 # Jeff Goldsmith
 #
 # Script for exploring R!
@@ -522,11 +522,11 @@ them, but you do need to load packages you want to use with the
 to load the <code>tidyverse</code> package now.</p>
 <pre class="r"><code>library(tidyverse)
 ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ dplyr     1.1.3     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-## ✔ ggplot2   3.4.1     ✔ tibble    3.2.1
+## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-## ✔ purrr     1.0.1     
+## ✔ purrr     1.0.2     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
@@ -554,15 +554,14 @@ If you do want to see the result, you’ll have to ask for it. You can
 also apply <strong>functions</strong> to objects.</p>
 <pre class="r"><code>x = runif(20)
 x
-##  [1] 0.50184729 0.27196961 0.17255745 0.61639601 0.12530459 0.96084052
-##  [7] 0.62541626 0.87781914 0.28749821 0.87188731 0.88054667 0.44283681
-## [13] 0.22999439 0.55190207 0.93050487 0.81036852 0.04315229 0.89445038
-## [19] 0.38875158 0.03690093
+##  [1] 0.5374626 0.5505739 0.1969485 0.4041128 0.3132313 0.9170231 0.3661522
+##  [8] 0.9935972 0.8702092 0.1215536 0.9449632 0.7706860 0.2378059 0.8091016
+## [15] 0.6915514 0.1320752 0.1360347 0.1200772 0.7670260 0.9381012
 
 mean(x)
-## [1] 0.5260472
+## [1] 0.5409143
 var(x)
-## [1] 0.1026518</code></pre>
+## [1] 0.1036736</code></pre>
 <p>We’ve created two variables, <code>x</code> and <code>y</code> –
 these now exist in the <strong>environment</strong>. You can see
 everything in the environment using <code>ls()</code> on the command
@@ -635,7 +634,7 @@ you wanted to produce. The two scripts below repeat content from
 above.</p>
 <p>First, data frames and variable classes.</p>
 <pre class="r"><code>##################################################################
-# Sept 5, 2019
+# Sept 5, 2023
 # Jeff Goldsmith
 #
 # Script exploring variable assignment
@@ -659,7 +658,7 @@ mean(x)
 var(x)</code></pre>
 <p>Second, simple plots.</p>
 <pre class="r"><code>##################################################################
-# Sept 5, 2019
+# Sept 5, 2023
 # Jeff Goldsmith
 #
 # Script producing basic plots
@@ -726,8 +725,8 @@ can find everything you need quickly and easily. R Projects, through
 RStudio, give you an easy way to do this.</p>
 <p>Create a directory and save the previous two scripts into that
 directory. Script names, like variable names, should be descriptive
-(e.g. <code>20200905_var_assign.R</code> and
-<code>20200905_simple_plots.R</code>). The directory name should be
+(e.g. <code>20230905_var_assign.R</code> and
+<code>20230905_simple_plots.R</code>). The directory name should be
 descriptive as well, and it should be in a reasonable place on your
 computer (e.g. <code>~/Documents/first_project/</code>). Create an R
 Project using File &gt; New Project &gt; Existing Directory and

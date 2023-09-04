@@ -53,7 +53,7 @@ Define "data science" and understand its vital role in public health research.
 
 For the purpose of this class, we'll use the following working definition of data science:
 
->Data science is the study of formulating and rigorously answering questions using a data-centric process that emphasizes clarity, reproducibility, and effective communication. 
+>Data science is the study of formulating and rigorously answering questions using a data-centric process that emphasizes clarity, reproducibility, effective communication, and ethical practices.
 
 In coming modules, we'll learn about wrangling data, making visualizations, and conducting analyses. Throughout, we'll focus on modern tools that facilitate best practices for working with data, including organization, reproducibility, and clear coding. Material will be presented in a way that combines didactic content with hands-on coding elements. Below are two examples we'll return to later in the course. 
 
