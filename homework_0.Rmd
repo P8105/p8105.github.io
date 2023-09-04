@@ -12,11 +12,11 @@ R and RStudio are required for this course, as are several R packages. Additiona
 
 ### Due date
 
-Due: September 8 at 10:00am. 
+Due: September 7 at 10:00am. 
 
 ### Problem 1
 
-Download and install the latest versions of [R](https://cran.r-project.org) (4.2.1) and [RStudio](https://www.rstudio.com/products/rstudio/download/) (2022.07.1-554). 
+Download and install the latest versions of [R](https://cran.r-project.org) (4.3.1) and [RStudio](https://posit.co/download/rstudio-desktop/) (2023.06.2+561). 
 
 Open RStudio and install several packages (and their dependencies) using the code below:
 
