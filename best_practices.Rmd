@@ -62,7 +62,7 @@ Today we're going to talk a lot about using R and being organized. Beyond that, 
 
 ### Get started
 
-Launch R Studio and take stock -- find the Console, the Environment/History, and the Files/Plots/Packages/Help. This is also a good time to set some preferences -- I like to turn off saving the workspace and history, and also turn on a lot of the R code diagnostics.
+Launch R Studio and take stock -- find the Console, the Environment/History, and the Files/Plots/Packages/Help. This is also a good time to set some preferences -- I strongly encourage you to turn off saving / loading the workspace and history, and also to turn on a lot of the R code diagnostics.
 
 Create a new R script using File > New File > R Script. Write a short comment section describing what this is, and follow along with the code below!
 
@@ -223,9 +223,9 @@ The scripts above illustrate some "best practices" that you should adopt:
 
 The organization of code into self-contained scripts is itself part of a bigger picture. Rather than focusing on the variables (or plots, or even complete analyses), focus on the code that produces them. Given whatever inputs you have (none for now, although later there will be data), your code should reliably produce whatever outputs you want. 
 
-To check how "real" your scripts are, clear out your workspace using `rm(list = ls())` or, even better, restart your R Session (Session > Restart R) and re-run everything. If everything works, great; if not, address the issue by editing your script. Do this frequently!
+To check how "real" your scripts are, clear out your workspace by restarting your R Session (Session > Restart R) and re-run everything. If everything works, great; if not, address the issue by editing your script. Do this frequently! Note -- using `rm(list = ls())` [doesn't do the same thing](https://rstats.wtf/source-and-blank-slates#rm-list-ls), and can get you into trouble. 
 
-R will, by default, save everything in your workspace. I strongly suggest you turn this behavior off (Preferences > General > Save Workspace: Never). First, doing so will remove a crutch early on and help you focus on your scripts. Second, saving your workspace automatically and doing so in the background can get you in trouble if (or when) you deal with patient data. 
+R will, by default, save everything in your workspace. As noted above, I strongly suggest you turn this behavior off (Preferences > General > Save Workspace: Never). First, doing so will remove a crutch early on and help you focus on your scripts as standalone objects. Second, saving your workspace automatically and doing so in the background can get you in trouble if (or when) you deal with patient data. 
 
 A final word about scripts -- not every line of code you write will (or should) make it to your scripts. It can take a few attempts to get code you like, and you don't need to save the intermediate stuff. You also don't need to save every bit of exploratory analysis you do -- keep the stuff that improved your understanding, but discard the rest. 
 
@@ -287,7 +287,7 @@ Basically all you need to know about workflows can be found in writing by Jenny 
 * Also, her intro to [workspaces, the working directory, and R Projects](http://stat545.com/block002_hello-r-workspace-wd-project.html)
 * Also also, her slides on [how to name files](https://speakerdeck.com/jennybc/how-to-name-files)
 * Also also also, her discussion on a [project-oriented workflow](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/)
-* A good thing to refer to often is her book  [WTF](https://whattheyforgot.org/save-source.html) -- I read this and learn new things every time.
+* A good thing to refer to often is her book [WTF](https://rstats.wtf/source-and-blank-slates) -- I read this and learn new things every time.
 
 Other people have written useful things too:
 
