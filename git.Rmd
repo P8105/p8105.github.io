@@ -92,8 +92,6 @@ Now, in RStudio, start a new Project using File > New Project > Version Control.
 
 Once you've done this, a few things will happen. Most obviously, you now have a Project with the name you chose, and that project contains the .Rproj file, your README.md from GitHub, and a `.gitignore` file (by default, this will ignore `.Rproj.user`, `.Rhistory`, `.RData`, and `.Ruserdata`). Less obviously, git is now watching your directory and will keep track of changes across versions of your work, and there's a new "Git" tab in the top-right RStudio pane. 
 
-Optionally, you can add the R Project to a separate git client. 
-
 **_Learning Assessment:_** Follow the process above to create your own repo on GH and clone it as an R Project using RStudio.
 
 ### Commit to git
@@ -129,9 +127,25 @@ The commit messages and git diffs are key features, and will help you understand
 **_Learning Assessment:_** Make some changes to your repo (edit your README, add a file, etc) and commit those changes. 
 
 
-### Push to GitHub
+### Pushing to GitHub
 
-Git is useful as a version control system all by itself, but it is especially powerful when combined with GitHub. This combination relies on pairing your "local repository" with a "remote repository" -- local is on your computer, remote is in the cloud (i.e. on GitHub's servers). Fortunately, in the "GitHub First" workflow, the local / remote pairing is basically done for you. So, the next step is to "push to remote", a step that drives home the difference between local and remote repositories: you can make local changes and commits, but the remote repository won't know about them until you push. 
+Git is useful as a version control system all by itself, but it is especially powerful when combined with GitHub. This combination relies on pairing your "local repository" with a "remote repository" -- local is on your computer, remote is in the cloud (i.e. on GitHub's servers). Fortunately, in the "GitHub First" workflow, the local / remote pairing is basically done for you. *However:* you still have to make sure that GitHub and RStudio are configured to talk to each other. This process can be confusing and stressful, even for git veterans, but usually only has to be completed once and there are useful R packages that make this easier. 
+
+First, make sure your GitHub username and email are established on your computer. You can do this in a terminal window, but I recommend running
+```{r, eval = FALSE}
+usethis::use_git_config(user.name = "YOUR NAME", user.email = "your_GH_email")
+```
+substituting your name and email. Next, you need to create a Personal Access Token. Again, there are several ways to do this, but I recommend you use
+```{r, eval = FALSE}
+usethis::create_github_token()
+```
+This will take you to GitHub, where you'll establish scopes (recommended scopes “repo”, “user”, and “workflow” will be selected by default), name your token (mine is "GH_Macbook"), and say how long this token will last. Copy your token or keep this page open. Once you've set up your PAT and try to push, RStudio may prompt you for your GitHub username and password; provide your new PAT, and you're be all set. Alternatively, run
+```{r, eval = FALSE}
+gitcreds::gitcreds_set()
+```
+and you'll be prompted to input your PAT. 
+
+Once you've done all this, the next step is to "push to remote", a step that drives home the difference between local and remote repositories: you can make local changes and commits, but the remote repository won't know about them until you push. 
 
 <img src="images/git_push_to_remote.png" style="width:80%">
 
@@ -139,7 +153,6 @@ Once you've pushed, all your commits are viewable on GitHub.
 
 <img src="images/git_gh_after_push.png" style="width:80%">
 
-**Note:** GitHub has a variety of security features. One that will be relevant right now is the use of Personal Access Tokens rather than passwords for pushing to and pulling from remote repositories. There are several [useful](https://stackoverflow.com/questions/68775869/support-for-password-authentication-was-removed-please-use-a-personal-access-to) [guides](https://usethis.r-lib.org/articles/articles/git-credentials.html) to get help with this. Once you've set up your PAT and try to push, RStudio may prompt you for your GitHub username and password; provide your new PAT, and you're be all set. Fortunately, you should only have to do this once, and the credentials will be stored for later uses. 
 
 GitHub has a lot of features that help as projects grow: issue trackers function as collaborative "to-do" lists, the built-in message system helps coordinate with collaborators, and others. You can also see what other people are working on, follow repos or developers, create your own versions of existing repos, and do other exciting stuff!
 

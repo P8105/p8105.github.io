@@ -13,7 +13,7 @@
 
 <title>Git and GitHub</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -527,7 +527,6 @@ the .Rproj file, your README.md from GitHub, and a
 and <code>.Ruserdata</code>). Less obviously, git is now watching your
 directory and will keep track of changes across versions of your work,
 and there’s a new “Git” tab in the top-right RStudio pane.</p>
-<p>Optionally, you can add the R Project to a separate git client.</p>
 <p><strong><em>Learning Assessment:</em></strong> Follow the process
 above to create your own repo on GH and clone it as an R Project using
 RStudio.</p>
@@ -602,31 +601,42 @@ changes were.</p>
 your repo (edit your README, add a file, etc) and commit those
 changes.</p>
 </div>
-<div id="push-to-github" class="section level3">
-<h3>Push to GitHub</h3>
+<div id="pushing-to-github" class="section level3">
+<h3>Pushing to GitHub</h3>
 <p>Git is useful as a version control system all by itself, but it is
 especially powerful when combined with GitHub. This combination relies
 on pairing your “local repository” with a “remote repository” – local is
 on your computer, remote is in the cloud (i.e. on GitHub’s servers).
 Fortunately, in the “GitHub First” workflow, the local / remote pairing
-is basically done for you. So, the next step is to “push to remote”, a
+is basically done for you. <em>However:</em> you still have to make sure
+that GitHub and RStudio are configured to talk to each other. This
+process can be confusing and stressful, even for git veterans, but
+usually only has to be completed once and there are useful R packages
+that make this easier.</p>
+<p>First, make sure your GitHub username and email are established on
+your computer. You can do this in a terminal window, but I recommend
+running</p>
+<pre class="r"><code>usethis::use_git_config(user.name = &quot;YOUR NAME&quot;, user.email = &quot;your_GH_email&quot;)</code></pre>
+<p>substituting your name and email. Next, you need to create a Personal
+Access Token. Again, there are several ways to do this, but I recommend
+you use</p>
+<pre class="r"><code>usethis::create_github_token()</code></pre>
+<p>This will take you to GitHub, where you’ll establish scopes
+(recommended scopes “repo”, “user”, and “workflow” will be selected by
+default), name your token (mine is “GH_Macbook”), and say how long this
+token will last. Copy your token or keep this page open. Once you’ve set
+up your PAT and try to push, RStudio may prompt you for your GitHub
+username and password; provide your new PAT, and you’re be all set.
+Alternatively, run</p>
+<pre class="r"><code>gitcreds::gitcreds_set()</code></pre>
+<p>and you’ll be prompted to input your PAT.</p>
+<p>Once you’ve done all this, the next step is to “push to remote”, a
 step that drives home the difference between local and remote
 repositories: you can make local changes and commits, but the remote
 repository won’t know about them until you push.</p>
 <p><img src="images/git_push_to_remote.png" style="width:80%"></p>
 <p>Once you’ve pushed, all your commits are viewable on GitHub.</p>
 <p><img src="images/git_gh_after_push.png" style="width:80%"></p>
-<p><strong>Note:</strong> GitHub has a variety of security features. One
-that will be relevant right now is the use of Personal Access Tokens
-rather than passwords for pushing to and pulling from remote
-repositories. There are several <a
-href="https://stackoverflow.com/questions/68775869/support-for-password-authentication-was-removed-please-use-a-personal-access-to">useful</a>
-<a
-href="https://usethis.r-lib.org/articles/articles/git-credentials.html">guides</a>
-to get help with this. Once you’ve set up your PAT and try to push,
-RStudio may prompt you for your GitHub username and password; provide
-your new PAT, and you’re be all set. Fortunately, you should only have
-to do this once, and the credentials will be stored for later uses.</p>
 <p>GitHub has a lot of features that help as projects grow: issue
 trackers function as collaborative “to-do” lists, the built-in message
 system helps coordinate with collaborators, and others. You can also see
