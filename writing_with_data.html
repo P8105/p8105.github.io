@@ -13,7 +13,7 @@
 
 <title>Writing with data</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -482,8 +482,8 @@ set in my ways, but there are <a
 href="https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/preview?slide=id.g362da58057_0_1">good
 reasons</a> to <a
 href="https://twitter.com/hspter/status/1034511875499732993">avoid
-notebooks</a>. These can be turned off using Preferences &gt; R Markdown
-&gt; Show output inline.</p>
+notebooks</a>. These can be turned off using Global Options &gt; R
+Markdown &gt; Show output inline.</p>
 <div id="basic-rmd" class="section level3">
 <h3>Basic RMD</h3>
 <p>Below is a first RMD file. To follow along, create a .Rmd file using
@@ -694,7 +694,7 @@ document.</p>
 will include both the <code>author</code> and <code>date</code> in each
 document I produce.</p>
 <pre class="yaml"><code>author: &quot;Jeff Goldsmith&quot;
-date: 2019-09-10</code></pre>
+date: 2023-09-12</code></pre>
 <p>We’re mostly concerned with the output format, which is controlled
 through the <code>output:</code> field.</p>
 <p>The snippet below will produce an HTML document. Notice that this has
@@ -720,8 +720,7 @@ and Word, respectively).</p>
 <p>The formatting for both PDF and Word documents can be controlled
 through options as well, although these can be tricky to control
 (especially for Word documents). If you’re really interested in
-generating reports using Word, you probably will want to read up on the
-<a
+generating reports using Word, you may want to read up on the <a
 href="https://noamross.github.io/redoc/index.html"><code>redoc</code></a>
 package!</p>
 <p>We use the <code>github_document</code> format extensively in this

@@ -59,7 +59,7 @@ We'll be getting up-to-speed on the basic tools in R. As part of that, we'll def
 
 ## Example
 
-Before jumping in, one short note about the default RStudio treatment of R Markdown documents: it behaves like a "notebook" and shows output mixed in with the code, rather than in the console or viewer. I don't like this, and I'm definitely not the only one. I might just be old and set in my ways, but there are [good reasons](https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/preview?slide=id.g362da58057_0_1) to [avoid notebooks](https://twitter.com/hspter/status/1034511875499732993). These can be turned off using Preferences > R Markdown > Show output inline.
+Before jumping in, one short note about the default RStudio treatment of R Markdown documents: it behaves like a "notebook" and shows output mixed in with the code, rather than in the console or viewer. I don't like this, and I'm definitely not the only one. I might just be old and set in my ways, but there are [good reasons](https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/preview?slide=id.g362da58057_0_1) to [avoid notebooks](https://twitter.com/hspter/status/1034511875499732993). These can be turned off using Global Options > R Markdown > Show output inline.
 
 ### Basic RMD
 
@@ -146,7 +146,7 @@ cat(readr::read_file("resources/writing_with_data_la2.Rmd"))
 The YAML header controls global features of the document. I generally will include both the `author` and `date` in each document I produce.
 ```yaml
 author: "Jeff Goldsmith"
-date: 2019-09-10
+date: 2023-09-12
 ```
 
 We're mostly concerned with the output format, which is controlled through the `output:` field. 
@@ -174,7 +174,7 @@ output:
   word_document: default
 ```
 
-The formatting for both PDF and Word documents can be controlled through options as well, although these can be tricky to control (especially for Word documents). If you're really interested in generating reports using Word, you probably will want to read up on the [`redoc`](https://noamross.github.io/redoc/index.html) package!
+The formatting for both PDF and Word documents can be controlled through options as well, although these can be tricky to control (especially for Word documents). If you're really interested in generating reports using Word, you may want to read up on the [`redoc`](https://noamross.github.io/redoc/index.html) package!
 
 We use the `github_document` format extensively in this course, and talk more about why in [git and github](git.html). Later in the course we'll talk about some other output formats -- especially dashboards and websites -- introducing other YAML options as needed.
 
