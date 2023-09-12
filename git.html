@@ -472,17 +472,17 @@ Goldsmith</a></strong>.
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>In the following, I’m assuming some important set-up steps are
-already done – if you were successful in <a
-href="homework_0.html">Homework 0</a>, you should be fine. To follow
-along, you’ll need to have git installed and a GitHub account. In some
-places I prefer to use a stand-alone git client (my preference is <a
-href="https://www.sourcetreeapp.com">Sourcetree</a>), but you can get by
-pretty well with RStudio’s built-in tools. Help for git installation and
+<p>There are some important set-up steps before getting started. To
+follow along, you’ll need to have git installed and a GitHub account.
+You should make sure your GitHub username and email are established on
+your computer. You can do this in a terminal window, but I recommend
+running</p>
+<pre class="r"><code>usethis::use_git_config(user.name = &quot;YOUR NAME&quot;, user.email = &quot;your_GH_email&quot;)</code></pre>
+<p>substituting your name and email. Help for git installation and
 troubleshooting can be found in Chapters 4-9 of <a
 href="http://happygitwithr.com">this book</a> by Jenny Bryan (note – all
 the rest of those chapters are also great).</p>
-<p>For this example, I’m going to re-do stuff from <a
+<p>For this example, I’m going to re-do work from <a
 href="writing_with_data.html">Writing with Data</a>.</p>
 <div id="new-workflow-github-first" class="section level3">
 <h3>New workflow – GitHub first</h3>
@@ -613,13 +613,8 @@ that GitHub and RStudio are configured to talk to each other. This
 process can be confusing and stressful, even for git veterans, but
 usually only has to be completed once and there are useful R packages
 that make this easier.</p>
-<p>First, make sure your GitHub username and email are established on
-your computer. You can do this in a terminal window, but I recommend
-running</p>
-<pre class="r"><code>usethis::use_git_config(user.name = &quot;YOUR NAME&quot;, user.email = &quot;your_GH_email&quot;)</code></pre>
-<p>substituting your name and email. Next, you need to create a Personal
-Access Token. Again, there are several ways to do this, but I recommend
-you use</p>
+<p>A key step is the creation of a Personal Access Token. As always,
+there are several ways to do this, but I recommend you use</p>
 <pre class="r"><code>usethis::create_github_token()</code></pre>
 <p>This will take you to GitHub, where you’ll establish scopes
 (recommended scopes “repo”, “user”, and “workflow” will be selected by
@@ -721,8 +716,8 @@ way.</p>
 <p>That said, try to coordinate with teammates so it’s clear who is
 working on what and when they’re doing it.</p>
 </div>
-<div id="new-workflow-project-first" class="section level3">
-<h3>New workflow – Project first</h3>
+<div id="alternative-workflow-project-first" class="section level3">
+<h3>Alternative workflow – Project first</h3>
 <p>The “GitHub first” workflow works well, but it’s not the only way to
 add version control to an R Project. An alternative is “Project
 first”:</p>
@@ -742,7 +737,7 @@ push)</strong></li>
 </ul>
 <p>Bold steps are new with respect to the workflow in <a
 href="writing_with_data.html">Writing with Data</a>. This workflow is
-useful if you don’t intend for your repo to end up “in the cloud”, whic
+useful if you don’t intend for your repo to end up “in the cloud”, which
 his sometimes the case, but means you have to take steps to create the
 remote repository.</p>
 </div>

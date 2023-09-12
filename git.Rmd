@@ -55,9 +55,17 @@ Git is awesome ... but it isn't easy at first. We'll look at how to use git and 
 
 ## Example
 
-In the following, I'm assuming some important set-up steps are already done -- if you were successful in [Homework 0](homework_0.html), you should be fine. To follow along, you'll need to have git installed and a GitHub account. In some places I prefer to use a stand-alone git client (my preference is [Sourcetree](https://www.sourcetreeapp.com)), but you can get by pretty well with RStudio's built-in tools. Help for git installation and troubleshooting can be found in Chapters 4-9 of [this book](http://happygitwithr.com) by Jenny Bryan (note -- all the rest of those chapters are also great).
 
-For this example, I'm going to re-do stuff from [Writing with Data](writing_with_data.html).
+
+
+
+There are some important set-up steps before getting started. To follow along, you'll need to have git installed and a GitHub account. You should make sure your GitHub username and email are established on your computer. You can do this in a terminal window, but I recommend running
+```{r, eval = FALSE}
+usethis::use_git_config(user.name = "YOUR NAME", user.email = "your_GH_email")
+```
+substituting your name and email.  Help for git installation and troubleshooting can be found in Chapters 4-9 of [this book](http://happygitwithr.com) by Jenny Bryan (note -- all the rest of those chapters are also great).
+
+For this example, I'm going to re-do work from [Writing with Data](writing_with_data.html).
 
 
 ### New workflow -- GitHub first
@@ -96,7 +104,7 @@ Once you've done this, a few things will happen. Most obviously, you now have a 
 
 ### Commit to git
 
-At this point, I haven't done much "work" -- I've created a repo and set up a project. Although I haven't really done much yet I'm going to make an initial commit with the Project set-up, which is a nice starting point.
+At this point, I haven't done much "work" -- I've created a repo and set up a project. Although I haven't really done much yet I'm going to make an initial commit with the Project set-up, which is a nice starting point. 
 
 <img src="images/git_initial_commit.png" style="width:80%">
 
@@ -131,15 +139,11 @@ The commit messages and git diffs are key features, and will help you understand
 
 Git is useful as a version control system all by itself, but it is especially powerful when combined with GitHub. This combination relies on pairing your "local repository" with a "remote repository" -- local is on your computer, remote is in the cloud (i.e. on GitHub's servers). Fortunately, in the "GitHub First" workflow, the local / remote pairing is basically done for you. *However:* you still have to make sure that GitHub and RStudio are configured to talk to each other. This process can be confusing and stressful, even for git veterans, but usually only has to be completed once and there are useful R packages that make this easier. 
 
-First, make sure your GitHub username and email are established on your computer. You can do this in a terminal window, but I recommend running
-```{r, eval = FALSE}
-usethis::use_git_config(user.name = "YOUR NAME", user.email = "your_GH_email")
-```
-substituting your name and email. Next, you need to create a Personal Access Token. Again, there are several ways to do this, but I recommend you use
+A key step is the creation of a Personal Access Token. As always, there are several ways to do this, but I recommend you use
 ```{r, eval = FALSE}
 usethis::create_github_token()
 ```
-This will take you to GitHub, where you'll establish scopes (recommended scopes “repo”, “user”, and “workflow” will be selected by default), name your token (mine is "GH_Macbook"), and say how long this token will last. Copy your token or keep this page open. Once you've set up your PAT and try to push, RStudio may prompt you for your GitHub username and password; provide your new PAT, and you're be all set. Alternatively, run
+This will take you to GitHub, where you'll establish scopes (recommended scopes "repo", "user", and "workflow" will be selected by default), name your token (mine is "GH_Macbook"), and say how long this token will last. Copy your token or keep this page open. Once you've set up your PAT and try to push, RStudio may prompt you for your GitHub username and password; provide your new PAT, and you're be all set. Alternatively, run
 ```{r, eval = FALSE}
 gitcreds::gitcreds_set()
 ```
@@ -207,7 +211,7 @@ Merge conflicts are a fact of life in collaborative work, and you probably run i
 That said, try to coordinate with teammates so it's clear who is working on what and when they're doing it. 
 
 
-### New workflow -- Project first
+### Alternative workflow -- Project first
 
 The "GitHub first" workflow works well, but it's not the only way to add version control to an R Project. An alternative is "Project first":
 
@@ -218,7 +222,7 @@ The "GitHub first" workflow works well, but it's not the only way to add version
 * **Keep track of changes using version control (save, commit, push)**
 * Periodically check for reproducibility of the analysis
 
-Bold steps are new with respect to the workflow in [Writing with Data](writing_with_data.html). This workflow is useful if you don't intend for your repo to end up "in the cloud", whic his sometimes the case, but means you have to take steps to create the remote repository.
+Bold steps are new with respect to the workflow in [Writing with Data](writing_with_data.html). This workflow is useful if you don't intend for your repo to end up "in the cloud", which his sometimes the case, but means you have to take steps to create the remote repository.
 
 
 ## Other materials
