@@ -13,7 +13,7 @@
 
 <title>Data Manipulation with dplyr</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -488,6 +488,16 @@ Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and
 column names using what we learned in <a href="data_import.html">Data
 Import</a>.</p>
 <pre class="r"><code>library(tidyverse)
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.3     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
 
 options(tibble.print_min = 3)
 
@@ -762,7 +772,7 @@ more columns:</p>
 ## # ℹ 2 more variables: pups_dead_birth &lt;int&gt;, pups_survive &lt;int&gt;</code></pre>
 </div>
 <div id="section" class="section level3">
-<h3><code>%&gt;%</code></h3>
+<h3><code>|&gt;</code></h3>
 <p>We’ve seen several commands you will use regularly for data
 manipulation and cleaning. You will rarely use them in isolation. For
 example, suppose you want to load the data, clean the column names,
@@ -825,12 +835,12 @@ clutters our workspace, and the second has to be read inside out.</p>
 into a sequential chain by passing the result of one function call as an
 argument to the next function call:</p>
 <pre class="r"><code>litters_data = 
-  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;%
-  janitor::clean_names() %&gt;%
-  select(-pups_survive) %&gt;%
+  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  select(-pups_survive) |&gt; 
   mutate(
     wt_gain = gd18_weight - gd0_weight,
-    group = str_to_lower(group)) %&gt;% 
+    group = str_to_lower(group)) |&gt; 
   drop_na(wt_gain)
 
 litters_data
@@ -844,35 +854,28 @@ litters_data
 ## # ℹ 2 more variables: pups_dead_birth &lt;int&gt;, wt_gain &lt;dbl&gt;</code></pre>
 <p>All three approaches result in the same dataset, but the piped
 commands are by far the most straightforward. The easiest way to read
-<code>%&gt;%</code> is “then”; the keyboard shortcuts are Ctrl + Shift +
-M (Windows) and Cmd + Shift + M (Mac).</p>
+<code>|&gt;</code> is “then”; the keyboard shortcuts are Ctrl + Shift +
+M (Windows) and Cmd + Shift + M (Mac). Note that by default RStudio will
+insert the “traditional” pipe <code>%&gt;%</code>, and you can update to
+the native in pipe through Global Preferences &gt; Code &gt; Use Native
+Pipe Operator. More on the difference between <code>|&gt;</code> and
+<code>%&gt;%</code> below.</p>
 <p>The functions in <code>dplyr</code> (and much of the
 <code>tidyverse</code>) are designed to work smoothly with the pipe
 operator. By default, the pipe will take the result of one function call
 and use that as the first argument of the next function call; by design,
 functions in <code>dplyr</code> will take a tibble as an input and
 return a tibble as a result. As a consequence, functions in
-<code>dplyr</code> are easy to connect in a data cleaning chain. You can
-make this more explicit by using <code>.</code> as a placeholder for the
-result of the preceding call:</p>
-<pre class="r"><code>litters_data = 
-  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;%
-  janitor::clean_names(dat = .) %&gt;%
-  select(.data = ., -pups_survive) %&gt;%
-  mutate(.data = .,
-    wt_gain = gd18_weight - gd0_weight,
-    group = str_to_lower(group)) %&gt;% 
-  drop_na(data = ., wt_gain)</code></pre>
-<p>In this example, the dataset argument is called <code>dat</code> in
-<code>janitor::clean_names</code>, <code>.data</code> in the
-<code>dplyr</code> functions, and <code>data</code> in
-<code>drop_na</code> – which is definitely confusing. In the majority of
-cases (and everywhere in the tidyverse) you’ll elide the first argument
-and be happy with life, but there are some cases where the placeholder
-is necessary. For example, to regress <code>wt_gain</code> on
-<code>pups_born_alive</code>, you might use:</p>
-<pre class="r"><code>litters_data %&gt;%
-  lm(wt_gain ~ pups_born_alive, data = .) %&gt;%
+<code>dplyr</code> are easy to connect in a data cleaning chain.</p>
+<p>In the majority of cases (and everywhere in the tidyverse) you can
+trust that the first argument is the right one and be happy with life,
+but there are some cases where what you’re piping isn’t going into the
+first argument. Here, using the placeholder <code>_</code> is necessary
+to indicate where the object being piped should go. For example, to
+regress <code>wt_gain</code> on <code>pups_born_alive</code>, you might
+use:</p>
+<pre class="r"><code>litters_data |&gt;
+  lm(wt_gain ~ pups_born_alive, data = _) |&gt;
   broom::tidy()
 ## # A tibble: 2 × 5
 ##   term            estimate std.error statistic  p.value
@@ -881,9 +884,9 @@ is necessary. For example, to regress <code>wt_gain</code> on
 ## 2 pups_born_alive    0.605     0.173      3.49 1.55e- 3</code></pre>
 <p>There are limitations to the pipe. You shouldn’t have sequences that
 are too long; there isn’t a great way to deal with multiple inputs and
-outputs; and (since it’s not base R) not everyone will know what
-<code>%&gt;%</code> means or does. That said, compared to days when R
-users only had the first two options, life is much better!</p>
+outputs; and not everyone will know what <code>|&gt;</code> means or
+does. That said, compared to days when R users only had the first two
+options, life is much better!</p>
 <p><strong><em>Learning Assessment:</em></strong> Write a chain of
 commands that:</p>
 <ul>
@@ -899,10 +902,10 @@ days</li>
 Solution
 </summary>
 <p>The chunk below performs these actions:</p>
-<pre class="r"><code>read_csv(&quot;./data/FAS_pups.csv&quot;, col_types = &quot;ciiiii&quot;) %&gt;%
-  janitor::clean_names() %&gt;% 
-  filter(sex == 1) %&gt;% 
-  select(-pd_ears) %&gt;% 
+<pre class="r"><code>read_csv(&quot;./data/FAS_pups.csv&quot;, col_types = &quot;ciiiii&quot;) |&gt;
+  janitor::clean_names() |&gt; 
+  filter(sex == 1) |&gt; 
+  select(-pd_ears) |&gt; 
   mutate(pd_pivot_gt7 = pd_pivot &gt; 7)
 ## # A tibble: 155 × 6
 ##   litter_number   sex pd_eyes pd_pivot pd_walk pd_pivot_gt7
@@ -912,6 +915,26 @@ Solution
 ## 3 #1/2/95/2         1      13        7       9 FALSE       
 ## # ℹ 152 more rows</code></pre>
 </details>
+</div>
+<div id="vs" class="section level3">
+<h3><code>|&gt;</code> vs <code>%&gt;%</code></h3>
+<p>There are some subtle differences between <code>|&gt;</code> and
+<code>%&gt;%</code> that it can be helpful to <a
+href="https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/">read
+about</a>, but in the vast majority of cases these are effectively
+interchangeable. While the similarities and differences can matter,
+there are a few points that are likely to come up more often:</p>
+<ul>
+<li>You’ll see <code>%&gt;%</code> a lot in code online. It was
+introduced first, and was very prevalent in tidyverse code for a long
+time before <code>|&gt;</code> came along.</li>
+<li>The native pipe <code>|&gt;</code> was <a
+href="https://www.infoworld.com/article/3621369/use-the-new-r-pipe-built-into-r-41.html">introduced</a>
+in R 4.1.0, and it changed some in 4.2.0 and 4.3.0; it’s pretty stable
+now and the main functionality is unlikely to change, but it won’t be
+familiar to everyone and can’t be used at all in older versions of
+R.</li>
+</ul>
 </div>
 </div>
 <div id="other-materials" class="section level2">
