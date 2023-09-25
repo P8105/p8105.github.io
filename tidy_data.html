@@ -481,7 +481,7 @@ href="data_manipulation.html">data manipulation</a>, but create a new
 limit the number of lines printed in a tibble.</p>
 <pre class="r"><code>library(tidyverse)
 ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.3     ✔ readr     2.1.4
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
 ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
@@ -498,7 +498,7 @@ options(tibble.print_min = 5)</code></pre>
 <code>haven</code> package to load the PULSE biomarkers dataset from a
 .sas7bdat. Let’s reload those data and take a closer look:</p>
 <pre class="r"><code>pulse_df = 
-  haven::read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) %&gt;%
+  haven::read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) |&gt;
   janitor::clean_names()
 
 pulse_df
@@ -562,40 +562,37 @@ changing <code>bl</code> to <code>00m</code> for consistency across
 visits and converting <code>visit</code> to a factor variable. (It’s
 possible that you would want <code>visit</code> to be a numeric variable
 instead, which could be done with a different call to
-<code>mutate</code>.) Lastly, it’s nice to organize the data into a
-reasonable order.</p>
+<code>mutate</code>.)</p>
 <p>Altogether, then, the code below will import, tidy, and transform the
 PULSE dataset into a usable format:</p>
 <pre class="r"><code>pulse_df = 
-  haven::read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) %&gt;%
-  janitor::clean_names() %&gt;%
+  haven::read_sas(&quot;./data/public_pulse_data.sas7bdat&quot;) |&gt;
+  janitor::clean_names() |&gt;
   pivot_longer(
     bdi_score_bl:bdi_score_12m,
     names_to = &quot;visit&quot;, 
     names_prefix = &quot;bdi_score_&quot;,
-    values_to = &quot;bdi&quot;) %&gt;%
-  relocate(visit) %&gt;%
+    values_to = &quot;bdi&quot;) |&gt;
   mutate(
     visit = replace(visit, visit == &quot;bl&quot;, &quot;00m&quot;),
-    visit = factor(visit)) %&gt;%
-  arrange(id, visit)
+    visit = factor(visit)) 
 
 print(pulse_df, n = 12)
 ## # A tibble: 4,348 × 5
-##    visit    id   age sex     bdi
-##    &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
-##  1 00m   10003  48.0 male      7
-##  2 01m   10003  48.0 male      1
-##  3 06m   10003  48.0 male      2
-##  4 12m   10003  48.0 male      0
-##  5 00m   10015  72.5 male      6
-##  6 01m   10015  72.5 male     NA
-##  7 06m   10015  72.5 male     NA
-##  8 12m   10015  72.5 male     NA
-##  9 00m   10022  58.5 male     14
-## 10 01m   10022  58.5 male      3
-## 11 06m   10022  58.5 male      8
-## 12 12m   10022  58.5 male     NA
+##       id   age sex   visit   bdi
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;fct&gt; &lt;dbl&gt;
+##  1 10003  48.0 male  00m       7
+##  2 10003  48.0 male  01m       1
+##  3 10003  48.0 male  06m       2
+##  4 10003  48.0 male  12m       0
+##  5 10015  72.5 male  00m       6
+##  6 10015  72.5 male  01m      NA
+##  7 10015  72.5 male  06m      NA
+##  8 10015  72.5 male  12m      NA
+##  9 10022  58.5 male  00m      14
+## 10 10022  58.5 male  01m       3
+## 11 10022  58.5 male  06m       8
+## 12 10022  58.5 male  12m      NA
 ## # ℹ 4,336 more rows</code></pre>
 <p>Now we’re in pretty okay shape :-).</p>
 <p><strong><em>Learning Assessment:</em></strong> In the litters data,
@@ -612,14 +609,19 @@ Solution
 </summary>
 <p>The code below shows one approach to this data cleaning process:</p>
 <pre class="r"><code>litters_wide = 
-  read_csv(&quot;./data/FAS_litters.csv&quot;) %&gt;%
-  janitor::clean_names() %&gt;%
-  select(litter_number, ends_with(&quot;weight&quot;)) %&gt;% 
+  read_csv(&quot;./data/FAS_litters.csv&quot;) |&gt;
+  janitor::clean_names() |&gt;
+  select(litter_number, ends_with(&quot;weight&quot;)) |&gt; 
   pivot_longer(
     gd0_weight:gd18_weight,
     names_to = &quot;gd&quot;, 
-    values_to = &quot;weight&quot;) %&gt;% 
-  mutate(gd = recode(gd, &quot;gd0_weight&quot; = 0, &quot;gd18_weight&quot; = 18))
+    values_to = &quot;weight&quot;) |&gt; 
+  mutate(
+    gd = case_match(
+      gd,
+      &quot;gd0_weight&quot;  ~ 0,
+      &quot;gd18_weight&quot; ~ 18
+    ))
 ## Rows: 49 Columns: 8
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -644,11 +646,12 @@ data.</p>
 analysis. This is the correct format for additional analysis or
 visualization, but doesn’t facilitate quick comparisons for human
 readers.</p>
-<pre class="r"><code>analysis_result = tibble(
-  group = c(&quot;treatment&quot;, &quot;treatment&quot;, &quot;placebo&quot;, &quot;placebo&quot;),
-  time = c(&quot;pre&quot;, &quot;post&quot;, &quot;pre&quot;, &quot;post&quot;),
-  mean = c(4, 8, 3.5, 4)
-)
+<pre class="r"><code>analysis_result = 
+  tibble(
+    group = c(&quot;treatment&quot;, &quot;treatment&quot;, &quot;placebo&quot;, &quot;placebo&quot;),
+    time = c(&quot;pre&quot;, &quot;post&quot;, &quot;pre&quot;, &quot;post&quot;),
+    mean = c(4, 8, 3.5, 4)
+  )
 
 analysis_result
 ## # A tibble: 4 × 3
@@ -690,15 +693,15 @@ example</a>).</p>
 <p>To produce the desired tidy dataset, we first need to read each table
 and do some cleaning.</p>
 <pre class="r"><code>fellowship_ring = 
-  readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
+  readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) |&gt;
   mutate(movie = &quot;fellowship_ring&quot;)
 
 two_towers = 
-  readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) %&gt;%
+  readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) |&gt;
   mutate(movie = &quot;two_towers&quot;)
 
 return_king = 
-  readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;%
+  readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) |&gt;
   mutate(movie = &quot;return_king&quot;)</code></pre>
 <p>Here it was necessary to add a variable to each dataframe indicating
 the movie; that information had stored elsewhere in the original
@@ -710,13 +713,13 @@ works for now.</p>
 <p>Once each table is ready to go, we can stack them up using
 <code>bind_rows</code> and tidy the result:</p>
 <pre class="r"><code>lotr_tidy = 
-  bind_rows(fellowship_ring, two_towers, return_king) %&gt;%
-  janitor::clean_names() %&gt;%
+  bind_rows(fellowship_ring, two_towers, return_king) |&gt;
+  janitor::clean_names() |&gt;
   pivot_longer(
     female:male,
     names_to = &quot;gender&quot;, 
-    values_to = &quot;words&quot;) %&gt;%
-  mutate(race = str_to_lower(race)) %&gt;% 
+    values_to = &quot;words&quot;) |&gt;
+  mutate(race = str_to_lower(race)) |&gt; 
   select(movie, everything()) 
 
 lotr_tidy
@@ -776,11 +779,15 @@ treatment! We’ll fix that bit of untidiness as part of the processing
 pipeline. I’m also going to address a pet peeve of mine, which is coding
 sex as an ambiguous numeric variable.)</p>
 <pre class="r"><code>pup_data = 
-  read_csv(&quot;./data/FAS_pups.csv&quot;) %&gt;%
-  janitor::clean_names() %&gt;%
+  read_csv(&quot;./data/FAS_pups.csv&quot;) |&gt;
+  janitor::clean_names() |&gt;
   mutate(
-    sex = recode(sex, `1` = &quot;male&quot;, `2` = &quot;female&quot;),
-    sex = factor(sex)) 
+    sex = 
+      case_match(
+        sex, 
+        1 ~ &quot;male&quot;, 
+        2 ~ &quot;female&quot;),
+    sex = as.factor(sex)) 
 ## Rows: 313 Columns: 6
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -791,10 +798,10 @@ sex as an ambiguous numeric variable.)</p>
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 litter_data = 
-  read_csv(&quot;./data/FAS_litters.csv&quot;) %&gt;%
-  janitor::clean_names() %&gt;%
-  separate(group, into = c(&quot;dose&quot;, &quot;day_of_tx&quot;), sep = 3) %&gt;%
-  relocate(litter_number) %&gt;%
+  read_csv(&quot;./data/FAS_litters.csv&quot;) |&gt;
+  janitor::clean_names() |&gt;
+  separate(group, into = c(&quot;dose&quot;, &quot;day_of_tx&quot;), sep = 3) |&gt;
+  relocate(litter_number) |&gt;
   mutate(
     wt_gain = gd18_weight - gd0_weight,
     dose = str_to_lower(dose))
@@ -829,7 +836,7 @@ determine the key(s) based on variable names in the datasets you want to
 join. This is often but not always sufficient, and an extra step to make
 the key clear will help you and others reading your code.</p>
 <p>Note that joining is not particularly amenable to the
-<code>%&gt;%</code> operator because it is fundamentally non-linear: two
+<code>|&gt;</code> operator because it is fundamentally non-linear: two
 separate datasets are coming together, rather than a single dataset
 being processed in a step-by-step fashion.</p>
 <p>As a final point, the <code>*_join</code> functions are very much
@@ -850,12 +857,12 @@ Solution
 project. The code below imports both datasets, cleans up variable names,
 and joins the datasets using <code>left_join</code>,
 <code>inner_join</code>, and <code>anti_join</code>.</p>
-<pre class="r"><code>surv_os = read_csv(&quot;data/surv_os.csv&quot;) %&gt;% 
-  janitor::clean_names() %&gt;% 
+<pre class="r"><code>surv_os = read_csv(&quot;data/surv_os.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
   rename(id = what_is_your_uni, os = what_operating_system_do_you_use)
 
-surv_pr_git = read_csv(&quot;data/surv_program_git.csv&quot;) %&gt;% 
-  janitor::clean_names() %&gt;% 
+surv_pr_git = read_csv(&quot;data/surv_program_git.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
   rename(
     id = what_is_your_uni, 
     prog = what_is_your_degree_program,
@@ -869,12 +876,13 @@ anti_join(surv_pr_git, surv_os)</code></pre>
 </div>
 <div id="a-quick-note-on-names" class="section level3">
 <h3>A quick note on names</h3>
-<p>Up until very recently, folks were using <code>gather</code> and
+<p>For a while, folks were using <code>gather</code> and
 <code>spread</code> instead of <code>pivot_longer</code> and
 <code>pivot_wider</code>. The new functions were updated <a
 href="https://tidyr.tidyverse.org/dev/articles/pivot.html">for good
 reasons</a>; <code>gather</code> and <code>spread</code> will still
-exist, but they’re going to be less common over time.</p>
+exist, but they’re going to be less common over time and you may never
+see them.</p>
 </div>
 </div>
 <div id="other-materials" class="section level2">

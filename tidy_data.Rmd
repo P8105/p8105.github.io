@@ -67,7 +67,7 @@ In [data import](data_import.html), we used the `haven` package to load the PULS
 
 ```{r}
 pulse_df = 
-  haven::read_sas("./data/public_pulse_data.sas7bdat") %>%
+  haven::read_sas("./data/public_pulse_data.sas7bdat") |>
   janitor::clean_names()
 
 pulse_df
@@ -100,24 +100,22 @@ pulse_tidy_data =
 pulse_tidy_data
 ```
 
-In the preceding I've saved intermediate datasets to make each step clear. While this can be a helpful crutch as you're trying out code, it is generally bad practice. There are also some additional transformations needed to wrap up the data wrangling process, like changing `bl` to `00m` for consistency across visits and converting `visit` to a factor variable. (It's possible that you would want `visit` to be a numeric variable instead, which could be done with a different call to `mutate`.) Lastly, it's nice to organize the data into a reasonable order.
+In the preceding I've saved intermediate datasets to make each step clear. While this can be a helpful crutch as you're trying out code, it is generally bad practice. There are also some additional transformations needed to wrap up the data wrangling process, like changing `bl` to `00m` for consistency across visits and converting `visit` to a factor variable. (It's possible that you would want `visit` to be a numeric variable instead, which could be done with a different call to `mutate`.)
 
 Altogether, then, the code below will import, tidy, and transform the PULSE dataset into a usable format:
 
 ```{r}
 pulse_df = 
-  haven::read_sas("./data/public_pulse_data.sas7bdat") %>%
-  janitor::clean_names() %>%
+  haven::read_sas("./data/public_pulse_data.sas7bdat") |>
+  janitor::clean_names() |>
   pivot_longer(
     bdi_score_bl:bdi_score_12m,
     names_to = "visit", 
     names_prefix = "bdi_score_",
-    values_to = "bdi") %>%
-  relocate(visit) %>%
+    values_to = "bdi") |>
   mutate(
     visit = replace(visit, visit == "bl", "00m"),
-    visit = factor(visit)) %>%
-  arrange(id, visit)
+    visit = factor(visit)) 
 
 print(pulse_df, n = 12)
 ```
@@ -133,14 +131,19 @@ The code below shows one approach to this data cleaning process:
 
 ```{r}
 litters_wide = 
-  read_csv("./data/FAS_litters.csv") %>%
-  janitor::clean_names() %>%
-  select(litter_number, ends_with("weight")) %>% 
+  read_csv("./data/FAS_litters.csv") |>
+  janitor::clean_names() |>
+  select(litter_number, ends_with("weight")) |> 
   pivot_longer(
     gd0_weight:gd18_weight,
     names_to = "gd", 
-    values_to = "weight") %>% 
-  mutate(gd = recode(gd, "gd0_weight" = 0, "gd18_weight" = 18))
+    values_to = "weight") |> 
+  mutate(
+    gd = case_match(
+      gd,
+      "gd0_weight"  ~ 0,
+      "gd18_weight" ~ 18
+    ))
 ```
 
 In one sense, this is "tidy" because I have a variable for day and a variable for weight rather that using values in my variable names. However, it's less useful if I'm interested in computing or analyzing weight gain during pregnancy. 
@@ -155,11 +158,12 @@ We've been exclusively interested in tidying data, but we've admitted that somet
 The code below creates a tidy dataset that could result from an analysis. This is the correct format for additional analysis or visualization, but doesn't facilitate quick comparisons for human readers.
 
 ```{r}
-analysis_result = tibble(
-  group = c("treatment", "treatment", "placebo", "placebo"),
-  time = c("pre", "post", "pre", "post"),
-  mean = c(4, 8, 3.5, 4)
-)
+analysis_result = 
+  tibble(
+    group = c("treatment", "treatment", "placebo", "placebo"),
+    time = c("pre", "post", "pre", "post"),
+    mean = c(4, 8, 3.5, 4)
+  )
 
 analysis_result
 ```
@@ -184,15 +188,15 @@ To produce the desired tidy dataset, we first need to read each table and do som
 
 ```{r}
 fellowship_ring = 
-  readxl::read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
+  readxl::read_excel("./data/LotR_Words.xlsx", range = "B3:D6") |>
   mutate(movie = "fellowship_ring")
 
 two_towers = 
-  readxl::read_excel("./data/LotR_Words.xlsx", range = "F3:H6") %>%
+  readxl::read_excel("./data/LotR_Words.xlsx", range = "F3:H6") |>
   mutate(movie = "two_towers")
 
 return_king = 
-  readxl::read_excel("./data/LotR_Words.xlsx", range = "J3:L6") %>%
+  readxl::read_excel("./data/LotR_Words.xlsx", range = "J3:L6") |>
   mutate(movie = "return_king")
 ```
 
@@ -202,13 +206,13 @@ Once each table is ready to go, we can stack them up using `bind_rows` and tidy 
 
 ```{r}
 lotr_tidy = 
-  bind_rows(fellowship_ring, two_towers, return_king) %>%
-  janitor::clean_names() %>%
+  bind_rows(fellowship_ring, two_towers, return_king) |>
+  janitor::clean_names() |>
   pivot_longer(
     female:male,
     names_to = "gender", 
-    values_to = "words") %>%
-  mutate(race = str_to_lower(race)) %>% 
+    values_to = "words") |>
+  mutate(race = str_to_lower(race)) |> 
   select(movie, everything()) 
 
 lotr_tidy
@@ -236,17 +240,21 @@ As an example, consider the data tables in `FAS_pups.csv` and `FAS_litters.csv`,
 
 ```{r}
 pup_data = 
-  read_csv("./data/FAS_pups.csv") %>%
-  janitor::clean_names() %>%
+  read_csv("./data/FAS_pups.csv") |>
+  janitor::clean_names() |>
   mutate(
-    sex = recode(sex, `1` = "male", `2` = "female"),
-    sex = factor(sex)) 
+    sex = 
+      case_match(
+        sex, 
+        1 ~ "male", 
+        2 ~ "female"),
+    sex = as.factor(sex)) 
 
 litter_data = 
-  read_csv("./data/FAS_litters.csv") %>%
-  janitor::clean_names() %>%
-  separate(group, into = c("dose", "day_of_tx"), sep = 3) %>%
-  relocate(litter_number) %>%
+  read_csv("./data/FAS_litters.csv") |>
+  janitor::clean_names() |>
+  separate(group, into = c("dose", "day_of_tx"), sep = 3) |>
+  relocate(litter_number) |>
   mutate(
     wt_gain = gd18_weight - gd0_weight,
     dose = str_to_lower(dose))
@@ -259,7 +267,7 @@ fas_data
 
 We made the key explicit in the join. By default, the `*_join` functions in `dplyr` will try to determine the key(s) based on variable names in the datasets you want to join. This is often but not always sufficient, and an extra step to make the key clear will help you and others reading your code.
 
-Note that joining is not particularly amenable to the `%>%` operator because it is fundamentally non-linear: two separate datasets are coming together, rather than a single dataset being processed in a step-by-step fashion.
+Note that joining is not particularly amenable to the `|>` operator because it is fundamentally non-linear: two separate datasets are coming together, rather than a single dataset being processed in a step-by-step fashion.
 
 As a final point, the `*_join` functions are very much related to SQL syntax, but emphasize operations common to data analysis. 
 
@@ -271,12 +279,12 @@ As a final point, the `*_join` functions are very much related to SQL syntax, bu
 I put both datasets in the `data` directory in my repo / project. The code below imports both datasets, cleans up variable names, and joins the datasets using `left_join`, `inner_join`, and `anti_join`.
 
 ```{r, eval = FALSE}
-surv_os = read_csv("data/surv_os.csv") %>% 
-  janitor::clean_names() %>% 
+surv_os = read_csv("data/surv_os.csv") |> 
+  janitor::clean_names() |> 
   rename(id = what_is_your_uni, os = what_operating_system_do_you_use)
 
-surv_pr_git = read_csv("data/surv_program_git.csv") %>% 
-  janitor::clean_names() %>% 
+surv_pr_git = read_csv("data/surv_program_git.csv") |> 
+  janitor::clean_names() |> 
   rename(
     id = what_is_your_uni, 
     prog = what_is_your_degree_program,
@@ -293,7 +301,7 @@ anti_join(surv_pr_git, surv_os)
 
 ### A quick note on names
 
-Up until very recently, folks were using `gather` and `spread` instead of `pivot_longer` and `pivot_wider`. The new functions were updated [for good reasons](https://tidyr.tidyverse.org/dev/articles/pivot.html); `gather` and `spread` will still exist, but they're going to be less common over time. 
+For a while, folks were using `gather` and `spread` instead of `pivot_longer` and `pivot_wider`. The new functions were updated [for good reasons](https://tidyr.tidyverse.org/dev/articles/pivot.html); `gather` and `spread` will still exist, but they're going to be less common over time and you may never see them. 
 
 ## Other materials
 
