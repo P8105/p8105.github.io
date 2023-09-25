@@ -69,18 +69,18 @@ We'll be working with NOAA weather data, which is downloaded using `rnoaa::meteo
 ```{r weather_data_create, cache = TRUE}
 weather_df = 
   rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USC00519397", "USS0023B17S"),
+    c("USW00094728", "USW00022534", "USS0023B17S"),
     var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2017-01-01",
-    date_max = "2017-12-31") %>%
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
   mutate(
     name = recode(
       id, 
       USW00094728 = "CentralPark_NY", 
-      USC00519397 = "Waikiki_HA",
+      USC00519397 = "Molokai_HI",
       USS0023B17S = "Waterhole_WA"),
     tmin = tmin / 10,
-    tmax = tmax / 10) %>%
+    tmax = tmax / 10) |>
   select(name, id, everything())
 
 weather_df
@@ -103,10 +103,10 @@ ggplot(weather_df, aes(x = tmin, y = tmax)) +
   geom_point()
 ```
 
-The code below could be used instead to produce the same figure. Using this style can be helpful if you want to do some pre-processing before making your plot but don't want to save the intermediate data.
+The code below could be used instead to produce the same figure. Using this style can be helpful if you want to do some pre-processing before making your plot but don't want to save the intermediate data. It's also consistent with many other pipelines: you start with a data frame, *and then* do stuff by piping the dataframe into the next function. Most of my plotting code is written like this. 
 
 ```{r eval = FALSE}
-weather_df %>%
+weather_df |>
   ggplot(aes(x = tmin, y = tmax)) + 
   geom_point()
 ```
@@ -116,11 +116,11 @@ Notice that we try to use good styling practices here as well -- new plot elemen
 You can also save the output of `ggplot()` to an object and modify / print it later. This is often helpful, although it's not my default approach to making plots. 
 
 ```{r eval = FALSE}
-plot_weather = 
-  weather_df %>%
+ggp_weather = 
+  weather_df |>
   ggplot(aes(x = tmin, y = tmax)) 
 
-plot_weather + geom_point()
+ggp_weather + geom_point()
 ```
 
 ### Advanced scatterplot
@@ -160,7 +160,7 @@ ggplot(weather_df, aes(x = date, y = tmax, color = name)) +
   facet_grid(. ~ name)
 ```
 
-Way more interesting! You get a whole range of temperatures in Central Park (sometimes it's maybe too hot); it's more temperate near Seattle but it rains _all the time_; and Waikiki is great except for that a few (relatively) cold, rainy days. 
+Way more interesting! You get a whole range of temperatures in Central Park (sometimes it's maybe too hot); it's more temperate near Seattle but it rains _all the time_; and Molokai is great except for that a few (relatively) cold, rainy days. 
 
 **_Learning Assessment:_** Write a code chain that starts with `weather_df`; focuses only on Central Park, converts temperatures to Fahrenheit, makes a scatterplot of min vs. max temperature, and overlays a linear regression line (using options in `geom_smooth()`).
 
@@ -170,11 +170,11 @@ Way more interesting! You get a whole range of temperatures in Central Park (som
 I can produce the desired plot using the code below:
 
 ```{r, eval = FALSE}
-weather_df %>% 
-  filter(name == "CentralPark_NY") %>% 
+weather_df |> 
+  filter(name == "CentralPark_NY") |> 
   mutate(
     tmax_fahr = tmax * (9 / 5) + 32,
-    tmin_fahr = tmin * (9 / 5) + 32) %>% 
+    tmin_fahr = tmin * (9 / 5) + 32) |> 
   ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
   geom_point(alpha = .5) + 
   geom_smooth(method = "lm", se = FALSE)
@@ -296,8 +296,8 @@ ggplot(weather_df, aes(y = prcp, x = name)) +
 This is a tough variable to plot because of the highly skewed distribution in each location. Of these, I'd probably choose the boxplot because it shows the outliers most clearly. If the "bulk" of the data were interesting, I'd probably compliment this with a plot showing data for all precipitation less than 100, or for a data omitting days with no precipitation.
 
 ```{r, eval = FALSE}
-weather_df %>% 
-  filter(prcp > 0) %>% 
+weather_df |> 
+  filter(prcp > 0) |> 
   ggplot(aes(x = prcp, y = name)) + 
   geom_density_ridges(scale = .85)
 ```
