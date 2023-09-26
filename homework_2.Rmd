@@ -1,0 +1,98 @@
+---
+title: "Homework 2"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Context
+
+This assignment reinforces ideas in [Data Wrangling I](topic_data_wrangling_i.html). 
+
+### Due date and submission
+
+Due: Oct 4 at 11:59pm. 
+
+Please submit (via courseworks) the web address of the GitHub repo containing your work for this assignment; git commits after the due date will cause the assignment to be considered late.
+
+R Markdown documents included as part of your solutions must not install packages, and should only load the packages necessary for your submission to knit. 
+
+### Points
+
+| Problem         | Points    |
+|:--------------- |:--------- |
+| Problem 0       | 20        |
+| Problem 1       | --        |
+| Problem 2       | 40        |
+| Problem 3       | 40        |
+| Optional survey | No points |
+
+
+### Problem 0
+
+This "problem" focuses on structure of your submission, especially the use git and GitHub for reproducibility, R Projects to organize your work, R Markdown to write reproducible reports, relative paths to load data from local files, and reasonable naming structures for your files. 
+
+To that end: 
+
+* create a public GitHub repo + local R Project; we suggest naming this repo / directory `p8105_hw2_YOURUNI` (e.g. `p8105_hw2_ajg2202` for Jeff), but that's not required
+* create a single .Rmd file named `p8105_hw2_YOURUNI.Rmd` that renders to `github_document`
+* create a subdirectory to store the local data files, and use relative paths to access these data files
+* submit a link to your repo via Courseworks
+
+Your solutions to Problems 1, 2, and 3 should be implemented in your .Rmd file, and your git commit history should reflect the process you used to solve these Problems. 
+
+For this Problem, we will assess adherence to the instructions above regarding repo structure, git commit history, and whether we are able to knit your .Rmd to ensure that your work is reproducible. Adherence to appropriate styling and clarity of code will be assessed in Problems 1+.
+
+
+### Problem 1
+
+This problem uses the [FiveThirtyEight](dataset_fivethirtyeight.html) data; these data were gathered to create the interactive graphic on [this page](https://fivethirtyeight.com/features/science-isnt-broken/#part1). In particular, we'll use the data in pols-month.csv, unemployment.csv, and snp.csv. Our goal is to merge these into a single data frame using year and month as keys across datasets. 
+
+First, clean the data in pols-month.csv. Use `separate()` to break up the variable `mon` into integer variables `year`, `month`, and `day`; replace month number with month name; create a `president` variable taking values `gop` and `dem`, and remove `prez_dem` and `prez_gop`; and remove the day variable. 
+
+Second, clean the data in snp.csv using a similar process to the above. For consistency across datasets, arrange according to year and month, and organize so that `year` and `month` are the leading columns. 
+
+Third, tidy the unemployment data so that it can be merged with the previous datasets. This process will involve switching from "wide" to "long" format; ensuring that key variables have the same name; and ensuring that key variables take the same values. 
+
+Join the datasets by merging `snp` into `pols`, and merging `unemployment` into the result. 
+
+Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables). 
+
+*Note: we could have used a `date` variable as a key instead of creating `year` and `month` keys; doing so would help with some kinds of plotting, and be a more accurate representation of the data. Date formats are tricky, though. For more information check out the `lubridate` package in the `tidyverse`.*
+
+
+### Problem 2
+
+This problem uses the [Mr. Trash Wheel](./dataset_mr_trash_wheel.html) dataset, available as an Excel file on the course website.
+
+Read and clean the Mr. Trash Wheel sheet:
+
+* specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in `read_excel`
+* use reasonable variable names 
+* omit rows that do not include dumpster-specific data
+
+The data include a column for the (approximate) number of homes powered. This calculation is described in the `Homes powered note`, but not applied to every row in the dataset. Update the data to include a new `homes_powered` variable based on this calculation. 
+
+Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda, and combine these with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to all datasets before combining. 
+
+Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables. For available data, what was the total weight of trash collected by Professor Trash Wheel? What was the total number of cigarette butts collected by Gwynnda in July of 2021?
+
+
+### Problem 3
+
+This problem uses [data](data/data_mci.zip) collected in an observational study to understand the trajectory of Alzheimer's disease (AD) biomarkers. Study participants were free of Mild Cognitive Impairment (MCI), a stage between the expected cognitive decline of normal aging and the more serious decline of dementia, at the study baseline. 
+
+Basic demographic information were measured at the study baseline. The study monitored the development of MCI and recorded the age of MCI onset during the follow-up period, with the last visit marking the end of follow-up. APOE4 is a variant of the apolipoprotein E gene, significantly associated with a higher risk of developing Alzheimer's disease. The amyloid $\beta$ 42/40 ratio holds significant promise for diagnosing and predicting disease outcomes. This ratio undergoes changes over time and has been linked to the manifestation of clinical symptoms of Alzheimer's disease. 
+
+Import, clean, and tidy the dataset of baseline demographics. Ensure that sex and APOE4 carrier status are appropriate encoded (i.e. not numeric), and remove any participants who do not meet the stated inclusion criteria (i.e. no MCI at baseline). Discuss important steps in the import process and relevant features of the dataset. How many participants were recruited, and of these how many develop MCI? What is the average baseline age? What proportion of women in the study are APOE4 carriers? 
+
+Similarly, import, clean, and tidy the dataset of longitudinally observed biomarker values; comment on the steps on the import process and the features of the dataset. 
+
+Check whether some participants appear in only the baseline or amyloid datasets, and comment on your findings. Combine the demographic and biomarker datasets so that only participants who appear in both datasets are retained, and briefly describe the resulting dataset; export the result as a CSV to your data directory. 
+
+
+
+### Optional post-assignment survey
+
+If you'd like, a you can complete [this short survey](https://forms.gle/yo3heFu6H7PVrP8EA) after you've finished the assignment.
