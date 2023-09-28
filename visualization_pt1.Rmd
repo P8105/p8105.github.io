@@ -310,10 +310,11 @@ weather_df |>
 You will, on occasion, need to save a plot to a specific file. **Don't** use the built-in "Export" button! If you do, your figure is not reproducible -- no one will know how your plot was exported. Instead, use `ggsave()` by explicitly creating the figure and exporting; `ggsave` will guess the file type you prefer and has options for specifying features of the plot. In this setting, it's often helpful to save the `ggplot` object explicitly and then export it (using relative paths!).
 
 ```{r, eval = FALSE}
-weather_plot = ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+ggp_weather = 
+  ggplot(weather_df, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) 
 
-ggsave("weather_plot.pdf", weather_plot, width = 8, height = 5)
+ggsave("ggp_weather.pdf", ggp_weather, width = 8, height = 5)
 ```
 
 Embedding plots in an R Markdown document can also take a while to get used to, because there are several things to adjust. First is the size of the figure created by R, which is controlled using two of the three chunk options `fig.width`, `fig.height`, and `fig.asp`. I prefer a common width and plots that are a little wider than they are tall, so I set options to `fig.width = 6` and `fig.asp = .6`. Second is the size of the figure inserted into your document, which is controlled using `out.width` or `out.height`. I like to have a little padding around the sides of my figures, so I set `out.width = "90%"`. I do all this by including the following in a code snippet at the outset of my R Markdown documents.

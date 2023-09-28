@@ -667,7 +667,10 @@ transparency. In these cases <code>geom_hex()</code>,
 handy:</p>
 <pre class="r"><code>ggplot(weather_df, aes(x = tmax, y = tmin)) + 
   geom_hex()
-## Warning: Removed 17 rows containing non-finite values (`stat_binhex()`).</code></pre>
+## Warning: Removed 17 rows containing non-finite values (`stat_binhex()`).
+## Warning: Computation failed in `stat_binhex()`
+## Caused by error in `compute_group()`:
+## ! The package &quot;hexbin&quot; is required for `stat_binhex()`</code></pre>
 <p><img src="visualization_pt1_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
 <p>There are lots of aesthetics, and these depend to some extent on the
 geom – <code>color</code> worked for both <code>geom_point()</code> and
@@ -794,10 +797,11 @@ figure and exporting; <code>ggsave</code> will guess the file type you
 prefer and has options for specifying features of the plot. In this
 setting, it’s often helpful to save the <code>ggplot</code> object
 explicitly and then export it (using relative paths!).</p>
-<pre class="r"><code>weather_plot = ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+<pre class="r"><code>ggp_weather = 
+  ggplot(weather_df, aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) 
 
-ggsave(&quot;weather_plot.pdf&quot;, weather_plot, width = 8, height = 5)</code></pre>
+ggsave(&quot;ggp_weather.pdf&quot;, ggp_weather, width = 8, height = 5)</code></pre>
 <p>Embedding plots in an R Markdown document can also take a while to
 get used to, because there are several things to adjust. First is the
 size of the figure created by R, which is controlled using two of the
