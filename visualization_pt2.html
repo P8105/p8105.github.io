@@ -941,7 +941,12 @@ across values of dose category and treatment day.</p>
 <pre class="r"><code>pup_data = 
   read_csv(&quot;./data/FAS_pups.csv&quot;) |&gt;
   janitor::clean_names() |&gt;
-  mutate(sex = recode(sex, `1` = &quot;male&quot;, `2` = &quot;female&quot;)) 
+  mutate(
+    sex = 
+      case_match(
+        sex, 
+        1 ~ &quot;male&quot;, 
+        2 ~ &quot;female&quot;))
 ## Rows: 313 Columns: 6
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;

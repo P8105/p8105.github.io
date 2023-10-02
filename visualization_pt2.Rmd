@@ -406,7 +406,12 @@ As a final example, we'll revisit the FAS data. We've seen code for data import 
 pup_data = 
   read_csv("./data/FAS_pups.csv") |>
   janitor::clean_names() |>
-  mutate(sex = recode(sex, `1` = "male", `2` = "female")) 
+  mutate(
+    sex = 
+      case_match(
+        sex, 
+        1 ~ "male", 
+        2 ~ "female"))
 
 litter_data = 
   read_csv("./data/FAS_litters.csv") |>
