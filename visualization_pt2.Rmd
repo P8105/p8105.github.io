@@ -69,7 +69,7 @@ weather_df =
     c("USW00094728", "USW00022534", "USS0023B17S"),
     var = c("PRCP", "TMIN", "TMAX"), 
     date_min = "2021-01-01",
-    date_max = "2022-12-31") |>
+    date_max = "2023-12-31") |>
   mutate(
     name = recode(
       id, 
@@ -104,6 +104,7 @@ weather_df |>
     title = "Temperature plot",
     x = "Minimum daily temperature (C)",
     y = "Maxiumum daily temperature (C)",
+    color = "Location",
     caption = "Data from the rnoaa package"
   )
 ```
@@ -122,6 +123,7 @@ weather_df |>
     title = "Temperature plot",
     x = "Minimum daily temperature (C)",
     y = "Maxiumum daily temperature (C)",
+    color = "Location",
     caption = "Data from the rnoaa package") + 
   scale_x_continuous(
     breaks = c(-15, 0, 15), 
@@ -138,6 +140,7 @@ weather_df |>
     title = "Temperature plot",
     x = "Minimum daily temperature (C)",
     y = "Maxiumum daily temperature (C)",
+    color = "Location",
     caption = "Data from the rnoaa package") + 
   scale_x_continuous(
     breaks = c(-15, 0, 15), 
@@ -150,7 +153,7 @@ weather_df |>
 
 For many graph options there are several ways to produce the desired result, and you should feel free to use whichever is most convenient. For instance, `scale_y_sqrt()` can be added to a `ggplot` object to transform the Y scale, and `xlim()` can be used to control the plot limits in the X axis. 
 
-Analogously to `scale_x_*` and `scale_y_*`, there are `scale`s corresponding to other aestheics. Some of the most common are used to control the `color` aesthetic. For example, arguments to `scale_color_hue()` control the color scale and the name in the plot legend. 
+Analogously to `scale_x_*` and `scale_y_*`, there are `scale`s corresponding to other aesthetics. Some of the most common are used to control the `color` aesthetic. For example, arguments to `scale_color_hue()` control the color scale and the name in the plot legend. 
 
 ```{r}
 weather_df |> 
@@ -160,8 +163,9 @@ weather_df |>
     title = "Temperature plot",
     x = "Minimum daily temperature (C)",
     y = "Maxiumum daily temperature (C)",
+    color = "Location",
     caption = "Data from the rnoaa package") + 
-  scale_color_hue(name = "Location", h = c(100, 300))
+  scale_color_hue(h = c(100, 300))
 ```
 
 Trying to create your own color scheme usually doesn't go well; I encourage you to use the [`viridis`](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) package instead. There are several options, but the default color scheme works nicely!
@@ -175,6 +179,7 @@ ggp_temp_plot =
     title = "Temperature plot",
     x = "Minimum daily temperature (C)",
     y = "Maxiumum daily temperature (C)",
+    color = "Location",
     caption = "Data from the rnoaa package"
   ) + 
   viridis::scale_color_viridis(
@@ -244,6 +249,7 @@ ggplot(weather_df, aes(x = date, y = tmax, color = name)) +
     title = "Temperature plot",
     x = "Date",
     y = "Maxiumum daily temperature (C)",
+    color = "Location",
     caption = "Data from the rnoaa package"
   ) + 
   viridis::scale_color_viridis(discrete = TRUE) + 
@@ -298,7 +304,7 @@ molokai_df =
 
 ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) + 
   geom_point() + 
-  geom_line(data = central_park_df)
+  geom_line(data = central_park_df) 
 ```
 
 More realistically, it's sometimes necessary to overlay data summaries on a plot of the complete data. Depending on the setting, one way to do this is to create a "summary" dataframe and use that when adding a new `geom` to a `ggplot` based on the full data. 
