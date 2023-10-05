@@ -662,44 +662,42 @@ days in Central Park and Waterhole. We can do this with some extra data
 manipulation steps and <code>group_by</code> +
 <code>summarize</code>:</p>
 <pre class="r"><code>weather_df |&gt; 
+  drop_na(tmax) |&gt; 
   mutate(
     cold = case_when(
       tmax &lt;  5 ~ &quot;cold&quot;,
       tmax &gt;= 5 ~ &quot;not_cold&quot;,
       TRUE      ~ &quot;&quot;
   )) |&gt; 
-  filter(name != &quot;Waikiki_HA&quot;) |&gt; 
+  filter(name != &quot;Molokai_HI&quot;) |&gt; 
   group_by(name, cold) |&gt; 
   summarize(count = n())
 ## `summarise()` has grouped output by &#39;name&#39;. You can override using the
 ## `.groups` argument.
-## # A tibble: 7 × 3
-## # Groups:   name [3]
-##   name           cold       count
-##   &lt;chr&gt;          &lt;chr&gt;      &lt;int&gt;
-## 1 CentralPark_NY &quot;cold&quot;        96
-## 2 CentralPark_NY &quot;not_cold&quot;   634
-## 3 Molokai_HI     &quot;&quot;             1
-## 4 Molokai_HI     &quot;not_cold&quot;   729
-## 5 Waterhole_WA   &quot;&quot;            16
-## 6 Waterhole_WA   &quot;cold&quot;       319
-## 7 Waterhole_WA   &quot;not_cold&quot;   395</code></pre>
+## # A tibble: 4 × 3
+## # Groups:   name [2]
+##   name           cold     count
+##   &lt;chr&gt;          &lt;chr&gt;    &lt;int&gt;
+## 1 CentralPark_NY cold        96
+## 2 CentralPark_NY not_cold   634
+## 3 Waterhole_WA   cold       319
+## 4 Waterhole_WA   not_cold   395</code></pre>
 <p>This is a “tidy” table, and it’s also a data frame. You could
 re-organize into a more standard (non-tidy) 2x2 table using
 <code>pivot_wider</code>, or you could use
 <code>janitor::tabyl</code>:</p>
 <pre class="r"><code>weather_df |&gt; 
+  drop_na(tmax) |&gt; 
   mutate(cold = case_when(
     tmax &lt;  5 ~ &quot;cold&quot;,
     tmax &gt;= 5 ~ &quot;not_cold&quot;,
     TRUE     ~ &quot;&quot;
   )) |&gt; 
-  filter(name != &quot;Waikiki_HA&quot;) |&gt; 
+  filter(name != &quot;Molokai_HI&quot;) |&gt; 
   janitor::tabyl(name, cold)
-##            name cold not_cold emptystring_
-##  CentralPark_NY   96      634            0
-##      Molokai_HI    0      729            1
-##    Waterhole_WA  319      395           16</code></pre>
+##            name cold not_cold
+##  CentralPark_NY   96      634
+##    Waterhole_WA  319      395</code></pre>
 <p>This isn’t tidy, but it is still a data frame – and that’s noticeably
 better than usual output from R’s built-in <code>table</code> function.
 <code>janitor</code> has a lot of little functions like this that turn
@@ -727,7 +725,7 @@ they apply and include any additional arguments as necessary.</p>
 <pre class="r"><code>weather_df |&gt;
   group_by(month) |&gt;
   summarize(
-    mean_tmax = mean(tmax),
+    mean_tmax = mean(tmax, na.rm = TRUE),
     mean_prec = mean(prcp, na.rm = TRUE),
     median_tmax = median(tmax),
     sd_tmax = sd(tmax))
@@ -736,7 +734,7 @@ they apply and include any additional arguments as necessary.</p>
 ##   &lt;date&gt;         &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;
 ## 1 2021-01-01     10.9       39.5         5     12.2 
 ## 2 2021-02-01      9.82      42.6         2.8   12.2 
-## 3 2021-03-01     NA         55.5        NA     NA   
+## 3 2021-03-01     13.7       55.5        NA     NA   
 ## 4 2021-04-01     16.8       14.7        18.0    9.29
 ## 5 2021-05-01     19.6       17.3        22.2    9.40
 ## 6 2021-06-01     24.3       14.1        28.3    8.28
@@ -785,14 +783,12 @@ within broader analysis pipelines. For example, we can take create a
 plot based on the monthly summary:</p>
 <pre class="r"><code>weather_df |&gt;
   group_by(name, month) |&gt;
-  summarize(mean_tmax = mean(tmax)) |&gt;
+  summarize(mean_tmax = mean(tmax, na.rm = TRUE)) |&gt;
   ggplot(aes(x = month, y = mean_tmax, color = name)) + 
     geom_point() + geom_line() + 
     theme(legend.position = &quot;bottom&quot;)
 ## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.
-## Warning: Removed 6 rows containing missing values (`geom_point()`).
-## Warning: Removed 1 row containing missing values (`geom_line()`).</code></pre>
+## `.groups` argument.</code></pre>
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
 <p>The results of <code>group_by()</code> and <code>summarize()</code>
 are generally tidy, but presenting reader-friendly results for this kind
@@ -801,7 +797,7 @@ example, the table below shows month-by-month average max temperatures
 in a more human-readable format.</p>
 <pre class="r"><code>weather_df |&gt;
   group_by(name, month) |&gt;
-  summarize(mean_tmax = mean(tmax)) |&gt; 
+  summarize(mean_tmax = mean(tmax, na.rm = TRUE)) |&gt; 
   pivot_wider(
     names_from = name,
     values_from = mean_tmax) |&gt; 
@@ -834,7 +830,7 @@ in a more human-readable format.</p>
 <td align="left">2021-03-01</td>
 <td align="right">12.3</td>
 <td align="right">25.9</td>
-<td align="right">NA</td>
+<td align="right">2.6</td>
 </tr>
 <tr class="even">
 <td align="left">2021-04-01</td>
@@ -888,7 +884,7 @@ in a more human-readable format.</p>
 <td align="left">2021-12-01</td>
 <td align="right">9.6</td>
 <td align="right">26.2</td>
-<td align="right">NA</td>
+<td align="right">-2.1</td>
 </tr>
 <tr class="odd">
 <td align="left">2022-01-01</td>
@@ -900,7 +896,7 @@ in a more human-readable format.</p>
 <td align="left">2022-02-01</td>
 <td align="right">7.7</td>
 <td align="right">26.8</td>
-<td align="right">NA</td>
+<td align="right">3.0</td>
 </tr>
 <tr class="odd">
 <td align="left">2022-03-01</td>
@@ -917,7 +913,7 @@ in a more human-readable format.</p>
 <tr class="odd">
 <td align="left">2022-05-01</td>
 <td align="right">22.3</td>
-<td align="right">NA</td>
+<td align="right">28.3</td>
 <td align="right">5.8</td>
 </tr>
 <tr class="even">
@@ -936,7 +932,7 @@ in a more human-readable format.</p>
 <td align="left">2022-08-01</td>
 <td align="right">30.5</td>
 <td align="right">30.7</td>
-<td align="right">NA</td>
+<td align="right">18.8</td>
 </tr>
 <tr class="odd">
 <td align="left">2022-09-01</td>
@@ -960,7 +956,7 @@ in a more human-readable format.</p>
 <td align="left">2022-12-01</td>
 <td align="right">6.8</td>
 <td align="right">27.3</td>
-<td align="right">NA</td>
+<td align="right">-0.5</td>
 </tr>
 </tbody>
 </table>

@@ -183,13 +183,14 @@ You might find yourself, someday, wanting to tabulate the frequency of a binary 
 
 ```{r}
 weather_df |> 
+  drop_na(tmax) |> 
   mutate(
     cold = case_when(
       tmax <  5 ~ "cold",
       tmax >= 5 ~ "not_cold",
       TRUE      ~ ""
   )) |> 
-  filter(name != "Waikiki_HA") |> 
+  filter(name != "Molokai_HI") |> 
   group_by(name, cold) |> 
   summarize(count = n())
 ```
@@ -198,12 +199,13 @@ This is a "tidy" table, and it's also a data frame. You could re-organize into a
 
 ```{r}
 weather_df |> 
+  drop_na(tmax) |> 
   mutate(cold = case_when(
     tmax <  5 ~ "cold",
     tmax >= 5 ~ "not_cold",
     TRUE     ~ ""
   )) |> 
-  filter(name != "Waikiki_HA") |> 
+  filter(name != "Molokai_HI") |> 
   janitor::tabyl(name, cold)
 ```
 
@@ -220,7 +222,7 @@ Standard statistical summaries are regularly computed in `summarize()` using fun
 weather_df |>
   group_by(month) |>
   summarize(
-    mean_tmax = mean(tmax),
+    mean_tmax = mean(tmax, na.rm = TRUE),
     mean_prec = mean(prcp, na.rm = TRUE),
     median_tmax = median(tmax),
     sd_tmax = sd(tmax))
@@ -249,7 +251,7 @@ The fact that `summarize()` produces a dataframe is important (and consistent wi
 ```{r}
 weather_df |>
   group_by(name, month) |>
-  summarize(mean_tmax = mean(tmax)) |>
+  summarize(mean_tmax = mean(tmax, na.rm = TRUE)) |>
   ggplot(aes(x = month, y = mean_tmax, color = name)) + 
     geom_point() + geom_line() + 
     theme(legend.position = "bottom")
@@ -260,7 +262,7 @@ The results of `group_by()` and `summarize()` are generally tidy, but presenting
 ```{r}
 weather_df |>
   group_by(name, month) |>
-  summarize(mean_tmax = mean(tmax)) |> 
+  summarize(mean_tmax = mean(tmax, na.rm = TRUE)) |> 
   pivot_wider(
     names_from = name,
     values_from = mean_tmax) |> 
