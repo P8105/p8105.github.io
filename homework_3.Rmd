@@ -66,7 +66,12 @@ The goal is to do some exploration of this dataset. To that end, write a short d
 
 ### Problem 2
 
-This problem uses the [BRFSS](dataset_brfss.html) data. DO NOT include this dataset in your local data directory; instead, load the data from the [`p8105.datasets`](https://github.com/P8105/p8105.datasets) package. 
+This problem uses the [BRFSS](dataset_brfss.html) data. DO NOT include this dataset in your local data directory; instead, load the data from the [`p8105.datasets`](https://github.com/P8105/p8105.datasets) package using 
+
+```{r, eval = FALSE}
+library(p8105.datasets)
+data("brfss_smart2010")
+```
 
 First, do some data cleaning: 
 
