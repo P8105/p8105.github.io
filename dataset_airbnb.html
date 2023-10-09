@@ -13,7 +13,7 @@
 
 <title>Airbnb</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -459,25 +459,28 @@ see maps showing type of room, activity, availability, and listings per
 host for all NYC Airbnb listings.</p>
 <p>After downloading both the “listings.csv.gz” and “listings.csv”
 files, the following code was used to create the provided dataset:</p>
-<pre><code>library(dplyr)
+<pre><code>library(tidyverse)
 
 # Uncompress and load the detailed NYC airbnb data
 # But only keep the 2 variables of interest
 zz &lt;- gzfile(&quot;listings.csv.gz&quot;, &#39;rt&#39;)   
-df1 &lt;- read.csv(zz, header = T) %&gt;% 
+airbnb_location_df = 
+  read_csv(zz, header = TRUE) %&gt;% 
   select(id, review_scores_location)
 
 # Read in the summary data for NYC
-df2 &lt;- read.csv(&quot;listings.csv&quot;, stringsAsFactors = FALSE) %&gt;% 
+airbnb_listings_df =
+  read_csv(&quot;listings.csv&quot;) %&gt;% 
   mutate(last_review = as.Date(last_review, format = &quot;%Y-%m-%d&quot;))
 
 # Combine the two datasets
-df &lt;- inner_join(df1, df2, by = &quot;id&quot;)
+nyc_airbnb = inner_join(airbnb_location_df, airbnb_listings_df, by = &quot;id&quot;)
 
 # Save the data
-save(df, file = &quot;nyc_airbnb.RData&quot;)</code></pre>
+save(nyc_airbnb, file = &quot;nyc_airbnb.RData&quot;)</code></pre>
 <p>The resulting R data file <code>nyc_airbnb</code> contains a single
-dataframe <code>df</code> with 40,753 rows of data on 17 variables:</p>
+dataframe <code>nyc_airbnb</code> with 40,753 rows of data on 17
+variables:</p>
 <ul>
 <li><code>id</code>: listing id</li>
 <li><code>review_scores_location</code>: 0-5 stars converted into a 0-10

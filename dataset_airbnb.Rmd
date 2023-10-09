@@ -23,26 +23,28 @@ Inside Airbnb provides some visualizations of the NYC Airbnb data [here](http://
 After downloading both the "listings.csv.gz" and "listings.csv" files, the following code was used to create the provided dataset:
 
 ```
-library(dplyr)
+library(tidyverse)
 
 # Uncompress and load the detailed NYC airbnb data
 # But only keep the 2 variables of interest
 zz <- gzfile("listings.csv.gz", 'rt')   
-df1 <- read.csv(zz, header = T) %>% 
+airbnb_location_df = 
+  read_csv(zz, header = TRUE) %>% 
   select(id, review_scores_location)
 
 # Read in the summary data for NYC
-df2 <- read.csv("listings.csv", stringsAsFactors = FALSE) %>% 
+airbnb_listings_df =
+  read_csv("listings.csv") %>% 
   mutate(last_review = as.Date(last_review, format = "%Y-%m-%d"))
 
 # Combine the two datasets
-df <- inner_join(df1, df2, by = "id")
+nyc_airbnb = inner_join(airbnb_location_df, airbnb_listings_df, by = "id")
 
 # Save the data
-save(df, file = "nyc_airbnb.RData")
+save(nyc_airbnb, file = "nyc_airbnb.RData")
 ```
 
-The resulting R data file `nyc_airbnb` contains a single dataframe `df` with 40,753 rows of data on 17 variables:
+The resulting R data file `nyc_airbnb` contains a single dataframe `nyc_airbnb` with 40,753 rows of data on 17 variables:
 
 - `id`: listing id
 - `review_scores_location`: 0-5 stars converted into a 0-10 scale
