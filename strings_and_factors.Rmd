@@ -104,13 +104,13 @@ You can designate a list of characters that will count as a match.
 
 ```{r}
 string_vec = c(
-  "Y'all remember Pres. HW Bush?",
-  "I saw a green bush",
-  "BBQ and Bushwalking at Molonglo Gorge",
-  "BUSH -- LIVE IN CONCERT!!"
+  "Time for a Pumpkin Spice Latte!",
+  "went to the #pumpkinpatch last weekend",
+  "Pumpkin Pie is obviously the best pie",
+  "SMASHING PUMPKINS -- LIVE IN CONCERT!!"
   )
 
-str_detect(string_vec,"[Bb]ush")
+str_detect(string_vec,"[Pp]umpkin")
 ```
 
 You don't have to list these; instead, you can provide a range of letters or numbers that count as a match.
@@ -186,9 +186,9 @@ We'll revisit the table scraped from the National Survey on Drug Use and Health 
 nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
 
 table_marj = 
-  read_html(nsduh_url) %>% 
-  html_table() %>% 
-  first() %>%
+  read_html(nsduh_url) |> 
+  html_table() |> 
+  first() |>
   slice(-1)
 ```
 
@@ -196,17 +196,17 @@ There are a few steps we need to implement to tidy these data. For now I'm not i
 
 ```{r}
 data_marj = 
-  table_marj %>%
-  select(-contains("P Value")) %>%
+  table_marj |>
+  select(-contains("P Value")) |>
   pivot_longer(
     -State,
     names_to = "age_year", 
-    values_to = "percent") %>%
-  separate(age_year, into = c("age", "year"), sep = "\\(") %>%
+    values_to = "percent") |>
+  separate(age_year, into = c("age", "year"), sep = "\\(") |>
   mutate(
     year = str_replace(year, "\\)", ""),
     percent = str_replace(percent, "[a-c]$", ""),
-    percent = as.numeric(percent)) %>%
+    percent = as.numeric(percent)) |>
   filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
 ```
 
@@ -219,9 +219,9 @@ We used `stringr` and regular expressions a couple of times above:
 Let's quickly visualize these data for the 12-17 age group; to make the plot readable, we'll treat `State` as a factor are reorder according to the median `percent` value. 
 
 ```{r}
-data_marj %>%
-  filter(age == "12-17") %>% 
-  mutate(State = fct_reorder(State, percent)) %>% 
+data_marj |>
+  filter(age == "12-17") |> 
+  mutate(State = fct_reorder(State, percent)) |> 
   ggplot(aes(x = State, y = percent, color = year)) + 
     geom_point() + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -236,9 +236,9 @@ First we'll import the data and take a look.
 ```{r}
 data("rest_inspec")
 
-rest_inspec %>% 
-  group_by(boro, grade) %>% 
-  summarize(n = n()) %>% 
+rest_inspec |> 
+  group_by(boro, grade) |> 
+  summarize(n = n()) |> 
   pivot_wider(names_from = grade, values_from = n)
 ```
 
@@ -246,36 +246,36 @@ To simplify things, I'll remove inspections with scores other than `A`, `B`, or 
 
 ```{r}
 rest_inspec =
-  rest_inspec %>%
-  filter(grade %in% c("A", "B", "C"), boro != "Missing") %>% 
+  rest_inspec |>
+  filter(grade %in% c("A", "B", "C"), boro != "Missing") |> 
   mutate(boro = str_to_title(boro))
 ```
 
 Let's focus only on pizza places for now, and re-examine grades by borough.
 
 ```{r}
-rest_inspec %>% 
-  filter(str_detect(dba, "Pizza")) %>% 
-  group_by(boro, grade) %>% 
-  summarize(n = n()) %>% 
+rest_inspec |> 
+  filter(str_detect(dba, "Pizza")) |> 
+  group_by(boro, grade) |> 
+  summarize(n = n()) |> 
   pivot_wider(names_from = grade, values_from = n)
 ```
 
 That doesn't look right -- for sure there are more pizza place ratings than that! The problem is that the match in `str_detect` is case-sensitive until we tell it not to be:
 
 ```{r}
-rest_inspec %>% 
-  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>% 
-  group_by(boro, grade) %>% 
-  summarize(n = n()) %>% 
+rest_inspec |> 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) |> 
+  group_by(boro, grade) |> 
+  summarize(n = n()) |> 
   pivot_wider(names_from = grade, values_from = n)
 ```
 
 The table is okay but I'd like to visualize this. 
 
 ```{r}
-rest_inspec %>% 
-  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>%
+rest_inspec |> 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) |>
   ggplot(aes(x = boro, fill = grade)) + 
   geom_bar() 
 ```
@@ -283,9 +283,9 @@ rest_inspec %>%
 Might help to have things in a different order -- maybe number of pizza places? Fortunately this can be done using `fct_infreq`. 
 
 ```{r}
-rest_inspec %>% 
-  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>%
-  mutate(boro = fct_infreq(boro)) %>%
+rest_inspec |> 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) |>
+  mutate(boro = fct_infreq(boro)) |>
   ggplot(aes(x = boro, fill = grade)) + 
   geom_bar() 
 ```
@@ -293,11 +293,11 @@ rest_inspec %>%
 Suppose I want to rename a borough. I could try using `str_replace`.
 
 ```{r}
-rest_inspec %>% 
-  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>%
+rest_inspec |> 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) |>
   mutate(
     boro = fct_infreq(boro),
-    boro = str_replace(boro, "Manhattan", "The City")) %>%
+    boro = str_replace(boro, "Manhattan", "The City")) |>
   ggplot(aes(x = boro, fill = grade)) + 
   geom_bar() 
 ```
@@ -307,11 +307,11 @@ This renamed the borough, but then converted the result back to a string -- whic
 If I tried base R (maybe because I found some code online), I might try to do this using `replace`.
 
 ```{r, warning = TRUE}
-rest_inspec %>% 
-  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>%
+rest_inspec |> 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) |>
   mutate(
     boro = fct_infreq(boro),
-    boro = replace(boro, which(boro == "Manhattan"), "The City")) %>%
+    boro = replace(boro, which(boro == "Manhattan"), "The City")) |>
   ggplot(aes(x = boro, fill = grade)) + 
   geom_bar()
 ```
@@ -321,11 +321,11 @@ That didn't work at all! Factors have very specific values, trying to use a valu
 Fortunately there is a dedicated function for renaming factor levels:
 
 ```{r}
-rest_inspec %>% 
-  filter(str_detect(dba, regex("pizza", ignore_case = TRUE))) %>%
+rest_inspec |> 
+  filter(str_detect(dba, regex("pizza", ignore_case = TRUE))) |>
   mutate(
     boro = fct_infreq(boro),
-    boro = fct_recode(boro, "The City" = "Manhattan")) %>%
+    boro = fct_recode(boro, "The City" = "Manhattan")) |>
   ggplot(aes(x = boro, fill = grade)) + 
   geom_bar()
 ```
@@ -342,18 +342,18 @@ Our first step is to load the data we used.
 ```{r weather_data_create, cache = TRUE}
 weather_df = 
   rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USC00519397", "USS0023B17S"),
+    c("USW00094728", "USW00022534", "USS0023B17S"),
     var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2017-01-01",
-    date_max = "2017-12-31") %>%
+    date_min = "2021-01-01",
+    date_max = "2023-12-31") |>
   mutate(
     name = recode(
       id, 
       USW00094728 = "CentralPark_NY", 
-      USC00519397 = "Waikiki_HA",
+      USW00022534 = "Molokai_HI",
       USS0023B17S = "Waterhole_WA"),
     tmin = tmin / 10,
-    tmax = tmax / 10) %>%
+    tmax = tmax / 10) |>
   select(name, id, everything())
 
 weather_df
@@ -362,8 +362,8 @@ weather_df
 Our first example reordered `name` "by hand" using `fct_relevel`:
 
 ```{r}
-weather_df %>%
-  mutate(name = forcats::fct_relevel(name, c("Waikiki_HA", "CentralPark_NY", "Waterhole_WA"))) %>% 
+weather_df |>
+  mutate(name = forcats::fct_relevel(name, c("Molokai_HI", "CentralPark_NY", "Waterhole_WA"))) |> 
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = "blue", alpha = .5) + 
   theme(legend.position = "bottom")
@@ -372,8 +372,8 @@ weather_df %>%
 We could instead reorder `name` according to `tmax` values in each name using `fct_reorder`:
 
 ```{r}
-weather_df %>%
-  mutate(name = forcats::fct_reorder(name, tmax)) %>% 
+weather_df |>
+  mutate(name = forcats::fct_reorder(name, tmax)) |> 
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = "blue", alpha = .5) + 
   theme(legend.position = "bottom")
@@ -382,15 +382,15 @@ weather_df %>%
 Although you may not have seen linear regression previously, the ordering of factor variables play an important in this case as well. Specifically, the ordering determines the "reference" category, and is something that can be adjusted as needed. 
 
 ```{r}
-weather_df %>%
-  lm(tmax ~ name, data = .)
+weather_df |>
+  lm(tmax ~ name, data = _)
 
-weather_df %>%
-  mutate(name = forcats::fct_relevel(name, c("Waikiki_HA", "CentralPark_NY", "Waterhole_WA"))) %>% 
-  lm(tmax ~ name, data = .)
+weather_df |>
+  mutate(name = forcats::fct_relevel(name, c("Molokai_HI", "CentralPark_NY", "Waterhole_WA"))) |> 
+  lm(tmax ~ name, data = _)
 ```
 
-In this example, we're also using a feature of `%>%` that allows us to specify where the tibble goes: `.` is a placeholder for the result of the preceding call. 
+In this example, we're also using a feature of `|>` that allows us to specify where the tibble goes: `_` is a placeholder for the result of the preceding call. 
 
 ### PULSE data
 
@@ -400,17 +400,17 @@ The code below updates the data processing pipeline for the PULSE data using `st
 
 ```{r}
 pulse_data = 
-  haven::read_sas("./data/public_pulse_data.sas7bdat") %>%
-  janitor::clean_names() %>%
+  haven::read_sas("./data/public_pulse_data.sas7bdat") |>
+  janitor::clean_names() |>
   pivot_longer(
     bdi_score_bl:bdi_score_12m,
     names_to = "visit", 
     names_prefix = "bdi_score_",
-    values_to = "bdi") %>%
-  select(id, visit, everything()) %>%
+    values_to = "bdi") |>
+  select(id, visit, everything()) |>
   mutate(
     visit = str_replace(visit, "bl", "00m"),
-    visit = factor(visit)) %>%
+    visit = factor(visit)) |>
   arrange(id, visit)
 
 print(pulse_data, n = 12)
@@ -424,10 +424,10 @@ We could also use factors in an exploratory analysis of the [Airbnb](dataset_air
 ```{r}
 data("nyc_airbnb")
 
-nyc_airbnb %>%
-  filter(neighbourhood_group == "Manhattan") %>% 
+nyc_airbnb |>
+  filter(neighbourhood_group == "Manhattan") |> 
   mutate(
-    neighbourhood = fct_reorder(neighbourhood, price)) %>% 
+    neighbourhood = fct_reorder(neighbourhood, price)) |> 
   ggplot(aes(x = neighbourhood, y = price)) +
   geom_boxplot() +
   coord_flip() + 
@@ -440,6 +440,6 @@ nyc_airbnb %>%
 * R for Data Science has chapters on both [strings / regex](http://r4ds.had.co.nz/strings.html) and [factors](http://r4ds.had.co.nz/factors.html)
 * There are useful materials by Jenny Bryan on [strings / regex](http://stat545.com/block022_regular-expression.html) and [factors](http://stat545.com/block029_factors.html) as well
 * Dealing with text entries can be a [real challenge](https://www.youtube.com/watch?v=15nNY7uofNw)
-* Cheatsheet for [stringr](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf)
+* Cheatsheet for [stringr](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf)
 
 The code that I produced working examples in lecture is [here](https://github.com/P8105/data_wrangling_ii).
