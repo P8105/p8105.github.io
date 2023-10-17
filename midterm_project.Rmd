@@ -1,0 +1,70 @@
+---
+title: "Midterm project"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Independence
+
+In contrast to Homework assignments, you must work completely independently on this project -- do not discuss your approach, your code, or your results with any other students, and do not use the discussion board for questions related to this project. If questions do arise, please email the instructor and lead TA.
+
+### Context
+
+At this point, we've covered [Building Blocks](topic_building_blocks.html), [Data Wrangling I](topic_data_wrangling_i.html), [Visualization and EDA](topic_visualization_and_eda.html), and [Data Wrangling II](topic_data_wrangling_ii.html). These topics give a broad introduction into the commonly-used tools of data science, and are the main focus of this project.
+
+### Due date
+
+Due: October 23 at 11:59pm. 
+
+### Reproducibility
+
+The course's emphasis on workflow -- especially the use git and GitHub for reproducibility, R Projects to organize your work, R Markdown to write reproducible reports, relative paths to load data from local files, and reasonable naming structures for your files -- will be reflected in your Midterm Project submission. 
+
+To that end: 
+
+* create a **private** GitHub repo + local R Project; we suggest naming this repo / directory `p8105_mtp_YOURUNI` (e.g. `p8105_mtp_ajg2202` for Jeff), but that's not required
+    * non-private repos will be treated as inconsistent with the independent work requirement and as violations of the academic integrity policy
+* add the GitHub user "bst-p8105" as a collaborator on the project, which will give us (and only us) access to your repo
+* create a single .Rmd file named `p8105_mtp_YOURUNI.Rmd` that renders to `github_document`
+* submit a link to your repo via Courseworks
+
+We will assess adherence to the instructions above and whether we are able to knit your .Rmd in the grading of this project. Adherence to appropriate styling and clarity of code will be assessed. This project includes figures; the readability of your embedded plots (e.g. font sizes, axis labels, titles) will be assessed.
+
+
+## Deliverable
+
+For this project, you should write a report describing your work in a way that targets a reasonably sophisticated collaborator – not an expert data scientist, but an interested observer. You should comment on findings (for example, describe trends in tables and figures). Structure your report to include sections corresponding to the problems below. Write in a reproducible way (e.g. using inline R code where necessary) and include relevant code chunks and their output. Include only relevant information, and adhere to a strict-500 word limit (this excludes figures and tables, code chunks, inline code, YAML, and other non-text elements). You can check your word count using `wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")`; installation instructions can be found on the [`wordcountaddin` package website](https://github.com/benmarwick/wordcountaddin). We'll use the "koRpus" count.
+
+## Data
+
+A common step when moving is to file a [Change of Address](https://www.usps.com/manage/forward.htm) form with the United States Post Office to ensure that mail is delivered to a new address. In response to broad interest, the USPS makes aggregate Change of Address (COA) data publicly available. In this project, we'll look at COA data in New York City between 2018 and 2022. This [dataset](data/USPS CHANGE OF ADDRESS NYC.xlsx) includes the total number of COAs to and from each ZIP code in NYC for each calendar month. In each sheet, the `TOTAL PERM IN` and `TOTAL PERM OUT` indicate the total number of permanent address changes going into and out of each ZIP code. 
+
+NYC is divided into five boroughs. Each of these boroughs is it's own county, and in some cases the borough name and county name differ; for example, Manhattan is New York County. Moreover, boroughs are divided into neighborhoods. COA data provided by USPS may not accurately reflect NYC's counties, boroughs, and neighborhoods, and a supplementary dataset including these is available [here](data/Zip Codes.csv).
+
+## Problems
+
+### Problem 1 -- Data import, cleaning, and quality control. 
+
+Provide a brief introduction to the raw data and the goals of your report. 
+
+Import, tidy, combine, and otherwise clean the data. In the ZIP code data, create a `borough` variable using county names. When importing COA data, add a `year` variable for later use; also, create a `net_change` variable by subtracting outbound COAs from inbound COAs. Resolve any issues that arise when merging COA and ZIP code data. Restrict your dataset to only variables necessary for later parts of this report. Describe the major steps in the data wrangling process in words, including what steps you took to address data quality issues. 
+
+Briefly describe the resulting *tidy* dataset. How many total observations exist? How many unique ZIP codes are included, and how many unique neighborhoods? 
+
+Compare the `city` variable in the COA database to the `borough` variable you created using the ZIP code database. Make two small tables to show the most common values of `city` in the `borough` of Manhattan and of Queens. Comment on the any data quality issues you observe. 
+
+There are 60 months between 2018 and 2022, but many ZIP codes have fewer than 60 observations; most of these are also missing `neighborhood` values. Discuss why this might be the case, using a few concrete examples as illustration.
+
+
+### Problem 2 -- EDA and Visualization
+
+Create a reader-friendly table showing the average of `net_change` in each borough and year. Comment on trends in this table. 
+
+Make a table showing, across all observed data, the five lowest values of `net_change`. This table should include ZIP code, neighborhood, and the year and month. Make a similar table showing, across data observed before 2020, the five highest values of `net_change`. This table should include ZIP code, neighborhood, and the year and month. 
+
+Understanding monthly `net_change` over the five-year period can give insights into trends in moving. Make a plot showing neighborhood-level average `net_change` values (i.e. averaging across ZIP codes within neighborhoods) against month over all five years. Your plot should facilitate comparisons across boroughs. Include this visualization in your report and export it to a `results` directory in your repository. Comment on any significant elements of this plot.
+
+Lastly, note any limitations of this dataset for understanding changes in ZIP code level population sizes. 
+
