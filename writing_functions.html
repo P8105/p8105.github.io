@@ -13,7 +13,7 @@
 
 <title>Writing Functions</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -481,9 +481,13 @@ new R Markdown document called <code>writing_functions.Rmd</code>, and
 I’m going to load the usual packages. I’m also setting the seed so that
 the output on this page is fixed.</p>
 <pre class="r"><code>library(tidyverse)
-library(rvest)
-
-set.seed(1)</code></pre>
+library(rvest)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rvest&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding</code></pre>
+<pre class="r"><code>set.seed(1)</code></pre>
 <div id="my-first-function" class="section level3">
 <h3>My first function</h3>
 <p>The best way to build up a function is to start with code you’ve
@@ -608,7 +612,7 @@ deviation. I’ll start from the code below.</p>
   x = rnorm(30, mean = 2, sd = 3)
 )
 
-sim_data %&gt;% 
+sim_data |&gt; 
   summarize(
     mu_hat = mean(x),
     sigma_hat = sd(x)
@@ -632,7 +636,7 @@ using default values for the mean and standard deviation, is below.</p>
     x = rnorm(n, mean = mu, sd = sigma),
   )
   
-  sim_data %&gt;% 
+  sim_data |&gt; 
     summarize(
       mu_hat = mean(x),
       sigma_hat = sd(x)
@@ -667,109 +671,105 @@ necessary. Named arguments can be supplied in any order:
 write code I didn’t like, because it would have made sense to write a
 function. We’ll revisit those quickly to see how we could improve our
 code.</p>
-<div id="scraping-amazon" class="section level4">
-<h4>Scraping Amazon</h4>
+<div id="nsduh" class="section level4">
+<h4>NSDUH</h4>
 <p>In <a href="reading_data_from_the_web.html">reading data from the
-web</a>, we wrote code that allowed us to scrape information in Amazon
-reviews. That code is below.</p>
-<pre class="r"><code>url = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+web</a>, we wrote code that allowed us to scrape information in from a
+page containing NSDUH results. We refined the resulting table in <a
+href="strings_and_factors.html">strings and factors</a>. A version of
+our prior code is below.</p>
+<pre class="r"><code>nsduh_url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
 
-dynamite_html = read_html(url)
+nsduh_html = read_html(nsduh_url)
 
-review_titles = 
-  dynamite_html %&gt;%
-  html_nodes(&quot;.a-text-bold span&quot;) %&gt;%
-  html_text()
-
-review_stars = 
-  dynamite_html %&gt;%
-  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
-  html_text() %&gt;%
-  str_extract(&quot;^\\d&quot;) %&gt;%
-  as.numeric()
-
-review_text = 
-  dynamite_html %&gt;%
-  html_nodes(&quot;.review-text-content span&quot;) %&gt;%
-  html_text() %&gt;% 
-  str_replace_all(&quot;\n&quot;, &quot;&quot;) %&gt;% 
-  str_trim()
-
-reviews = tibble(
-  title = review_titles,
-  stars = review_stars,
-  text = review_text
-)</code></pre>
-<p>Let’s write a quick function to scrape review information for any URL
-to an Amazon review page. Note that this contains some extra code for
-manipulating the <code>review_text</code> – our previous code worked for
-the first page, but broke on a later page. The added lines remove
-entries in <code>review_text</code> that come from embedded images after
-extracting text from HTML using CSS tags.</p>
-<pre class="r"><code>read_page_reviews &lt;- function(url) {
+data_marj = 
+  nsduh_html |&gt; 
+  html_table() |&gt; 
+  nth(1) |&gt;
+  slice(-1) |&gt; 
+  select(-contains(&quot;P Value&quot;)) |&gt;
+  pivot_longer(
+    -State,
+    names_to = &quot;age_year&quot;, 
+    values_to = &quot;percent&quot;) |&gt;
+  separate(age_year, into = c(&quot;age&quot;, &quot;year&quot;), sep = &quot;\\(&quot;) |&gt;
+  mutate(
+    year = str_replace(year, &quot;\\)&quot;, &quot;&quot;),
+    percent = str_replace(percent, &quot;[a-c]$&quot;, &quot;&quot;),
+    percent = as.numeric(percent)) |&gt;
+  filter(!(State %in% c(&quot;Total U.S.&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;)))</code></pre>
+<p>Let’s write a quick function to scrape review information for other
+tables on this page. We’ll pass in the HTML data as an argument so we
+don’t scrape it each time, along with a number and name for the table we
+want to process.</p>
+<pre class="r"><code>nsduh_table &lt;- function(html, table_num, table_name) {
   
-  html = read_html(url)
-  
-  review_titles = 
-    html %&gt;%
-    html_nodes(&quot;.a-text-bold span&quot;) %&gt;%
-    html_text()
-  
-  review_stars = 
-    html %&gt;%
-    html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
-    html_text() %&gt;%
-    str_extract(&quot;^\\d&quot;) %&gt;%
-    as.numeric()
-  
-  review_text = 
-    html %&gt;%
-    html_nodes(&quot;.review-text-content span&quot;) %&gt;%
-    html_text() %&gt;% 
-    str_replace_all(&quot;\n&quot;, &quot;&quot;) %&gt;% 
-    str_trim() %&gt;% 
-    str_subset(&quot;The media could not be loaded.&quot;, negate = TRUE) %&gt;% 
-    str_subset(&quot;^$&quot;, negate = TRUE)
-  
-  tibble(
-    title = review_titles,
-    stars = review_stars,
-    text = review_text
-  )
+  table = 
+    html |&gt; 
+    html_table() |&gt; 
+    nth(table_num) |&gt;
+    slice(-1) |&gt; 
+    select(-contains(&quot;P Value&quot;)) |&gt;
+    pivot_longer(
+      -State,
+      names_to = &quot;age_year&quot;, 
+      values_to = &quot;percent&quot;) |&gt;
+    separate(age_year, into = c(&quot;age&quot;, &quot;year&quot;), sep = &quot;\\(&quot;) |&gt;
+    mutate(
+      year = str_replace(year, &quot;\\)&quot;, &quot;&quot;),
+      percent = str_replace(percent, &quot;[a-c]$&quot;, &quot;&quot;),
+      percent = as.numeric(percent),
+      name = table_name) |&gt;
+    filter(!(State %in% c(&quot;Total U.S.&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;)))
 }</code></pre>
-<p>Next we’ll use this to read in reviews from a few pages and combine
-the results.</p>
-<pre class="r"><code>url_base = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
-vec_urls = str_c(url_base, 1:5)
-
-dynamite_reviews = bind_rows(
-  read_page_reviews(vec_urls[1]),
-  read_page_reviews(vec_urls[2]),
-  read_page_reviews(vec_urls[3]),
-  read_page_reviews(vec_urls[4]),
-  read_page_reviews(vec_urls[5])
-)
-
-dynamite_reviews</code></pre>
+<p>Next we’ll use this to get a few different tables and combine the
+results.</p>
+<pre class="r"><code>nsduh_results = 
+  bind_rows(
+    nsduh_table(nsduh_html, 1, &quot;marj_one_year&quot;),
+    nsduh_table(nsduh_html, 4, &quot;cocaine_one_year&quot;),
+    nsduh_table(nsduh_html, 5, &quot;heroin_one_year&quot;)
+  )</code></pre>
+<p>We could use this for subsequent visualizations. This code chunk uses
+a strange feature of factor variables to order <code>State</code>. We
+first put <code>name</code> in order of appearance in our dataset, and
+the group by <code>name</code> and <code>year</code>. After that
+grouping, we can use <code>fct_reorder</code> to order
+<code>State</code> by the <code>percent</code> variable – but because
+the resulting factor variable must have the same levels and ordering,
+the first combination of <code>name</code> and <code>year</code> gets
+used throughout. This is … weird, and I don’t exactly recommend it, but
+… it works?</p>
+<pre class="r"><code>nsduh_results |&gt; 
+  filter(age == &quot;26+&quot;) |&gt; 
+  mutate(name = fct_inorder(name)) |&gt; 
+  group_by(name, year) |&gt; 
+  mutate(State = fct_reorder(State, percent)) |&gt; 
+  ungroup() |&gt; 
+  ggplot(aes(x = State, y = percent, color = year)) + 
+    geom_point() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  facet_grid(. ~ name)</code></pre>
+<p><img src="writing_functions_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
 </div>
 <div id="loading-lotr-data" class="section level4">
 <h4>Loading LoTR data</h4>
 <p>In <a href="tidy_data.html">tidy data</a>, we broke the “only copy
 code twice” rule when we used the code below to process the <a
 href="./data/LotR_Words.xlsx">LoTR words data</a>:</p>
-<pre class="r"><code>fellowship_ring = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
+<pre class="r"><code>fellowship_ring = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) |&gt;
   mutate(movie = &quot;fellowship_ring&quot;)
 
-two_towers = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) %&gt;%
+two_towers = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) |&gt;
   mutate(movie = &quot;two_towers&quot;)
 
-return_king = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;%
+return_king = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) |&gt;
   mutate(movie = &quot;return_king&quot;)
 
-lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) %&gt;%
-  janitor::clean_names() %&gt;%
-  gather(key = sex, value = words, female:male) %&gt;%
-  mutate(race = str_to_lower(race)) %&gt;% 
+lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) |&gt;
+  janitor::clean_names() |&gt;
+  gather(key = sex, value = words, female:male) |&gt;
+  mutate(race = str_to_lower(race)) |&gt; 
   select(movie, everything()) </code></pre>
 <p><strong><em>Learning Assessment:</em></strong> Try to write a
 function that can be used to abstract the data loading and cleaning
@@ -784,9 +784,9 @@ rather than after data have been combined, but produces the same
 result.</p>
 <pre class="r"><code>lotr_load_and_tidy = function(path, range, movie_name) {
   
-  df = readxl::read_excel(path, range = range) %&gt;%
-    janitor::clean_names() %&gt;%
-    gather(key = sex, value = words, female:male) %&gt;%
+  df = readxl::read_excel(path, range = range) |&gt;
+    janitor::clean_names() |&gt;
+    gather(key = sex, value = words, female:male) |&gt;
     mutate(race = str_to_lower(race),
            movie = movie_name)
   
@@ -798,7 +798,7 @@ lotr_tidy =
   bind_rows(
     lotr_load_and_tidy(&quot;./data/LotR_Words.xlsx&quot;, &quot;B3:D6&quot;, &quot;fellowship_ring&quot;),
     lotr_load_and_tidy(&quot;./data/LotR_Words.xlsx&quot;, &quot;F3:H6&quot;, &quot;two_towers&quot;),
-    lotr_load_and_tidy(&quot;./data/LotR_Words.xlsx&quot;, &quot;J3:L6&quot;, &quot;return_king&quot;)) %&gt;%
+    lotr_load_and_tidy(&quot;./data/LotR_Words.xlsx&quot;, &quot;J3:L6&quot;, &quot;return_king&quot;)) |&gt;
   select(movie, everything()) </code></pre>
 <p>Having a function that handles the loading and cleaning is great – if
 I decide I want to change the tidying step, I only have to do it once,

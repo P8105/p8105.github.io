@@ -180,7 +180,7 @@ sim_data = tibble(
   x = rnorm(30, mean = 2, sd = 3)
 )
 
-sim_data %>% 
+sim_data |> 
   summarize(
     mu_hat = mean(x),
     sigma_hat = sd(x)
@@ -198,7 +198,7 @@ sim_mean_sd = function(n, mu = 2, sigma = 3) {
     x = rnorm(n, mean = mu, sd = sigma),
   )
   
-  sim_data %>% 
+  sim_data |> 
     summarize(
       mu_hat = mean(x),
       sigma_hat = sd(x)
@@ -217,92 +217,82 @@ Alternatively, we can use _named_ matching, which uses the argument name in the 
 
 There have been a couple of times in this class that I've had to write code I didn't like, because it would have made sense to write a function. We'll revisit those quickly to see how we could improve our code. 
 
-#### Scraping Amazon
+#### NSDUH
 
-In [reading data from the web](reading_data_from_the_web.html), we wrote code that allowed us to scrape information in Amazon reviews. That code is below.
-
-```{r, eval = FALSE}
-url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
-
-dynamite_html = read_html(url)
-
-review_titles = 
-  dynamite_html %>%
-  html_nodes(".a-text-bold span") %>%
-  html_text()
-
-review_stars = 
-  dynamite_html %>%
-  html_nodes("#cm_cr-review_list .review-rating") %>%
-  html_text() %>%
-  str_extract("^\\d") %>%
-  as.numeric()
-
-review_text = 
-  dynamite_html %>%
-  html_nodes(".review-text-content span") %>%
-  html_text() %>% 
-  str_replace_all("\n", "") %>% 
-  str_trim()
-
-reviews = tibble(
-  title = review_titles,
-  stars = review_stars,
-  text = review_text
-)
-```
-
-Let's write a quick function to scrape review information for any URL to an Amazon review page. Note that this contains some extra code for manipulating the `review_text` -- our previous code worked for the first page, but broke on a later page. The added lines remove entries in `review_text` that come from embedded images after extracting text from HTML using CSS tags.
+In [reading data from the web](reading_data_from_the_web.html), we wrote code that allowed us to scrape information in from a page containing NSDUH results. We refined the resulting table in [strings and factors](strings_and_factors.html). A version of our prior code is below.
 
 ```{r}
-read_page_reviews <- function(url) {
+nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+
+nsduh_html = read_html(nsduh_url)
+
+data_marj = 
+  nsduh_html |> 
+  html_table() |> 
+  nth(1) |>
+  slice(-1) |> 
+  select(-contains("P Value")) |>
+  pivot_longer(
+    -State,
+    names_to = "age_year", 
+    values_to = "percent") |>
+  separate(age_year, into = c("age", "year"), sep = "\\(") |>
+  mutate(
+    year = str_replace(year, "\\)", ""),
+    percent = str_replace(percent, "[a-c]$", ""),
+    percent = as.numeric(percent)) |>
+  filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
+```
+
+Let's write a quick function to scrape review information for other tables on this page. We'll pass in the HTML data as an argument so we don't scrape it each time, along with a number and name for the table we want to process. 
+
+```{r}
+nsduh_table <- function(html, table_num, table_name) {
   
-  html = read_html(url)
-  
-  review_titles = 
-    html %>%
-    html_nodes(".a-text-bold span") %>%
-    html_text()
-  
-  review_stars = 
-    html %>%
-    html_nodes("#cm_cr-review_list .review-rating") %>%
-    html_text() %>%
-    str_extract("^\\d") %>%
-    as.numeric()
-  
-  review_text = 
-    html %>%
-    html_nodes(".review-text-content span") %>%
-    html_text() %>% 
-    str_replace_all("\n", "") %>% 
-    str_trim() %>% 
-    str_subset("The media could not be loaded.", negate = TRUE) %>% 
-    str_subset("^$", negate = TRUE)
-  
-  tibble(
-    title = review_titles,
-    stars = review_stars,
-    text = review_text
-  )
+  table = 
+    html |> 
+    html_table() |> 
+    nth(table_num) |>
+    slice(-1) |> 
+    select(-contains("P Value")) |>
+    pivot_longer(
+      -State,
+      names_to = "age_year", 
+      values_to = "percent") |>
+    separate(age_year, into = c("age", "year"), sep = "\\(") |>
+    mutate(
+      year = str_replace(year, "\\)", ""),
+      percent = str_replace(percent, "[a-c]$", ""),
+      percent = as.numeric(percent),
+      name = table_name) |>
+    filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
 }
 ```
 
-Next we'll use this to read in reviews from a few pages and combine the results.
+Next we'll use this to get a few different tables and combine the results.
 
-```{r, eval = FALSE}
-url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
-vec_urls = str_c(url_base, 1:5)
+```{r}
+nsduh_results = 
+  bind_rows(
+    nsduh_table(nsduh_html, 1, "marj_one_year"),
+    nsduh_table(nsduh_html, 4, "cocaine_one_year"),
+    nsduh_table(nsduh_html, 5, "heroin_one_year")
+  )
+```
 
-dynamite_reviews = bind_rows(
-  read_page_reviews(vec_urls[1]),
-  read_page_reviews(vec_urls[2]),
-  read_page_reviews(vec_urls[3]),
-  read_page_reviews(vec_urls[4]),
-  read_page_reviews(vec_urls[5])
-)
+We could use this for subsequent visualizations. This code chunk uses a strange feature of factor variables to order `State`. We first put `name` in order of appearance in our dataset, and the group by `name` and `year`. After that grouping, we can use `fct_reorder` to order `State` by the `percent` variable -- but because the resulting factor variable must have the same levels and ordering, the first combination of `name` and `year` gets used throughout. This is ... weird, and I don't exactly recommend it, but ... it works?
 
-dynamite_reviews
+```{r}
+nsduh_results |> 
+  filter(age == "26+") |> 
+  mutate(name = fct_inorder(name)) |> 
+  group_by(name, year) |> 
+  mutate(State = fct_reorder(State, percent)) |> 
+  ungroup() |> 
+  ggplot(aes(x = State, y = percent, color = year)) + 
+    geom_point() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  facet_grid(. ~ name)
 ```
 
 
@@ -311,19 +301,19 @@ dynamite_reviews
 In [tidy data](tidy_data.html), we broke the "only copy code twice" rule when we used the code below to process the [LoTR words data](./data/LotR_Words.xlsx):
 
 ```{r}
-fellowship_ring = readxl::read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
+fellowship_ring = readxl::read_excel("./data/LotR_Words.xlsx", range = "B3:D6") |>
   mutate(movie = "fellowship_ring")
 
-two_towers = readxl::read_excel("./data/LotR_Words.xlsx", range = "F3:H6") %>%
+two_towers = readxl::read_excel("./data/LotR_Words.xlsx", range = "F3:H6") |>
   mutate(movie = "two_towers")
 
-return_king = readxl::read_excel("./data/LotR_Words.xlsx", range = "J3:L6") %>%
+return_king = readxl::read_excel("./data/LotR_Words.xlsx", range = "J3:L6") |>
   mutate(movie = "return_king")
 
-lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) %>%
-  janitor::clean_names() %>%
-  gather(key = sex, value = words, female:male) %>%
-  mutate(race = str_to_lower(race)) %>% 
+lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) |>
+  janitor::clean_names() |>
+  gather(key = sex, value = words, female:male) |>
+  mutate(race = str_to_lower(race)) |> 
   select(movie, everything()) 
 ```
 
@@ -337,9 +327,9 @@ The function below will read in and clean LoTR data -- it differs from the previ
 ```{r, eval = FALSE}
 lotr_load_and_tidy = function(path, range, movie_name) {
   
-  df = readxl::read_excel(path, range = range) %>%
-    janitor::clean_names() %>%
-    gather(key = sex, value = words, female:male) %>%
+  df = readxl::read_excel(path, range = range) |>
+    janitor::clean_names() |>
+    gather(key = sex, value = words, female:male) |>
     mutate(race = str_to_lower(race),
            movie = movie_name)
   
@@ -351,7 +341,7 @@ lotr_tidy =
   bind_rows(
     lotr_load_and_tidy("./data/LotR_Words.xlsx", "B3:D6", "fellowship_ring"),
     lotr_load_and_tidy("./data/LotR_Words.xlsx", "F3:H6", "two_towers"),
-    lotr_load_and_tidy("./data/LotR_Words.xlsx", "J3:L6", "return_king")) %>%
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "J3:L6", "return_king")) |>
   select(movie, everything()) 
 ```
 
