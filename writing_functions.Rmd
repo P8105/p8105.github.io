@@ -233,7 +233,10 @@ return_king = readxl::read_excel("./data/LotR_Words.xlsx", range = "J3:L6") |>
 
 lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) |>
   janitor::clean_names() |>
-  gather(key = sex, value = words, female:male) |>
+  pivot_longer(
+    female:male,
+    names_to = "sex",
+    values_to = "words") |> 
   mutate(race = str_to_lower(race)) |> 
   select(movie, everything()) 
 ```
@@ -248,11 +251,17 @@ The function below will read in and clean LoTR data -- it differs from the previ
 ```{r, eval = FALSE}
 lotr_load_and_tidy = function(path, range, movie_name) {
   
-  df = readxl::read_excel(path, range = range) |>
+  df = 
+    readxl::read_excel(path, range = range) |>
     janitor::clean_names() |>
-    gather(key = sex, value = words, female:male) |>
-    mutate(race = str_to_lower(race),
-           movie = movie_name)
+    pivot_longer(
+      female:male,
+      names_to = "sex",
+      values_to = "words") |>
+    mutate(
+      race = str_to_lower(race),
+      movie = movie_name) |> 
+    select(movie, everything())
   
   df
   
@@ -262,8 +271,7 @@ lotr_tidy =
   bind_rows(
     lotr_load_and_tidy("data/LotR_Words.xlsx", "B3:D6", "fellowship_ring"),
     lotr_load_and_tidy("data/LotR_Words.xlsx", "F3:H6", "two_towers"),
-    lotr_load_and_tidy("data/LotR_Words.xlsx", "J3:L6", "return_king")) |>
-  select(movie, everything()) 
+    lotr_load_and_tidy("data/LotR_Words.xlsx", "J3:L6", "return_king"))
 ```
 
 Having a function that handles the loading and cleaning is great -- if I decide I want to change the tidying step, I only have to do it once, and I don't have to worry about mistakes creeping in through copy-and-paste errors!
@@ -334,22 +342,7 @@ nsduh_results =
   )
 ```
 
-We could use this for subsequent visualizations. This code chunk uses a strange feature of factor variables to order `State`. We first put `name` in order of appearance in our dataset, and the group by `name` and `year`. After that grouping, we can use `fct_reorder` to order `State` by the `percent` variable -- but because the resulting factor variable must have the same levels and ordering, the first combination of `name` and `year` gets used throughout. This is ... weird, and I don't exactly recommend it, but ... it works?
-
-```{r}
-nsduh_results |> 
-  filter(age == "26+") |> 
-  mutate(name = fct_inorder(name)) |> 
-  group_by(name, year) |> 
-  mutate(State = fct_reorder(State, percent)) |> 
-  ungroup() |> 
-  ggplot(aes(x = State, y = percent, color = year)) + 
-    geom_point() + 
-    theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  facet_grid(. ~ name)
-```
-
-
+In addition to being less likely to result in errors than copy-and-pasting, using a function is clearer: once the purpose of the function is known, using that function to extract separate tables uses only three easy-to-understand lines of code. 
 
 
 ### Functions as arguments

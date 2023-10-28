@@ -687,7 +687,10 @@ return_king = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &qu
 
 lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) |&gt;
   janitor::clean_names() |&gt;
-  gather(key = sex, value = words, female:male) |&gt;
+  pivot_longer(
+    female:male,
+    names_to = &quot;sex&quot;,
+    values_to = &quot;words&quot;) |&gt; 
   mutate(race = str_to_lower(race)) |&gt; 
   select(movie, everything()) </code></pre>
 <p><strong><em>Learning Assessment:</em></strong> Try to write a
@@ -703,11 +706,17 @@ rather than after data have been combined, but produces the same
 result.</p>
 <pre class="r"><code>lotr_load_and_tidy = function(path, range, movie_name) {
   
-  df = readxl::read_excel(path, range = range) |&gt;
+  df = 
+    readxl::read_excel(path, range = range) |&gt;
     janitor::clean_names() |&gt;
-    gather(key = sex, value = words, female:male) |&gt;
-    mutate(race = str_to_lower(race),
-           movie = movie_name)
+    pivot_longer(
+      female:male,
+      names_to = &quot;sex&quot;,
+      values_to = &quot;words&quot;) |&gt;
+    mutate(
+      race = str_to_lower(race),
+      movie = movie_name) |&gt; 
+    select(movie, everything())
   
   df
   
@@ -717,8 +726,7 @@ lotr_tidy =
   bind_rows(
     lotr_load_and_tidy(&quot;data/LotR_Words.xlsx&quot;, &quot;B3:D6&quot;, &quot;fellowship_ring&quot;),
     lotr_load_and_tidy(&quot;data/LotR_Words.xlsx&quot;, &quot;F3:H6&quot;, &quot;two_towers&quot;),
-    lotr_load_and_tidy(&quot;data/LotR_Words.xlsx&quot;, &quot;J3:L6&quot;, &quot;return_king&quot;)) |&gt;
-  select(movie, everything()) </code></pre>
+    lotr_load_and_tidy(&quot;data/LotR_Words.xlsx&quot;, &quot;J3:L6&quot;, &quot;return_king&quot;))</code></pre>
 <p>Having a function that handles the loading and cleaning is great – if
 I decide I want to change the tidying step, I only have to do it once,
 and I don’t have to worry about mistakes creeping in through
@@ -784,27 +792,10 @@ results.</p>
     nsduh_table(nsduh_html, 4, &quot;cocaine_one_year&quot;),
     nsduh_table(nsduh_html, 5, &quot;heroin_one_year&quot;)
   )</code></pre>
-<p>We could use this for subsequent visualizations. This code chunk uses
-a strange feature of factor variables to order <code>State</code>. We
-first put <code>name</code> in order of appearance in our dataset, and
-the group by <code>name</code> and <code>year</code>. After that
-grouping, we can use <code>fct_reorder</code> to order
-<code>State</code> by the <code>percent</code> variable – but because
-the resulting factor variable must have the same levels and ordering,
-the first combination of <code>name</code> and <code>year</code> gets
-used throughout. This is … weird, and I don’t exactly recommend it, but
-… it works?</p>
-<pre class="r"><code>nsduh_results |&gt; 
-  filter(age == &quot;26+&quot;) |&gt; 
-  mutate(name = fct_inorder(name)) |&gt; 
-  group_by(name, year) |&gt; 
-  mutate(State = fct_reorder(State, percent)) |&gt; 
-  ungroup() |&gt; 
-  ggplot(aes(x = State, y = percent, color = year)) + 
-    geom_point() + 
-    theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  facet_grid(. ~ name)</code></pre>
-<p><img src="writing_functions_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
+<p>In addition to being less likely to result in errors than
+copy-and-pasting, using a function is clearer: once the purpose of the
+function is known, using that function to extract separate tables uses
+only three easy-to-understand lines of code.</p>
 </div>
 </div>
 <div id="functions-as-arguments" class="section level3">
