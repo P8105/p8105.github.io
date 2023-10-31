@@ -13,7 +13,7 @@
 
 <title>Iteration and List Columns</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -489,8 +489,13 @@ called <code>iteration_and_listcols.Rmd</code> in the
 chunk below loads the <code>tidyverse</code> and sets a seed for
 reproducibility.</p>
 <pre class="r"><code>library(tidyverse)
-
-set.seed(1)</code></pre>
+library(rvest)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rvest&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding</code></pre>
+<pre class="r"><code>set.seed(1)</code></pre>
 <p>Things are gonna get a little weird…</p>
 <div id="lists" class="section level3">
 <h3>Lists</h3>
@@ -633,12 +638,6 @@ data frame) we want to iterate over, and the second argument is the
 function we want to apply to each element. The line above will produce
 the same output as the previous loop, but is clearer and easier to
 understand (once you’re used to <code>map</code> …).</p>
-<p>It’s sometimes necessary to be more specific in giving arguments to
-<code>map</code>. In particular, using <code>.x = list_norms</code> for
-the input list and <code>~ mean_and_sd(.x)</code> to specify the
-function applied to the input list (using <code>.x</code> as a
-placeholder) will produce the same result.</p>
-<pre class="r"><code>output = map(.x = list_norms, ~ mean_and_sd(.x))</code></pre>
 <p>This code (using <code>map</code>) is why we pointed out in <a
 href="writing_functions.html">writing functions</a> that functions can
 be passed as arguments to other functions. The second argument in
@@ -653,8 +652,7 @@ for (i in 1:4) {
   output[[i]] = median(list_norms[[i]])
 }
 
-output = map(list_norms, median)
-# output = map(.x = list_norms, ~ median(.x))</code></pre>
+output = map(list_norms, median)</code></pre>
 <p>Again, both options produce the same <code>output</code>, but the
 <code>map</code> places the focus squarely on the function you want to
 apply by removing much of the bookkeeping.</p>
@@ -681,8 +679,8 @@ statement is part of a longer chain of piped commands.</p>
 <p>Lastly, the variant <code>map2</code> (and <code>map2_dbl</code>,
 etc) is helpful when your function has two arguments. In these cases, I
 find it best to be specific about arguments using something like the
-following:</p>
-<pre class="r"><code>output = map2(.x = input_1, .y = input_2, ~func(arg_1 = .x, arg_2 = .y))</code></pre>
+following (more on anonymous functions shortly):</p>
+<pre class="r"><code>output = map2(input_1, input_2, \(x,y) func(arg_1 = x, arg_2 = y))</code></pre>
 </div>
 <div id="list-columns-and-operations" class="section level3">
 <h3>List columns and operations</h3>
@@ -695,9 +693,9 @@ following:</p>
 column from the <code>listcol_df</code> data frame, the result is a
 character vector. Similarly, the <code>samp</code> column is a <em>list
 column</em> – on it’s own, it’s a list.</p>
-<pre class="r"><code>listcol_df %&gt;% pull(name)</code></pre>
+<pre class="r"><code>listcol_df |&gt; pull(name)</code></pre>
 <pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;</code></pre>
-<pre class="r"><code>listcol_df %&gt;% pull(samp)</code></pre>
+<pre class="r"><code>listcol_df |&gt; pull(samp)</code></pre>
 <pre><code>## $a
 ##  [1] 4.134965 4.111932 2.129222 3.210732 3.069396 1.337351 3.810840 1.087654
 ##  [9] 1.753247 3.998154 2.459127 2.783624 1.378063 1.549036 3.350910 2.825453
@@ -771,7 +769,7 @@ the results as a new <strong><em>list column</em></strong> … !!!</p>
 data frame, especially one that is a function of an existing variable.
 That’s exactly what we will keep doing.</p>
 <pre class="r"><code>listcol_df = 
-  listcol_df %&gt;% 
+  listcol_df |&gt; 
   mutate(summary = map(samp, mean_and_sd))
 
 listcol_df</code></pre>
@@ -783,8 +781,71 @@ listcol_df</code></pre>
 ## 3 c     &lt;dbl [20]&gt;   &lt;tibble [1 × 2]&gt;
 ## 4 d     &lt;dbl [20]&gt;   &lt;tibble [1 × 2]&gt;</code></pre>
 </div>
-<div id="nested-data" class="section level3">
-<h3>Nested data</h3>
+<div id="revisiting-nsduh" class="section level3">
+<h3>Revisiting NSDUH</h3>
+<p>In <a href="reading_data_from_the_web.html">reading data from the
+web</a> and elsewhere, we wrote code that allowed us to import data
+tables from a recent NSDUH survey; in <a
+href="writing_functions.html">writing functions</a> we wrapped that code
+into a function called <code>nsduh_table</code> which, for a given
+<code>table_number</code>, produces a data frame containing state, age
+group, year, and percents. A similar function, which omits the argument
+<code>table_name</code>, is shown below.</p>
+<pre class="r"><code>nsduh_table &lt;- function(html, table_num) {
+  
+  table = 
+    html |&gt; 
+    html_table() |&gt; 
+    nth(table_num) |&gt;
+    slice(-1) |&gt; 
+    select(-contains(&quot;P Value&quot;)) |&gt;
+    pivot_longer(
+      -State,
+      names_to = &quot;age_year&quot;, 
+      values_to = &quot;percent&quot;) |&gt;
+    separate(age_year, into = c(&quot;age&quot;, &quot;year&quot;), sep = &quot;\\(&quot;) |&gt;
+    mutate(
+      year = str_replace(year, &quot;\\)&quot;, &quot;&quot;),
+      percent = str_replace(percent, &quot;[a-c]$&quot;, &quot;&quot;),
+      percent = as.numeric(percent)) |&gt;
+    filter(!(State %in% c(&quot;Total U.S.&quot;, &quot;Northeast&quot;, &quot;Midwest&quot;, &quot;South&quot;, &quot;West&quot;)))
+  
+  table
+}</code></pre>
+<p>We can use this function to import three tables using the next code
+chunk, which downloads and extracts the page HTML and then iterates over
+table numbers. The results are combined using <code>bind_rows()</code>.
+Note that, because this version of our function doesn’t include
+<code>table_name</code>, that information is lost for now.</p>
+<pre class="r"><code>nsduh_url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
+
+nsduh_html = read_html(nsduh_url)
+
+output = vector(&quot;list&quot;, 3)
+
+for (i in c(1, 4, 5)) {
+  output[[i]] = nsduh_table(nsduh_html, i)
+}
+
+nsduh_results = bind_rows(output)</code></pre>
+<p>We can also import these data using <code>map()</code>. Here I’m
+supplying the <code>html</code> argument after the name of the function
+that I’m iterating over.</p>
+<pre class="r"><code>nsduh_results = 
+  map(c(1, 4, 5), nsduh_table, html = nsduh_html) |&gt; 
+  bind_rows()</code></pre>
+<p>As with previous examples, using a for loop is pretty okay but the
+<code>map</code> call is clearer.</p>
+<p>We can also do this using data frames and list columns.</p>
+<pre class="r"><code>nsduh_results= 
+  tibble(
+    name = c(&quot;marj&quot;, &quot;cocaine&quot;, &quot;heroine&quot;),
+    number = c(1, 4, 5)) |&gt; 
+  mutate(table = map(number, \(num) nsduh_table(html = nsduh_html, num))) |&gt; 
+  unnest(cols = &quot;table&quot;)</code></pre>
+</div>
+<div id="operations-on-nested-data" class="section level3">
+<h3>Operations on nested data</h3>
 <p>Shifting gears a bit, let’s revisit the weather data from <a
 href="visualization.html">visualization</a> and elsewhere; these data
 consist of one year of observations from three monitoring stations. The
@@ -792,28 +853,31 @@ code below pulls these data into R (using the <code>rnoaa</code>
 package, which interacts with the NOAA API).</p>
 <pre class="r"><code>weather_df = 
   rnoaa::meteo_pull_monitors(
-    c(&quot;USW00094728&quot;, &quot;USC00519397&quot;, &quot;USS0023B17S&quot;),
+    c(&quot;USW00094728&quot;, &quot;USW00022534&quot;, &quot;USS0023B17S&quot;),
     var = c(&quot;PRCP&quot;, &quot;TMIN&quot;, &quot;TMAX&quot;), 
-    date_min = &quot;2017-01-01&quot;,
-    date_max = &quot;2017-12-31&quot;) %&gt;%
+    date_min = &quot;2021-01-01&quot;,
+    date_max = &quot;2022-12-31&quot;) |&gt;
   mutate(
     name = recode(
       id, 
       USW00094728 = &quot;CentralPark_NY&quot;, 
-      USC00519397 = &quot;Waikiki_HA&quot;,
+      USW00022534 = &quot;Molokai_HI&quot;,
       USS0023B17S = &quot;Waterhole_WA&quot;),
     tmin = tmin / 10,
-    tmax = tmax / 10) %&gt;%
+    tmax = tmax / 10) |&gt;
   select(name, id, everything())</code></pre>
-<pre><code>## using cached file: ~/Library/Caches/R/noaa_ghcnd/USW00094728.dly</code></pre>
-<pre><code>## date created (size, mb): 2020-09-07 13:22:55 (7.518)</code></pre>
-<pre><code>## file min/max dates: 1869-01-01 / 2020-09-30</code></pre>
-<pre><code>## using cached file: ~/Library/Caches/R/noaa_ghcnd/USC00519397.dly</code></pre>
-<pre><code>## date created (size, mb): 2020-09-07 13:22:59 (1.699)</code></pre>
-<pre><code>## file min/max dates: 1965-01-01 / 2020-03-31</code></pre>
-<pre><code>## using cached file: ~/Library/Caches/R/noaa_ghcnd/USS0023B17S.dly</code></pre>
-<pre><code>## date created (size, mb): 2020-09-07 13:23:01 (0.877)</code></pre>
-<pre><code>## file min/max dates: 1999-09-01 / 2020-09-30</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;hoardr&#39;:
+##   method           from
+##   print.cache_info httr</code></pre>
+<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00094728.dly</code></pre>
+<pre><code>## date created (size, mb): 2023-09-19 15:41:55.07359 (8.524)</code></pre>
+<pre><code>## file min/max dates: 1869-01-01 / 2023-09-30</code></pre>
+<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00022534.dly</code></pre>
+<pre><code>## date created (size, mb): 2023-09-25 10:06:23.827176 (3.83)</code></pre>
+<pre><code>## file min/max dates: 1949-10-01 / 2023-09-30</code></pre>
+<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USS0023B17S.dly</code></pre>
+<pre><code>## date created (size, mb): 2023-09-19 15:42:03.139582 (0.994)</code></pre>
+<pre><code>## file min/max dates: 1999-09-01 / 2023-09-30</code></pre>
 <p>The station name and id are constant across the year’s temperature
 and precipitation data. For that reason, we can reorganize these data
 into a new data frame with a single row for each station. Weather data
@@ -826,64 +890,80 @@ weather_nest</code></pre>
 <pre><code>## # A tibble: 3 × 3
 ##   name           id          data              
 ##   &lt;chr&gt;          &lt;chr&gt;       &lt;list&gt;            
-## 1 CentralPark_NY USW00094728 &lt;tibble [365 × 4]&gt;
-## 2 Waikiki_HA     USC00519397 &lt;tibble [365 × 4]&gt;
-## 3 Waterhole_WA   USS0023B17S &lt;tibble [365 × 4]&gt;</code></pre>
+## 1 CentralPark_NY USW00094728 &lt;tibble [730 × 4]&gt;
+## 2 Molokai_HI     USW00022534 &lt;tibble [730 × 4]&gt;
+## 3 Waterhole_WA   USS0023B17S &lt;tibble [730 × 4]&gt;</code></pre>
 <p>This is a different way of producing a list column. The result is a
 lot like <code>listcol_df</code>, in that the columns in
 <code>weather_nest</code> are a vector and a list.</p>
-<pre class="r"><code>weather_nest %&gt;% pull(name)</code></pre>
-<pre><code>## [1] &quot;CentralPark_NY&quot; &quot;Waikiki_HA&quot;     &quot;Waterhole_WA&quot;</code></pre>
-<pre class="r"><code>weather_nest %&gt;% pull(data)</code></pre>
+<pre class="r"><code>weather_nest |&gt; pull(name)</code></pre>
+<pre><code>## [1] &quot;CentralPark_NY&quot; &quot;Molokai_HI&quot;     &quot;Waterhole_WA&quot;</code></pre>
+<pre class="r"><code>weather_nest |&gt; pull(data)</code></pre>
 <pre><code>## [[1]]
-## # A tibble: 365 × 4
-##   date        prcp  tmax  tmin
-##   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 2017-01-01     0   8.9   4.4
-## 2 2017-01-02    53   5     2.8
-## 3 2017-01-03   147   6.1   3.9
-## 4 2017-01-04     0  11.1   1.1
-## 5 2017-01-05     0   1.1  -2.7
-## 6 2017-01-06    13   0.6  -3.8
-## # ℹ 359 more rows
+## # A tibble: 730 × 4
+##    date        prcp  tmax  tmin
+##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 2021-01-01   157   4.4   0.6
+##  2 2021-01-02    13  10.6   2.2
+##  3 2021-01-03    56   3.3   1.1
+##  4 2021-01-04     5   6.1   1.7
+##  5 2021-01-05     0   5.6   2.2
+##  6 2021-01-06     0   5     1.1
+##  7 2021-01-07     0   5    -1  
+##  8 2021-01-08     0   2.8  -2.7
+##  9 2021-01-09     0   2.8  -4.3
+## 10 2021-01-10     0   5    -1.6
+## # ℹ 720 more rows
 ## 
 ## [[2]]
-## # A tibble: 365 × 4
-##   date        prcp  tmax  tmin
-##   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 2017-01-01     0  26.7  16.7
-## 2 2017-01-02     0  27.2  16.7
-## 3 2017-01-03     0  27.8  17.2
-## 4 2017-01-04     0  27.2  16.7
-## 5 2017-01-05     0  27.8  16.7
-## 6 2017-01-06     0  27.2  16.7
-## # ℹ 359 more rows
+## # A tibble: 730 × 4
+##    date        prcp  tmax  tmin
+##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 2021-01-01     0  27.8  22.2
+##  2 2021-01-02     0  28.3  23.9
+##  3 2021-01-03     0  28.3  23.3
+##  4 2021-01-04     0  30    18.9
+##  5 2021-01-05     0  28.9  21.7
+##  6 2021-01-06     0  27.8  20  
+##  7 2021-01-07     0  29.4  21.7
+##  8 2021-01-08     0  28.3  18.3
+##  9 2021-01-09     0  27.8  18.9
+## 10 2021-01-10     0  28.3  18.9
+## # ℹ 720 more rows
 ## 
 ## [[3]]
-## # A tibble: 365 × 4
-##   date        prcp  tmax  tmin
-##   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 2017-01-01   432  -6.8 -10.7
-## 2 2017-01-02    25 -10.5 -12.4
-## 3 2017-01-03     0  -8.9 -15.9
-## 4 2017-01-04     0  -9.9 -15.5
-## 5 2017-01-05     0  -5.9 -14.2
-## 6 2017-01-06     0  -4.4 -11.3
-## # ℹ 359 more rows</code></pre>
+## # A tibble: 730 × 4
+##    date        prcp  tmax  tmin
+##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 2021-01-01   254   3.2   0  
+##  2 2021-01-02   152   0.9  -3.2
+##  3 2021-01-03     0   0.2  -4.2
+##  4 2021-01-04   559   0.9  -3.2
+##  5 2021-01-05    25   0.5  -3.3
+##  6 2021-01-06    51   0.8  -4.8
+##  7 2021-01-07     0   0.2  -5.8
+##  8 2021-01-08    25   0.5  -8.3
+##  9 2021-01-09     0   0.1  -7.7
+## 10 2021-01-10   203   0.9  -0.1
+## # ℹ 720 more rows</code></pre>
 <p>Of course, if you can <code>nest</code> data you should be able to
 <code>unnest</code> it as well, and you can (with the caveat that you’re
 unnesting a list column that contains a data frame).</p>
 <pre class="r"><code>unnest(weather_nest, cols = data)</code></pre>
-<pre><code>## # A tibble: 1,095 × 6
-##   name           id          date        prcp  tmax  tmin
-##   &lt;chr&gt;          &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 CentralPark_NY USW00094728 2017-01-01     0   8.9   4.4
-## 2 CentralPark_NY USW00094728 2017-01-02    53   5     2.8
-## 3 CentralPark_NY USW00094728 2017-01-03   147   6.1   3.9
-## 4 CentralPark_NY USW00094728 2017-01-04     0  11.1   1.1
-## 5 CentralPark_NY USW00094728 2017-01-05     0   1.1  -2.7
-## 6 CentralPark_NY USW00094728 2017-01-06    13   0.6  -3.8
-## # ℹ 1,089 more rows</code></pre>
+<pre><code>## # A tibble: 2,190 × 6
+##    name           id          date        prcp  tmax  tmin
+##    &lt;chr&gt;          &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6
+##  2 CentralPark_NY USW00094728 2021-01-02    13  10.6   2.2
+##  3 CentralPark_NY USW00094728 2021-01-03    56   3.3   1.1
+##  4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7
+##  5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2
+##  6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1
+##  7 CentralPark_NY USW00094728 2021-01-07     0   5    -1  
+##  8 CentralPark_NY USW00094728 2021-01-08     0   2.8  -2.7
+##  9 CentralPark_NY USW00094728 2021-01-09     0   2.8  -4.3
+## 10 CentralPark_NY USW00094728 2021-01-10     0   5    -1.6
+## # ℹ 2,180 more rows</code></pre>
 <p>Nesting columns can help with data organization and comprehension by
 masking complexity you’re less concerned about right now and clarifying
 the things you are concerned about. In the weather data, it can be
@@ -906,7 +986,7 @@ sole argument to fit this model.</p>
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##       7.209        1.039</code></pre>
+##       7.514        1.034</code></pre>
 <p>Since <code>weather$data</code> is a <strong><em>list</em></strong>,
 we can apply our <code>weather_lm</code> function to each data frame
 using <code>map</code>.</p>
@@ -918,7 +998,7 @@ using <code>map</code>.</p>
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##       7.209        1.039  
+##       7.514        1.034  
 ## 
 ## 
 ## [[2]]
@@ -928,7 +1008,7 @@ using <code>map</code>.</p>
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##     20.0966       0.4509  
+##     21.7547       0.3222  
 ## 
 ## 
 ## [[3]]
@@ -938,53 +1018,53 @@ using <code>map</code>.</p>
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##       7.499        1.221</code></pre>
+##       7.532        1.137</code></pre>
 <p>As an aside, you can avoid the creation of a dedicated function using
 <code>map</code>’s syntax for “anonymous” (i.e. not named and saved)
 functions. This is fine for really short operations, but I typically
 write a dedicated function instead of using this option.</p>
-<pre class="r"><code>map(weather_nest$data, ~lm(tmax ~ tmin, data = .x))</code></pre>
+<pre class="r"><code>map(weather_nest$data, \(df) lm(tmax ~ tmin, data = df))</code></pre>
 <pre><code>## [[1]]
 ## 
 ## Call:
-## lm(formula = tmax ~ tmin, data = .x)
+## lm(formula = tmax ~ tmin, data = df)
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##       7.209        1.039  
+##       7.514        1.034  
 ## 
 ## 
 ## [[2]]
 ## 
 ## Call:
-## lm(formula = tmax ~ tmin, data = .x)
+## lm(formula = tmax ~ tmin, data = df)
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##     20.0966       0.4509  
+##     21.7547       0.3222  
 ## 
 ## 
 ## [[3]]
 ## 
 ## Call:
-## lm(formula = tmax ~ tmin, data = .x)
+## lm(formula = tmax ~ tmin, data = df)
 ## 
 ## Coefficients:
 ## (Intercept)         tmin  
-##       7.499        1.221</code></pre>
+##       7.532        1.137</code></pre>
 <p>Let’s use <code>mutate</code> to fit this model, and to store the
 result in the same dataframe.</p>
 <pre class="r"><code>weather_nest = 
-  weather_nest %&gt;% 
+  weather_nest |&gt; 
   mutate(models = map(data, weather_lm))
 
 weather_nest</code></pre>
 <pre><code>## # A tibble: 3 × 4
 ##   name           id          data               models
 ##   &lt;chr&gt;          &lt;chr&gt;       &lt;list&gt;             &lt;list&gt;
-## 1 CentralPark_NY USW00094728 &lt;tibble [365 × 4]&gt; &lt;lm&gt;  
-## 2 Waikiki_HA     USC00519397 &lt;tibble [365 × 4]&gt; &lt;lm&gt;  
-## 3 Waterhole_WA   USS0023B17S &lt;tibble [365 × 4]&gt; &lt;lm&gt;</code></pre>
+## 1 CentralPark_NY USW00094728 &lt;tibble [730 × 4]&gt; &lt;lm&gt;  
+## 2 Molokai_HI     USW00022534 &lt;tibble [730 × 4]&gt; &lt;lm&gt;  
+## 3 Waterhole_WA   USS0023B17S &lt;tibble [730 × 4]&gt; &lt;lm&gt;</code></pre>
 <p>This is great! We now have a data frame that has rows for each
 station; columns contain weather datasets and fitted models. This makes
 it very easy to keep track of models across stations, and to perform
@@ -994,79 +1074,6 @@ lines we’re able to fit separate linear models to each of our stations.
 And, once you get used to list columns, <code>map</code>, and the rest
 of it, these lines of code are pretty clear and can be extended to
 larger datasets with more complex structures.</p>
-</div>
-<div id="revisiting-napoleon" class="section level3">
-<h3>Revisiting Napoleon</h3>
-<p>In <a href="reading_data_from_the_web.html">reading data from the
-web</a> and elsewhere, we wrote code that allowed us to scrape
-information in Amazon reviews; in <a
-href="writing_functions.html">writing functions</a> we wrapped that code
-into a function called <code>read_page_reviews</code> which, for a given
-<code>url</code>, produces a data frame containing review titles, star
-ratings, and text.</p>
-<pre class="r"><code>library(rvest)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;rvest&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:readr&#39;:
-## 
-##     guess_encoding</code></pre>
-<pre class="r"><code>read_page_reviews &lt;- function(url) {
-  
-  html = read_html(urls[1])
-  
-  review_titles = 
-    html %&gt;%
-    html_nodes(&quot;.a-text-bold span&quot;) %&gt;%
-    html_text() %&gt;% 
-    magrittr::extract(3*(1:10))
-  
-  review_stars = 
-    html %&gt;%
-    html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
-    html_text() %&gt;%
-    str_extract(&quot;^\\d&quot;) %&gt;%
-    as.numeric()
-  
-  review_text = 
-    html %&gt;%
-    html_nodes(&quot;.review-text-content span&quot;) %&gt;%
-    html_text() %&gt;% 
-    str_replace_all(&quot;\n&quot;, &quot;&quot;) %&gt;% 
-    str_trim() %&gt;% 
-    str_subset(&quot;The media could not be loaded.&quot;, negate = TRUE) %&gt;% 
-    str_subset(&quot;^$&quot;, negate = TRUE)
-  
-  tibble(
-    title = review_titles,
-    stars = review_stars,
-    text = review_text
-  )
-}</code></pre>
-<p>We can use this function to read the five pages of reviews on the
-URLs defined in the code chunk below.</p>
-<pre class="r"><code>url_base = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
-vec_urls = str_c(url_base, 1:5)</code></pre>
-<p>First I’ll define a vector of URLs to act as an input, and then I’ll
-iterate over that vector using both a for loop and a <code>map_df</code>
-statement.</p>
-<pre class="r"><code>output = vector(&quot;list&quot;, 5)
-
-for (i in 1:5) {
-  output[[i]] = read_page_reviews(vec_urls[[i]])
-}
-
-dynamite_reviews = bind_rows(output)
-
-dynamite_reviews = map_df(vec_urls, read_page_reviews)</code></pre>
-<p>As with previous examples, using a for loop is pretty okay but the
-<code>map_df</code> call is clearer.</p>
-<p>We can also do this using data frames and list columns.</p>
-<pre class="r"><code>dynamite_reviews = 
-  tibble(
-    page = 1:5,
-    urls = str_c(url_base, page)) %&gt;% 
-  mutate(reviews = map(urls, read_page_reviews)) %&gt;% 
-  unnest()</code></pre>
 </div>
 </div>
 <div id="other-materials" class="section level2">
