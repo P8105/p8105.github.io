@@ -494,11 +494,16 @@ Write in a reproducible way (e.g. using inline R code where necessary)
 and include relevant code chunks and their output. Include only relevant
 information, and adhere to a strict-500 word limit (this excludes
 figures and tables, code chunks, inline code, YAML, and other non-text
-elements). You can check your word count using
+elements).</p>
+<p>You can check your word count using
 <code>wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")</code>;
 installation instructions can be found on the <a
 href="https://github.com/benmarwick/wordcountaddin"><code>wordcountaddin</code>
-package website</a>. We’ll use the “koRpus” count.</p>
+package website</a>. We’ll use the “koRpus” count.
+<strong><em>NOTE:</em></strong> you do not need to include a word count
+in your report, and running
+<code>wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")</code> in your
+document can interfere with our automated reproducibility checks.</p>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>

@@ -35,7 +35,9 @@ We will assess adherence to the instructions above and whether we are able to kn
 
 ## Deliverable
 
-For this project, you should write a report describing your work in a way that targets a reasonably sophisticated collaborator – not an expert data scientist, but an interested observer. You should comment on findings (for example, describe trends in tables and figures). Structure your report to include sections corresponding to the problems below. Write in a reproducible way (e.g. using inline R code where necessary) and include relevant code chunks and their output. Include only relevant information, and adhere to a strict-500 word limit (this excludes figures and tables, code chunks, inline code, YAML, and other non-text elements). You can check your word count using `wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")`; installation instructions can be found on the [`wordcountaddin` package website](https://github.com/benmarwick/wordcountaddin). We'll use the "koRpus" count.
+For this project, you should write a report describing your work in a way that targets a reasonably sophisticated collaborator – not an expert data scientist, but an interested observer. You should comment on findings (for example, describe trends in tables and figures). Structure your report to include sections corresponding to the problems below. Write in a reproducible way (e.g. using inline R code where necessary) and include relevant code chunks and their output. Include only relevant information, and adhere to a strict-500 word limit (this excludes figures and tables, code chunks, inline code, YAML, and other non-text elements). 
+
+You can check your word count using `wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")`; installation instructions can be found on the [`wordcountaddin` package website](https://github.com/benmarwick/wordcountaddin). We'll use the "koRpus" count. **_NOTE:_** you do not need to include a word count in your report, and running `wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")` in your document can interfere with our automated reproducibility checks. 
 
 ## Data
 
