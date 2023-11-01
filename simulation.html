@@ -13,7 +13,7 @@
 
 <title>Simulation</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -503,7 +503,7 @@ function is below.</p>
     x = rnorm(n, mean = mu, sd = sigma),
   )
   
-  sim_data %&gt;% 
+  sim_data |&gt; 
     summarize(
       mu_hat = mean(x),
       sigma_hat = sd(x)
@@ -551,27 +551,27 @@ previous loop.</p>
   expand_grid(
     sample_size = 30,
     iter = 1:100
-  ) %&gt;% 
+  ) |&gt; 
   mutate(
     estimate_df = map(sample_size, sim_mean_sd)
-  ) %&gt;% 
+  ) |&gt; 
   unnest(estimate_df)</code></pre>
 <p>Critically, the result is a dataframe which can be manipulated or
 used in ways we’re now pretty familiar with. Let’s make some quick plots
 and compute some summaries for our simulation results.</p>
-<pre class="r"><code>sim_results_df %&gt;% 
+<pre class="r"><code>sim_results_df |&gt; 
   ggplot(aes(x = mu_hat)) + 
   geom_density()</code></pre>
 <p><img src="simulation_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
-<pre class="r"><code>sim_results_df %&gt;% 
+<pre class="r"><code>sim_results_df |&gt; 
   pivot_longer(
     mu_hat:sigma_hat,
     names_to = &quot;parameter&quot;, 
-    values_to = &quot;estimate&quot;) %&gt;% 
-  group_by(parameter) %&gt;% 
+    values_to = &quot;estimate&quot;) |&gt; 
+  group_by(parameter) |&gt; 
   summarize(
     emp_mean = mean(estimate),
-    emp_sd = sd(estimate)) %&gt;% 
+    emp_sd = sd(estimate)) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -599,6 +599,15 @@ are distributed under our simulation scenario, and can compare empirical
 results to theoretical ones. In this way, we can build intuition for
 fundamental statistical procedures under repeated sampling in a way
 that’s not possible with single data sets.</p>
+<p>In cases like this, where the inputs to the function don’t change,
+using an “anonymous” function can be a helpful shorthand. Here the
+syntax <code>(i)</code> defines a function with the input
+<code>i</code>, and that function just runs
+<code>sim_mean_sd(30, 2, 3)</code> without actually using
+<code>i</code>.</p>
+<pre class="r"><code>sim_results_df =   
+  map(1:100, \(i) sim_mean_sd(30, 2, 3)) |&gt; 
+  bind_rows()</code></pre>
 </div>
 <div id="simulation-mean-for-several-ns" class="section level3">
 <h3>Simulation: Mean for several <span
@@ -615,35 +624,35 @@ and <code>unnest</code> the result.</p>
   expand_grid(
     sample_size = c(30, 60, 120, 240),
     iter = 1:1000
-  ) %&gt;% 
+  ) |&gt; 
   mutate(
     estimate_df = map(sample_size, sim_mean_sd)
-  ) %&gt;% 
+  ) |&gt; 
   unnest(estimate_df)</code></pre>
 <p>Let’s take a look at what we’ve accomplished in our simulations!
 First I’ll take a look at the distribution of mean estimates across
 sample sizes.</p>
-<pre class="r"><code>sim_results_df %&gt;% 
+<pre class="r"><code>sim_results_df |&gt; 
   mutate(
     sample_size = str_c(&quot;n = &quot;, sample_size),
-    sample_size = fct_inorder(sample_size)) %&gt;% 
+    sample_size = fct_inorder(sample_size)) |&gt; 
   ggplot(aes(x = sample_size, y = mu_hat, fill = sample_size)) + 
   geom_violin()</code></pre>
-<p><img src="simulation_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
+<p><img src="simulation_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
 <p>These estimates are centered around the truth (2) for each sample
 size, and the width of the distribution shrinks as sample size
 grows.</p>
 <p>Lastly I’ll look at the empirical mean and variance of these
 estimates.</p>
-<pre class="r"><code>sim_results_df %&gt;% 
+<pre class="r"><code>sim_results_df |&gt; 
   pivot_longer(
     mu_hat:sigma_hat,
     names_to = &quot;parameter&quot;, 
-    values_to = &quot;estimate&quot;) %&gt;% 
-  group_by(parameter, sample_size) %&gt;% 
+    values_to = &quot;estimate&quot;) |&gt; 
+  group_by(parameter, sample_size) |&gt; 
   summarize(
     emp_mean = mean(estimate),
-    emp_var = var(estimate)) %&gt;% 
+    emp_var = var(estimate)) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;parameter&#39;. You can override using the
 ## `.groups` argument.</code></pre>
@@ -660,50 +669,50 @@ estimates.</p>
 <tr class="odd">
 <td align="left">mu_hat</td>
 <td align="right">30</td>
-<td align="right">2.005</td>
-<td align="right">0.274</td>
+<td align="right">2.001</td>
+<td align="right">0.289</td>
 </tr>
 <tr class="even">
 <td align="left">mu_hat</td>
 <td align="right">60</td>
-<td align="right">1.989</td>
-<td align="right">0.148</td>
+<td align="right">1.992</td>
+<td align="right">0.147</td>
 </tr>
 <tr class="odd">
 <td align="left">mu_hat</td>
 <td align="right">120</td>
-<td align="right">2.006</td>
+<td align="right">2.005</td>
 <td align="right">0.079</td>
 </tr>
 <tr class="even">
 <td align="left">mu_hat</td>
 <td align="right">240</td>
 <td align="right">1.999</td>
-<td align="right">0.040</td>
+<td align="right">0.038</td>
 </tr>
 <tr class="odd">
 <td align="left">sigma_hat</td>
 <td align="right">30</td>
-<td align="right">2.976</td>
-<td align="right">0.151</td>
+<td align="right">2.974</td>
+<td align="right">0.154</td>
 </tr>
 <tr class="even">
 <td align="left">sigma_hat</td>
 <td align="right">60</td>
-<td align="right">3.000</td>
-<td align="right">0.069</td>
+<td align="right">2.999</td>
+<td align="right">0.068</td>
 </tr>
 <tr class="odd">
 <td align="left">sigma_hat</td>
 <td align="right">120</td>
-<td align="right">2.997</td>
+<td align="right">2.996</td>
 <td align="right">0.039</td>
 </tr>
 <tr class="even">
 <td align="left">sigma_hat</td>
 <td align="right">240</td>
-<td align="right">2.992</td>
-<td align="right">0.021</td>
+<td align="right">2.994</td>
+<td align="right">0.018</td>
 </tr>
 </tbody>
 </table>
@@ -712,76 +721,113 @@ distribution of the sample mean. This kind of check is a useful way to
 support derivations (although they don’t serve as a formal proof in any
 way).</p>
 </div>
-<div id="using-rerun" class="section level3">
-<h3>Using <code>rerun</code></h3>
-<p>In cases like these, where the inputs to the function you’re running
-don’t change, the <code>purrr::rerun</code> function can be very
-handy.</p>
-<pre class="r"><code>sim_results_df =   
-  rerun(100, sim_mean_sd(30, 2, 3)) %&gt;% 
-  bind_rows()</code></pre>
-<p>Structurally, <code>rerun</code> is a lot like <code>map</code> – the
-first argument defines the amount of iteration and the second argument
-is the function to use in each iteration step. As with <code>map</code>,
-we’ve replaced a for loop with a segment of code that makes our purpose
-much more transparent but both approaches give the same results.</p>
-<p>I can use this process to investigate several sample sizes as well.
-I’ll start with a for loop around the code I established above using
-<code>rerun</code> (I could start from scratch by nesting one for loop
-in another for loop, but let’s not).</p>
-<pre class="r"><code>n_list = 
-  list(
-    &quot;n_30&quot;  = 30, 
-    &quot;n_60&quot;  = 60, 
-    &quot;n_120&quot; = 120, 
-    &quot;n_240&quot; = 240)
-
-output = vector(&quot;list&quot;, length = 4)
-
-for (i in 1:4) {
-  output[[i]] = rerun(100, sim_mean_sd(n_list[[i]])) %&gt;% 
-    bind_rows
+<div id="simulation-slr-for-one-n" class="section level3">
+<h3>Simulation: SLR for one <span class="math inline">\(n\)</span></h3>
+<p>The distribution of the sample mean is critical in statistics, but
+behaves in often familiar ways. Next we’ll use simulations to explore
+another very important setting that is sometimes surprising. In
+particular, we’ll use a function to we generate data from <span
+class="math display">\[ y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\]</span></p>
+<p>for subjects <span class="math inline">\(1 \leq i \leq n\)</span>
+with <span class="math inline">\(\epsilon_i \sim N[0,1]\)</span> and
+return estimates</p>
+<p><span class="math inline">\(\hat{\beta}_0,
+\hat{\beta}_1\)</span>.</p>
+<p>One implementation of this goal is shown below. This takes the sample
+size and true regression coefficients as inputs; simulates both
+<code>x</code> and <code>y</code>; fits the regression; and returns the
+estimated coefficients.</p>
+<pre class="r"><code>sim_regression = function(n, beta0 = 2, beta1 = 3) {
+  
+  sim_data = 
+    tibble(
+      x = rnorm(n, mean = 1, sd = 1),
+      y = beta0 + beta1 * x + rnorm(n, 0, 1)
+    )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
 }</code></pre>
-<p>After this loop, <code>output</code> is a list of 4 data frames; each
-data frame contains the results of 100 simulations at different sample
-sizes.</p>
-<p>Before we spend time looking at the results of the simulation, let’s
-recast this using list columns and <code>map</code>. I’ll set up a
-tibble with the sample sizes I want to investigate, and then use
-<code>rerun</code> to perform the complete simulation for each sample
-size. Remember that <code>rerun</code> produces a list, so I’m going to
-use <code>bind_rows</code> to produce a tibble of simulation results for
-each sample size. Finally, I’ll <code>unnest</code> the tibbles to
-produce a standard data frame with no list columns.</p>
+<p>As for the sample mean, the repeated sampling framework can be used
+to establish properties of estimates <span
+class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span>. If you
+could draw repeatedly from the population, your estimates will have a
+known mean and covariance:</p>
+<p><span class="math display">\[ \hat{\beta}_0 \sim \left[\beta_0,
+\sigma^2 \left(\frac{1}{n} + \frac{\bar{x}}{\sum (x_i -
+\bar{x})^2}\right) \right] \mbox{ and } \hat{\beta}_1 \sim
+\left[\beta_1,\frac{\sigma^2}{\sum (x_i - \bar{x})^2} \right]
+\]</span></p>
+<p>(Because our simulation design generates errors from a Normal
+distribution we also know that the estimates follow a Normal
+distribution, although that’s not guaranteed by least squares
+estimation.)</p>
+<p>Again, though, “repeated sampling” remains conceptual for regression
+– but we can draw samples easily in simulations. We’ll use
+<code>map</code> to run <code>sim_regression()</code> 500 times and show
+the effect of randomness in <span
+class="math inline">\(\epsilon\)</span> on estimates <span
+class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span>.</p>
 <pre class="r"><code>sim_results_df = 
-  tibble(sample_size = c(30, 60, 120, 240)) %&gt;% 
+  expand_grid(
+    sample_size = 30,
+    iter = 1:500
+  ) |&gt; 
   mutate(
-    output_lists = map(.x = sample_size, ~rerun(1000, sim_mean_sd(n = .x))),
-    estimate_dfs = map(output_lists, bind_rows)) %&gt;% 
-  select(-output_lists) %&gt;% 
-  unnest(estimate_dfs)</code></pre>
-<p>The resulting object, <code>sim_results_df</code> is structured in
-the same way as it was when we used <code>map</code> instead of
-<code>rerun</code>, and can be used to generate similar plots and
-tables.</p>
+    estimate_df = map(sample_size, sim_regression)
+  ) |&gt; 
+  unnest(estimate_df)</code></pre>
+<p>Next we’ll plot the estimated coefficients against each other (<span
+class="math inline">\(\hat{\beta}_0\)</span> on the x axis and <span
+class="math inline">\(\hat{\beta}_1\)</span> on the y axis). Both
+estimators are “unbiased”, meaning that on average you get the right
+answer. But what’s striking about this plot is that the estimated
+coefficients are inversely correlated – a lower estimate of the
+intercept tends to imply a higher estimate of the slope.</p>
+<pre class="r"><code>sim_results_df |&gt; 
+  ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
+  geom_point()</code></pre>
+<p><img src="simulation_files/figure-html/unnamed-chunk-11-1.png" width="90%" /></p>
 </div>
 <div id="varying-two-simulation-parameters" class="section level3">
 <h3>Varying two simulation parameters</h3>
+<p>In our last example, we’ll consider varying two parameters – the
+sample size and the true standard deviation in our simulation looking at
+the mean and SD. We can use <code>expand_grid()</code> again to consider
+all possible combinations of sample size and true SD, while also
+defining a variable to look at 1000 iterations of each combination.</p>
+<p>The key step in this code chunk is the use of <code>map2</code>,
+which allows mapping over two inputs to a function. We can also use an
+“anonymous” function which passes inputs <code>n</code> and
+<code>sd</code> to specific arguments in the <code>sim_mean_sd()</code>
+function.</p>
 <pre class="r"><code>sim_results_df = 
   expand_grid(
     sample_size = c(30, 60, 120, 240),
     true_sd = c(6, 3),
     iter = 1:1000
-  ) %&gt;% 
+  ) |&gt; 
   mutate(
     estimate_df = 
-      map2(.x = sample_size, .y = true_sd, ~sim_mean_sd(n = .x, sigma = .y))
-  ) %&gt;% 
+      map2(sample_size, true_sd, \(n, sd) sim_mean_sd(n = n, sigma = sd))
+  ) |&gt; 
   unnest(estimate_df)</code></pre>
-<pre class="r"><code>sim_results_df %&gt;% 
+<p>As before, once we have the results of this simulation, we can use
+graphical summaries to understand how the sample size and true SD relate
+to the distribution of the sample mean. For both true SDs, increasing
+the sample size results in a narrower distribution, and the distribution
+of the sample mean is wider when the true SD is larger.</p>
+<pre class="r"><code>sim_results_df |&gt; 
   mutate(
+    true_sd = str_c(&quot;True SD: &quot;, true_sd),
+    true_sd = fct_inorder(true_sd),
     sample_size = str_c(&quot;n = &quot;, sample_size),
-    sample_size = fct_inorder(sample_size)) %&gt;% 
+    sample_size = fct_inorder(sample_size)) |&gt; 
   ggplot(aes(x = sample_size, y = mu_hat, fill = sample_size)) + 
   geom_violin() + 
   facet_grid(. ~ true_sd)</code></pre>
