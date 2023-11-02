@@ -18,7 +18,7 @@ In addition to grading for content, we reserve the right to deduct points for st
 | Homework 2           | Sept 26, 10am          | Oct 4, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_2.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw2_ajg2202.zip)    |
 | Homework 3           | Oct 5, 10am            | Oct 14, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_3.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw3_ajg2202.zip)    |
 | Homework 4           | Oct 24, 10am           | Nov 1, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_4.html) | [<i class="fas fa-check fa-lg"></i>]()                                     |
-| Homework 5           | Nov 2, 10am            | Nov 16, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_5.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw5_ajg2202.zip)    |
+| Homework 5           | Nov 2, 10am            | Nov 15, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_5.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw5_ajg2202.zip)    |
 | Homework 6           | Nov 16, 10am           | Dec 2, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_6.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw6_ajg2202.zip)    |
 | Homework 7           | Nov 30, 10am           | Dec 9, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_7.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw6_ajg2202.zip)    |
 
