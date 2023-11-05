@@ -328,6 +328,9 @@ nsduh_table <- function(html, table_num, table_name) {
       percent = as.numeric(percent),
       name = table_name) |>
     filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
+  
+  table
+  
 }
 ```
 
