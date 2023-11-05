@@ -1021,8 +1021,12 @@ using <code>map</code>.</p>
 ##       7.532        1.137</code></pre>
 <p>As an aside, you can avoid the creation of a dedicated function using
 <code>map</code>’s syntax for “anonymous” (i.e. not named and saved)
-functions. This is fine for really short operations, but I typically
-write a dedicated function instead of using this option.</p>
+functions. This is helpful for really short operations – here, rather
+than writing a separate (named) function that takes the argument
+<code>df</code> and returns a regression of <code>tmax</code> on
+<code>tmin</code>, I can use <code>\(df)</code> to indicate that same
+function. If you have a one-line function, this is a good option;
+otherwise creating a named function is probably better.</p>
 <pre class="r"><code>map(weather_nest$data, \(df) lm(tmax ~ tmin, data = df))</code></pre>
 <pre><code>## [[1]]
 ## 

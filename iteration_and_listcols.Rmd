@@ -408,7 +408,7 @@ Since `weather$data` is a **_list_**, we can apply our `weather_lm` function to 
 map(weather_nest$data, weather_lm)
 ```
 
-As an aside, you can avoid the creation of a dedicated function using `map`'s syntax for "anonymous" (i.e. not named and saved) functions. This is fine for really short operations, but I typically write a dedicated function instead of using this option.
+As an aside, you can avoid the creation of a dedicated function using `map`'s syntax for "anonymous" (i.e. not named and saved) functions. This is helpful for really short operations -- here, rather than writing a separate (named) function that takes the argument `df` and returns a regression of `tmax` on `tmin`, I can use `\(df)` to indicate that same function. If you have a one-line function, this is a good option; otherwise creating a named function is probably better. 
 
 ```{r}
 map(weather_nest$data, \(df) lm(tmax ~ tmin, data = df))
