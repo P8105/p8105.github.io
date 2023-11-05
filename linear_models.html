@@ -13,7 +13,7 @@
 
 <title>Linear models</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -496,12 +496,12 @@ example for fitting linear models.</p>
 <pre class="r"><code>data(&quot;nyc_airbnb&quot;)
 
 nyc_airbnb = 
-  nyc_airbnb %&gt;% 
-  mutate(stars = review_scores_location / 2) %&gt;% 
+  nyc_airbnb |&gt; 
+  mutate(stars = review_scores_location / 2) |&gt; 
   rename(
     borough = neighbourhood_group,
-    neighborhood = neighbourhood) %&gt;% 
-  filter(borough != &quot;Staten Island&quot;) %&gt;% 
+    neighborhood = neighbourhood) |&gt; 
+  filter(borough != &quot;Staten Island&quot;) |&gt; 
   select(price, stars, borough, neighborhood, room_type)</code></pre>
 <p>An good place to start is to consider price as an outcome that may
 depend on rating and borough. We fit that initial model in the following
@@ -520,7 +520,7 @@ category and included in your model, and the factor level is treated as
 the reference. As with <code>ggplot</code>, being careful with factors
 is therefore critical!</p>
 <pre class="r"><code>nyc_airbnb = 
-  nyc_airbnb %&gt;% 
+  nyc_airbnb |&gt; 
   mutate(
     borough = fct_infreq(borough),
     room_type = fct_infreq(room_type))
@@ -551,14 +551,14 @@ know there are a range of ways to interact with models in base R. That
 said, for the most part it’s easiest to use tidy tools.</p>
 <p>The <code>broom</code> package has functions for obtaining a quick
 summary of the model and for cleaning up the coefficient table.</p>
-<pre class="r"><code>fit %&gt;% 
+<pre class="r"><code>fit |&gt; 
   broom::glance()</code></pre>
 <pre><code>## # A tibble: 1 × 12
 ##   r.squared adj.r.squared sigma statistic   p.value    df   logLik    AIC    BIC
 ##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ## 1    0.0342        0.0341  182.      271. 6.73e-229     4 -202113. 4.04e5 4.04e5
 ## # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
-<pre class="r"><code>fit %&gt;% 
+<pre class="r"><code>fit |&gt; 
   broom::tidy()</code></pre>
 <pre><code>## # A tibble: 5 × 5
 ##   term            estimate std.error statistic   p.value
@@ -570,10 +570,10 @@ summary of the model and for cleaning up the coefficient table.</p>
 ## 5 boroughBronx       -90.3      8.57    -10.5  6.64e- 26</code></pre>
 <p>Both of these functions produce data frames, which makes it
 straightforward to include the results in subsequent steps.</p>
-<pre class="r"><code>fit %&gt;% 
-  broom::tidy() %&gt;% 
-  select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;^borough&quot;, &quot;Borough: &quot;)) %&gt;% 
+<pre class="r"><code>fit |&gt; 
+  broom::tidy() |&gt; 
+  select(term, estimate, p.value) |&gt; 
+  mutate(term = str_replace(term, &quot;^borough&quot;, &quot;Borough: &quot;)) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -625,35 +625,43 @@ exercise.</p>
 fitted values to a dataframe.</p>
 <pre class="r"><code>modelr::add_residuals(nyc_airbnb, fit)</code></pre>
 <pre><code>## # A tibble: 40,492 × 6
-##   price stars borough neighborhood room_type        resid
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;            &lt;dbl&gt;
-## 1    99     5 Bronx   City Island  Private room      9.47
-## 2   200    NA Bronx   City Island  Private room     NA   
-## 3   300    NA Bronx   City Island  Entire home/apt  NA   
-## 4   125     5 Bronx   City Island  Entire home/apt  35.5 
-## 5    69     5 Bronx   City Island  Private room    -20.5 
-## 6   125     5 Bronx   City Island  Entire home/apt  35.5 
-## # ℹ 40,486 more rows</code></pre>
+##    price stars borough neighborhood room_type        resid
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;            &lt;dbl&gt;
+##  1    99   5   Bronx   City Island  Private room      9.47
+##  2   200  NA   Bronx   City Island  Private room     NA   
+##  3   300  NA   Bronx   City Island  Entire home/apt  NA   
+##  4   125   5   Bronx   City Island  Entire home/apt  35.5 
+##  5    69   5   Bronx   City Island  Private room    -20.5 
+##  6   125   5   Bronx   City Island  Entire home/apt  35.5 
+##  7    85   5   Bronx   City Island  Entire home/apt  -4.53
+##  8    39   4.5 Bronx   Allerton     Private room    -34.5 
+##  9    95   5   Bronx   Allerton     Entire home/apt   5.47
+## 10   125   4.5 Bronx   Allerton     Entire home/apt  51.5 
+## # ℹ 40,482 more rows</code></pre>
 <pre class="r"><code>modelr::add_predictions(nyc_airbnb, fit)</code></pre>
 <pre><code>## # A tibble: 40,492 × 6
-##   price stars borough neighborhood room_type        pred
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;           &lt;dbl&gt;
-## 1    99     5 Bronx   City Island  Private room     89.5
-## 2   200    NA Bronx   City Island  Private room     NA  
-## 3   300    NA Bronx   City Island  Entire home/apt  NA  
-## 4   125     5 Bronx   City Island  Entire home/apt  89.5
-## 5    69     5 Bronx   City Island  Private room     89.5
-## 6   125     5 Bronx   City Island  Entire home/apt  89.5
-## # ℹ 40,486 more rows</code></pre>
+##    price stars borough neighborhood room_type        pred
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;        &lt;fct&gt;           &lt;dbl&gt;
+##  1    99   5   Bronx   City Island  Private room     89.5
+##  2   200  NA   Bronx   City Island  Private room     NA  
+##  3   300  NA   Bronx   City Island  Entire home/apt  NA  
+##  4   125   5   Bronx   City Island  Entire home/apt  89.5
+##  5    69   5   Bronx   City Island  Private room     89.5
+##  6   125   5   Bronx   City Island  Entire home/apt  89.5
+##  7    85   5   Bronx   City Island  Entire home/apt  89.5
+##  8    39   4.5 Bronx   Allerton     Private room     73.5
+##  9    95   5   Bronx   Allerton     Entire home/apt  89.5
+## 10   125   4.5 Bronx   Allerton     Entire home/apt  73.5
+## # ℹ 40,482 more rows</code></pre>
 <p>Like many things in the tidyverse, the first argument is a dataframe.
 That makes it easy to included steps adding residuals or predictions in
 pipeline of commands to conduct inspections and perform diagnostics.</p>
-<pre class="r"><code>nyc_airbnb %&gt;% 
-  modelr::add_residuals(fit) %&gt;% 
+<pre class="r"><code>nyc_airbnb |&gt; 
+  modelr::add_residuals(fit) |&gt; 
   ggplot(aes(x = borough, y = resid)) + geom_violin()</code></pre>
 <p><img src="linear_models_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
-<pre class="r"><code>nyc_airbnb %&gt;% 
-  modelr::add_residuals(fit) %&gt;% 
+<pre class="r"><code>nyc_airbnb |&gt; 
+  modelr::add_residuals(fit) |&gt; 
   ggplot(aes(x = stars, y = resid)) + geom_point()</code></pre>
 <p><img src="linear_models_files/figure-html/unnamed-chunk-10-2.png" width="90%" /></p>
 <p>This example has some obvious issues, most notably the presence of
@@ -688,10 +696,10 @@ categorical predictor with more than two levels, as in the example
 below.</p>
 <pre class="r"><code>fit_null = lm(price ~ stars + borough, data = nyc_airbnb)
 fit_alt = lm(price ~ stars + borough + room_type, data = nyc_airbnb)</code></pre>
-<p>The test of interest is implemented in the <code>anova</code>
+<p>The test of interest is implemented in the <code>anova()</code>
 function which, of course, can be summarized using
-<code>broom::tidy</code>.</p>
-<pre class="r"><code>anova(fit_null, fit_alt) %&gt;% 
+<code>broom::tidy()</code>.</p>
+<pre class="r"><code>anova(fit_null, fit_alt) |&gt; 
   broom::tidy()</code></pre>
 <pre><code>## # A tibble: 2 × 7
 ##   term                        df.residual    rss    df   sumsq statistic p.value
@@ -707,15 +715,15 @@ validation</a>.</p>
 <h3>Nesting data</h3>
 <p>We’ll now turn our attention to fitting models to datasets nested
 within variables – meaning, essentially, that we’ll use
-<code>nest</code> to create a list column containing datasets and fit
+<code>nest()</code> to create a list column containing datasets and fit
 separate models to each. This is very different from fitting <em>nested
 models</em>, even though the terminology is similar.</p>
 <p>In the airbnb data, we might think that star ratings and room type
 affects price differently in each borough. One way to allow this kind of
 effect modification is through interaction terms:</p>
-<pre class="r"><code>nyc_airbnb %&gt;% 
-  lm(price ~ stars * borough + room_type * borough, data = .) %&gt;% 
-  broom::tidy() %&gt;% 
+<pre class="r"><code>nyc_airbnb |&gt; 
+  lm(price ~ stars * borough + room_type * borough, data = _) |&gt; 
+  broom::tidy() |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <colgroup>
@@ -856,19 +864,19 @@ Queens / private room interaction.</p>
 <p>Alternatively, we can nest within boroughs and fit borough-specific
 models associating price with rating and room type:</p>
 <pre class="r"><code>nest_lm_res =
-  nyc_airbnb %&gt;% 
-  nest(data = -borough) %&gt;% 
+  nyc_airbnb |&gt; 
+  nest(data = -borough) |&gt; 
   mutate(
-    models = map(data, ~lm(price ~ stars + room_type, data = .x)),
-    results = map(models, broom::tidy)) %&gt;% 
-  select(-data, -models) %&gt;% 
+    models = map(data, \(df) lm(price ~ stars + room_type, data = df)),
+    results = map(models, broom::tidy)) |&gt; 
+  select(-data, -models) |&gt; 
   unnest(results)</code></pre>
 <p>The results of this approach are given in the table below.</p>
-<pre class="r"><code>nest_lm_res %&gt;% 
-  select(borough, term, estimate) %&gt;% 
-  mutate(term = fct_inorder(term)) %&gt;% 
+<pre class="r"><code>nest_lm_res |&gt; 
+  select(borough, term, estimate) |&gt; 
+  mutate(term = fct_inorder(term)) |&gt; 
   pivot_wider(
-    names_from = term, values_from = estimate) %&gt;% 
+    names_from = term, values_from = estimate) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <colgroup>
@@ -929,21 +937,21 @@ strata.</p>
 effects in Manhattan. The code chunk below fits neighborhood-specific
 models:</p>
 <pre class="r"><code>manhattan_airbnb =
-  nyc_airbnb %&gt;% 
+  nyc_airbnb |&gt; 
   filter(borough == &quot;Manhattan&quot;)
 
 manhattan_nest_lm_res =
-  manhattan_airbnb %&gt;% 
-  nest(data = -neighborhood) %&gt;% 
+  manhattan_airbnb |&gt; 
+  nest(data = -neighborhood) |&gt; 
   mutate(
-    models = map(data, ~lm(price ~ stars + room_type, data = .x)),
-    results = map(models, broom::tidy)) %&gt;% 
-  select(-data, -models) %&gt;% 
+    models = map(data, \(df) lm(price ~ stars + room_type, data = df)),
+    results = map(models, broom::tidy)) |&gt; 
+  select(-data, -models) |&gt; 
   unnest(results)</code></pre>
 <p>And the chunk below shows neighborhood-specific estimates for the
 coefficients related to room type.</p>
-<pre class="r"><code>manhattan_nest_lm_res %&gt;% 
-  filter(str_detect(term, &quot;room_type&quot;)) %&gt;% 
+<pre class="r"><code>manhattan_nest_lm_res |&gt; 
+  filter(str_detect(term, &quot;room_type&quot;)) |&gt; 
   ggplot(aes(x = neighborhood, y = estimate)) + 
   geom_point() + 
   facet_wrap(~term) + 
@@ -959,8 +967,8 @@ neighborhood. Although it’s well beyond the scope of this class, code to
 fit a mixed model with neighborhood-level random intercepts and random
 slopes for room type is below. And, of course, we can tidy the results
 using a mixed-model spinoff of the <code>broom</code> package.</p>
-<pre class="r"><code>manhattan_airbnb %&gt;% 
-  lme4::lmer(price ~ stars + room_type + (1 + room_type | neighborhood), data = .) %&gt;% 
+<pre class="r"><code>manhattan_airbnb |&gt; 
+  lme4::lmer(price ~ stars + room_type + (1 + room_type | neighborhood), data = _) |&gt; 
   broom.mixed::tidy()</code></pre>
 <pre><code>## boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
 <pre><code>## # A tibble: 11 × 6
@@ -995,12 +1003,12 @@ We’ll use data on unresolved murders in Baltimore, MD to illustrate
 logistic regression in R. The code below imports, cleans, and generally
 wrangles the data for analysis.</p>
 <pre class="r"><code>baltimore_df = 
-  read_csv(&quot;data/homicide-data.csv&quot;) %&gt;% 
-  filter(city == &quot;Baltimore&quot;) %&gt;% 
+  read_csv(&quot;data/homicide-data.csv&quot;) |&gt; 
+  filter(city == &quot;Baltimore&quot;) |&gt; 
   mutate(
     resolved = as.numeric(disposition == &quot;Closed by arrest&quot;),
     victim_age = as.numeric(victim_age),
-    victim_race = fct_relevel(victim_race, &quot;White&quot;)) %&gt;% 
+    victim_race = fct_relevel(victim_race, &quot;White&quot;)) |&gt; 
   select(resolved, victim_age, victim_race, victim_sex)</code></pre>
 <pre><code>## Rows: 52179 Columns: 12
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -1015,16 +1023,16 @@ wrangles the data for analysis.</p>
 <code>glm</code> function with the family specified to account for the
 non-Gaussian outcome distribution.</p>
 <pre class="r"><code>fit_logistic = 
-  baltimore_df %&gt;% 
-  glm(resolved ~ victim_age + victim_race + victim_sex, data = ., family = binomial()) </code></pre>
+  baltimore_df |&gt; 
+  glm(resolved ~ victim_age + victim_race + victim_sex, data = _, family = binomial()) </code></pre>
 <p>Many of the same tools we used to work with <code>lm</code> fits can
 be used for <code>glm</code> fits. The table below summaries the
 coefficients from the model fit; because logistic model estimates are
 log odds ratios, we include a step to compute odds ratios as well.</p>
-<pre class="r"><code>fit_logistic %&gt;% 
-  broom::tidy() %&gt;% 
-  mutate(OR = exp(estimate)) %&gt;%
-  select(term, log_OR = estimate, OR, p.value) %&gt;% 
+<pre class="r"><code>fit_logistic |&gt; 
+  broom::tidy() |&gt; 
+  mutate(OR = exp(estimate)) |&gt;
+  select(term, log_OR = estimate, OR, p.value) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -1090,19 +1098,23 @@ conducted before interpreting too deeply.</p>
 <p>We can also compute fitted values; similarly to the estimates in the
 model summary, these are expressed as log odds and can be transformed to
 produce probabilities for each subject.</p>
-<pre class="r"><code>baltimore_df %&gt;% 
-  modelr::add_predictions(fit_logistic) %&gt;% 
+<pre class="r"><code>baltimore_df |&gt; 
+  modelr::add_predictions(fit_logistic) |&gt; 
   mutate(fitted_prob = boot::inv.logit(pred))</code></pre>
 <pre><code>## # A tibble: 2,827 × 6
-##   resolved victim_age victim_race victim_sex   pred fitted_prob
-##      &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;       &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-## 1        0         17 Black       Male       -0.654       0.342
-## 2        0         26 Black       Male       -0.720       0.327
-## 3        0         21 Black       Male       -0.683       0.335
-## 4        1         61 White       Male       -0.131       0.467
-## 5        1         46 Black       Male       -0.864       0.296
-## 6        1         27 Black       Male       -0.727       0.326
-## # ℹ 2,821 more rows</code></pre>
+##    resolved victim_age victim_race victim_sex    pred fitted_prob
+##       &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;       &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+##  1        0         17 Black       Male       -0.654        0.342
+##  2        0         26 Black       Male       -0.720        0.327
+##  3        0         21 Black       Male       -0.683        0.335
+##  4        1         61 White       Male       -0.131        0.467
+##  5        1         46 Black       Male       -0.864        0.296
+##  6        1         27 Black       Male       -0.727        0.326
+##  7        1         21 Black       Male       -0.683        0.335
+##  8        1         16 Black       Male       -0.647        0.344
+##  9        1         21 Black       Male       -0.683        0.335
+## 10        1         44 Black       Female      0.0297       0.507
+## # ℹ 2,817 more rows</code></pre>
 </div>
 </div>
 <div id="other-materials" class="section level2">
