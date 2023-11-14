@@ -97,7 +97,7 @@ sim_df_const =
     y = 2 + 3 * x + error
   )
 
-sim_df_nonconst = sim_df_const %>% 
+sim_df_nonconst = sim_df_const |> 
   mutate(
   error = error * .75 * x,
   y = 2 + 3 * x + error
@@ -110,7 +110,7 @@ By generating data in this way, I'm creating one case in which the usual linear 
 sim_df = 
   bind_rows(const = sim_df_const, nonconst = sim_df_nonconst, .id = "data_source") 
 
-sim_df %>% 
+sim_df |> 
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = "lm") +
@@ -122,12 +122,12 @@ These datasets have roughly the same overall variance, but the left panel shows 
 The output below shows results from fitting simple linear regressions to both datasets.
 
 ```{r}
-lm(y ~ x, data = sim_df_const) %>% 
-  broom::tidy() %>% 
+lm(y ~ x, data = sim_df_const) |> 
+  broom::tidy() |> 
   knitr::kable(digits = 3)
 
-lm(y ~ x, data = sim_df_nonconst) %>% 
-  broom::tidy() %>% 
+lm(y ~ x, data = sim_df_nonconst) |> 
+  broom::tidy() |> 
   knitr::kable(digits = 3)
 ```
 
@@ -149,7 +149,7 @@ boot_sample = function(df) {
 We should also do a quick check to see if this is working.
 
 ```{r}
-boot_sample(sim_df_nonconst) %>% 
+boot_sample(sim_df_nonconst) |> 
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = "lm")
@@ -165,9 +165,9 @@ Let's give that a try:
 
 ```{r}
 boot_straps = 
-  data_frame(
-    strap_number = 1:1000,
-    strap_sample = rerun(1000, boot_sample(sim_df_nonconst))
+  tibble(strap_number = 1:1000) |> 
+  mutate(
+    strap_sample = map(strap_number, \(i) boot_sample(df = sim_df_nonconst))
   )
 
 boot_straps
@@ -176,18 +176,18 @@ boot_straps
 We can do a few of quick checks to make sure this has worked as intended. First we'll look at a couple of bootstrap samples. 
 
 ```{r}
-boot_straps %>% 
-  filter(strap_number %in% 1:2) %>% 
-  mutate(strap_sample = map(strap_sample, ~arrange(.x, x))) %>% 
+boot_straps |> 
+  slice(1:3) |> 
+  mutate(strap_sample = map(strap_sample, arrange, x)) |> 
   pull(strap_sample)
 ```
 
 Seems okay -- some values are repeated, some don't appear in both datasets. Next I'll use `ggplot` to show some of these datasets, and to include a linear fit for each.
 
 ```{r}
-boot_straps %>% 
-  filter(strap_number %in% 1:3) %>% 
-  unnest(strap_sample) %>% 
+boot_straps |> 
+  slice(1:3) |> 
+  unnest(strap_sample) |> 
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = "lm", se = FALSE) +
@@ -205,16 +205,16 @@ To do that, I'll use the analytic pipeline we established when looking at nested
 
 ```{r}
 bootstrap_results = 
-  boot_straps %>% 
+  boot_straps |> 
   mutate(
-    models = map(strap_sample, ~lm(y ~ x, data = .x) ),
-    results = map(models, broom::tidy)) %>% 
-  select(-strap_sample, -models) %>% 
+    models = map(strap_sample, \(df) lm(y ~ x, data = df) ),
+    results = map(models, broom::tidy)) |> 
+  select(-strap_sample, -models) |> 
   unnest(results) 
 
-bootstrap_results %>% 
-  group_by(term) %>% 
-  summarize(boot_se = sd(estimate)) %>% 
+bootstrap_results |> 
+  group_by(term) |> 
+  summarize(boot_se = sd(estimate)) |> 
   knitr::kable(digits = 3)
 ```
 
@@ -223,8 +223,8 @@ Comparing these to the results of ordinary least squares, the standard error for
 I can also use the estimates across bootstrap samples to construct a confidence interval. For a 95% CI, we might try to exclude the lower and upper 2.5% of the distribution of parameter estimates across "repeated" samples. The code below will do that. 
 
 ```{r}
-bootstrap_results %>% 
-  group_by(term) %>% 
+bootstrap_results |> 
+  group_by(term) |> 
   summarize(
     ci_lower = quantile(estimate, 0.025), 
     ci_upper = quantile(estimate, 0.975))
@@ -234,8 +234,8 @@ bootstrap_results %>%
 For a simple linear regression, we can show the fitted lines for each bootstrap sample to build intuition for these results. 
 
 ```{r}
-boot_straps %>% 
-  unnest(strap_sample) %>% 
+boot_straps |> 
+  unnest(strap_sample) |> 
   ggplot(aes(x = x, y = y)) + 
   geom_line(aes(group = strap_number), stat = "smooth", method = "lm", se = FALSE, alpha = .1, color = "blue") +
   geom_point(data = sim_df_nonconst, alpha = .5)
@@ -249,24 +249,24 @@ Bootstrapping is common enough that it's been automated, to some degree, in the 
 
 ```{r}
 boot_straps = 
-  sim_df_nonconst %>% 
+  sim_df_nonconst |> 
   modelr::bootstrap(n = 1000)
 
-boot_straps$strap[[1]]
-as_data_frame(boot_straps$strap[[1]])
+boot_straps |> pull(strap) |> nth(1)
+boot_straps |> pull(strap) |> nth(1) |> as_tibble()
 ```
 
 Let's repeat our analysis pipeline using the `bootstrap` function instead of our own process for drawing samples with replacement.
 
 ```{r}
-sim_df_nonconst %>% 
-  modelr::bootstrap(n = 1000) %>% 
+sim_df_nonconst |> 
+  modelr::bootstrap(n = 1000) |> 
   mutate(
-    models = map(strap, ~lm(y ~ x, data = .x) ),
-    results = map(models, broom::tidy)) %>% 
-  select(-strap, -models) %>% 
-  unnest(results) %>% 
-  group_by(term) %>% 
+    models = map(strap, \(df) lm(y ~ x, data = df) ),
+    results = map(models, broom::tidy)) |> 
+  select(-strap, -models) |> 
+  unnest(results) |> 
+  group_by(term) |> 
   summarize(boot_se = sd(estimate))
 ```
 
@@ -275,13 +275,14 @@ The results are the same (up to resampling variability), and the code to get her
 Also, check this out -- to bootstrap the dataset with constant error variance, we only have to change the input dataframe!
 
 ```{r}
-sim_df_const %>% 
-  modelr::bootstrap(n = 1000) %>% 
-  mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
-         results = map(models, broom::tidy)) %>% 
-  select(-strap, -models) %>% 
-  unnest(results) %>% 
-  group_by(term) %>% 
+sim_df_const |> 
+  modelr::bootstrap(n = 1000) |> 
+  mutate(
+    models = map(strap, \(df) lm(y ~ x, data = df)),
+    results = map(models, broom::tidy)) |> 
+  select(-strap, -models) |> 
+  unnest(results) |> 
+  group_by(term) |> 
   summarize(boot_se = sd(estimate))
 ```
 
@@ -297,20 +298,20 @@ As a final example, we'll revisit the [Airbnb data](dataset_airbnb.html). The co
 data("nyc_airbnb")
 
 nyc_airbnb = 
-  nyc_airbnb %>% 
-  mutate(stars = review_scores_location / 2) %>% 
+  nyc_airbnb |> 
+  mutate(stars = review_scores_location / 2) |> 
   rename(
     borough = neighbourhood_group,
-    neighborhood = neighbourhood) %>% 
-  filter(borough != "Staten Island") %>% 
-  drop_na(price, stars) %>% 
+    neighborhood = neighbourhood) |> 
+  filter(borough != "Staten Island") |> 
+  drop_na(price, stars) |> 
   select(price, stars, borough, neighborhood, room_type)
 ```
 
 I'll make a quick plot showing these data, with particular emphasis on the features I'm interested in analyzing: `price` as an outcome with `stars` and `room_type` as covariates.
 
 ```{r}
-nyc_airbnb %>% 
+nyc_airbnb |> 
   ggplot(aes(x = stars, y = price, color = room_type)) + 
   geom_point() 
 ```
@@ -318,15 +319,15 @@ nyc_airbnb %>%
 In this plot (and in [linear models](linear_models.html), we noticed that some large outliers in price might affect estimates and inference for the association between star rating and price. Because estimates are likely to be sensitive to those outliers and "usual" rules for inference may not apply, the code chunk below uses the bootstrap to examine the distribution of regression coefficients under repeated sampling.
 
 ```{r}
-nyc_airbnb %>% 
-  filter(borough == "Manhattan") %>% 
-  modelr::bootstrap(n = 1000) %>% 
+nyc_airbnb |> 
+  filter(borough == "Manhattan") |> 
+  modelr::bootstrap(n = 1000) |> 
   mutate(
-    models = map(strap, ~ lm(price ~ stars + room_type, data = .x)),
-    results = map(models, broom::tidy)) %>% 
-  select(results) %>% 
-  unnest(results) %>% 
-  filter(term == "stars") %>% 
+    models = map(strap, \(df) lm(price ~ stars + room_type, data = df)),
+    results = map(models, broom::tidy)) |> 
+  select(results) |> 
+  unnest(results) |> 
+  filter(term == "stars") |> 
   ggplot(aes(x = estimate)) + geom_density()
 ```
 

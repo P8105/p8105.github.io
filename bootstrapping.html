@@ -13,7 +13,7 @@
 
 <title>Bootstrapping</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -531,7 +531,7 @@ sim_df_const =
     y = 2 + 3 * x + error
   )
 
-sim_df_nonconst = sim_df_const %&gt;% 
+sim_df_nonconst = sim_df_const |&gt; 
   mutate(
   error = error * .75 * x,
   y = 2 + 3 * x + error
@@ -543,7 +543,7 @@ dataset.</p>
 <pre class="r"><code>sim_df = 
   bind_rows(const = sim_df_const, nonconst = sim_df_nonconst, .id = &quot;data_source&quot;) 
 
-sim_df %&gt;% 
+sim_df |&gt; 
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;) +
@@ -558,8 +558,8 @@ standard inference approaches may only be justified for the data on the
 left.</p>
 <p>The output below shows results from fitting simple linear regressions
 to both datasets.</p>
-<pre class="r"><code>lm(y ~ x, data = sim_df_const) %&gt;% 
-  broom::tidy() %&gt;% 
+<pre class="r"><code>lm(y ~ x, data = sim_df_const) |&gt; 
+  broom::tidy() |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -588,8 +588,8 @@ to both datasets.</p>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>lm(y ~ x, data = sim_df_nonconst) %&gt;% 
-  broom::tidy() %&gt;% 
+<pre class="r"><code>lm(y ~ x, data = sim_df_nonconst) |&gt; 
+  broom::tidy() |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -635,7 +635,7 @@ sample from that dataframe drawn with replacement.</p>
   sample_frac(df, replace = TRUE)
 }</code></pre>
 <p>We should also do a quick check to see if this is working.</p>
-<pre class="r"><code>boot_sample(sim_df_nonconst) %&gt;% 
+<pre class="r"><code>boot_sample(sim_df_nonconst) |&gt; 
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;)</code></pre>
@@ -654,9 +654,9 @@ have a data structure that makes it possible to keep track of
 everything. Maybe a <strong><em>list column</em></strong>??!</p>
 <p>Let’s give that a try:</p>
 <pre class="r"><code>boot_straps = 
-  data_frame(
-    strap_number = 1:1000,
-    strap_sample = rerun(1000, boot_sample(sim_df_nonconst))
+  tibble(strap_number = 1:1000) |&gt; 
+  mutate(
+    strap_sample = map(strap_number, \(i) boot_sample(df = sim_df_nonconst))
   )
 
 boot_straps</code></pre>
@@ -676,9 +676,9 @@ boot_straps</code></pre>
 ## # ℹ 990 more rows</code></pre>
 <p>We can do a few of quick checks to make sure this has worked as
 intended. First we’ll look at a couple of bootstrap samples.</p>
-<pre class="r"><code>boot_straps %&gt;% 
-  filter(strap_number %in% 1:2) %&gt;% 
-  mutate(strap_sample = map(strap_sample, ~arrange(.x, x))) %&gt;% 
+<pre class="r"><code>boot_straps |&gt; 
+  slice(1:3) |&gt; 
+  mutate(strap_sample = map(strap_sample, arrange, x)) |&gt; 
   pull(strap_sample)</code></pre>
 <pre><code>## [[1]]
 ## # A tibble: 250 × 3
@@ -710,13 +710,29 @@ intended. First we’ll look at a couple of bootstrap samples.</p>
 ##  8 -0.641 -0.416 -0.338 
 ##  9 -0.606 -0.106  0.0774
 ## 10 -0.606 -0.106  0.0774
+## # ℹ 240 more rows
+## 
+## [[3]]
+## # A tibble: 250 × 3
+##         x  error      y
+##     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1 -1.89   1.62  -2.04 
+##  2 -1.89   1.62  -2.04 
+##  3 -1.29   1.40  -0.454
+##  4 -1.29   1.40  -0.454
+##  5 -1.00   0.832 -0.169
+##  6 -0.914 -0.908 -1.65 
+##  7 -0.805  0.292 -0.123
+##  8 -0.665 -0.544 -0.539
+##  9 -0.665 -0.544 -0.539
+## 10 -0.665 -0.544 -0.539
 ## # ℹ 240 more rows</code></pre>
 <p>Seems okay – some values are repeated, some don’t appear in both
 datasets. Next I’ll use <code>ggplot</code> to show some of these
 datasets, and to include a linear fit for each.</p>
-<pre class="r"><code>boot_straps %&gt;% 
-  filter(strap_number %in% 1:3) %&gt;% 
-  unnest(strap_sample) %&gt;% 
+<pre class="r"><code>boot_straps |&gt; 
+  slice(1:3) |&gt; 
+  unnest(strap_sample) |&gt; 
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;, se = FALSE) +
@@ -738,16 +754,16 @@ models</a>: fit the model; tidy the output; unnest and examine the
 results. The code chunk below uses this pipeline to look at bootstrap
 standard errors for the estimated regression coefficients.</p>
 <pre class="r"><code>bootstrap_results = 
-  boot_straps %&gt;% 
+  boot_straps |&gt; 
   mutate(
-    models = map(strap_sample, ~lm(y ~ x, data = .x) ),
-    results = map(models, broom::tidy)) %&gt;% 
-  select(-strap_sample, -models) %&gt;% 
+    models = map(strap_sample, \(df) lm(y ~ x, data = df) ),
+    results = map(models, broom::tidy)) |&gt; 
+  select(-strap_sample, -models) |&gt; 
   unnest(results) 
 
-bootstrap_results %&gt;% 
-  group_by(term) %&gt;% 
-  summarize(boot_se = sd(estimate)) %&gt;% 
+bootstrap_results |&gt; 
+  group_by(term) |&gt; 
+  summarize(boot_se = sd(estimate)) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -777,8 +793,8 @@ distribution.</p>
 confidence interval. For a 95% CI, we might try to exclude the lower and
 upper 2.5% of the distribution of parameter estimates across “repeated”
 samples. The code below will do that.</p>
-<pre class="r"><code>bootstrap_results %&gt;% 
-  group_by(term) %&gt;% 
+<pre class="r"><code>bootstrap_results |&gt; 
+  group_by(term) |&gt; 
   summarize(
     ci_lower = quantile(estimate, 0.025), 
     ci_upper = quantile(estimate, 0.975))</code></pre>
@@ -789,8 +805,8 @@ samples. The code below will do that.</p>
 ## 2 x               2.91     3.31</code></pre>
 <p>For a simple linear regression, we can show the fitted lines for each
 bootstrap sample to build intuition for these results.</p>
-<pre class="r"><code>boot_straps %&gt;% 
-  unnest(strap_sample) %&gt;% 
+<pre class="r"><code>boot_straps |&gt; 
+  unnest(strap_sample) |&gt; 
   ggplot(aes(x = x, y = y)) + 
   geom_line(aes(group = strap_number), stat = &quot;smooth&quot;, method = &quot;lm&quot;, se = FALSE, alpha = .1, color = &quot;blue&quot;) +
   geom_point(data = sim_df_nonconst, alpha = .5)</code></pre>
@@ -811,12 +827,12 @@ converted to and treated like a data frame. (This keeps you from having
 to actually store 1000 dataframes, and saves a lot of memory on your
 computer.)</p>
 <pre class="r"><code>boot_straps = 
-  sim_df_nonconst %&gt;% 
+  sim_df_nonconst |&gt; 
   modelr::bootstrap(n = 1000)
 
-boot_straps$strap[[1]]</code></pre>
+boot_straps |&gt; pull(strap) |&gt; nth(1)</code></pre>
 <pre><code>## &lt;resample [250 x 3]&gt; 8, 132, 69, 225, 180, 122, 34, 170, 216, 122, ...</code></pre>
-<pre class="r"><code>as_data_frame(boot_straps$strap[[1]])</code></pre>
+<pre class="r"><code>boot_straps |&gt; pull(strap) |&gt; nth(1) |&gt; as_tibble()</code></pre>
 <pre><code>## # A tibble: 250 × 3
 ##         x  error     y
 ##     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -834,14 +850,14 @@ boot_straps$strap[[1]]</code></pre>
 <p>Let’s repeat our analysis pipeline using the <code>bootstrap</code>
 function instead of our own process for drawing samples with
 replacement.</p>
-<pre class="r"><code>sim_df_nonconst %&gt;% 
-  modelr::bootstrap(n = 1000) %&gt;% 
+<pre class="r"><code>sim_df_nonconst |&gt; 
+  modelr::bootstrap(n = 1000) |&gt; 
   mutate(
-    models = map(strap, ~lm(y ~ x, data = .x) ),
-    results = map(models, broom::tidy)) %&gt;% 
-  select(-strap, -models) %&gt;% 
-  unnest(results) %&gt;% 
-  group_by(term) %&gt;% 
+    models = map(strap, \(df) lm(y ~ x, data = df) ),
+    results = map(models, broom::tidy)) |&gt; 
+  select(-strap, -models) |&gt; 
+  unnest(results) |&gt; 
+  group_by(term) |&gt; 
   summarize(boot_se = sd(estimate))</code></pre>
 <pre><code>## # A tibble: 2 × 2
 ##   term        boot_se
@@ -852,13 +868,14 @@ replacement.</p>
 to get here is pretty clean.</p>
 <p>Also, check this out – to bootstrap the dataset with constant error
 variance, we only have to change the input dataframe!</p>
-<pre class="r"><code>sim_df_const %&gt;% 
-  modelr::bootstrap(n = 1000) %&gt;% 
-  mutate(models = map(strap, ~lm(y ~ x, data = .x) ),
-         results = map(models, broom::tidy)) %&gt;% 
-  select(-strap, -models) %&gt;% 
-  unnest(results) %&gt;% 
-  group_by(term) %&gt;% 
+<pre class="r"><code>sim_df_const |&gt; 
+  modelr::bootstrap(n = 1000) |&gt; 
+  mutate(
+    models = map(strap, \(df) lm(y ~ x, data = df)),
+    results = map(models, broom::tidy)) |&gt; 
+  select(-strap, -models) |&gt; 
+  unnest(results) |&gt; 
+  group_by(term) |&gt; 
   summarize(boot_se = sd(estimate))</code></pre>
 <pre><code>## # A tibble: 2 × 2
 ##   term        boot_se
@@ -876,19 +893,19 @@ and tidies the data.</p>
 <pre class="r"><code>data(&quot;nyc_airbnb&quot;)
 
 nyc_airbnb = 
-  nyc_airbnb %&gt;% 
-  mutate(stars = review_scores_location / 2) %&gt;% 
+  nyc_airbnb |&gt; 
+  mutate(stars = review_scores_location / 2) |&gt; 
   rename(
     borough = neighbourhood_group,
-    neighborhood = neighbourhood) %&gt;% 
-  filter(borough != &quot;Staten Island&quot;) %&gt;% 
-  drop_na(price, stars) %&gt;% 
+    neighborhood = neighbourhood) |&gt; 
+  filter(borough != &quot;Staten Island&quot;) |&gt; 
+  drop_na(price, stars) |&gt; 
   select(price, stars, borough, neighborhood, room_type)</code></pre>
 <p>I’ll make a quick plot showing these data, with particular emphasis
 on the features I’m interested in analyzing: <code>price</code> as an
 outcome with <code>stars</code> and <code>room_type</code> as
 covariates.</p>
-<pre class="r"><code>nyc_airbnb %&gt;% 
+<pre class="r"><code>nyc_airbnb |&gt; 
   ggplot(aes(x = stars, y = price, color = room_type)) + 
   geom_point() </code></pre>
 <p><img src="bootstrapping_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
@@ -899,15 +916,15 @@ estimates are likely to be sensitive to those outliers and “usual” rules
 for inference may not apply, the code chunk below uses the bootstrap to
 examine the distribution of regression coefficients under repeated
 sampling.</p>
-<pre class="r"><code>nyc_airbnb %&gt;% 
-  filter(borough == &quot;Manhattan&quot;) %&gt;% 
-  modelr::bootstrap(n = 1000) %&gt;% 
+<pre class="r"><code>nyc_airbnb |&gt; 
+  filter(borough == &quot;Manhattan&quot;) |&gt; 
+  modelr::bootstrap(n = 1000) |&gt; 
   mutate(
-    models = map(strap, ~ lm(price ~ stars + room_type, data = .x)),
-    results = map(models, broom::tidy)) %&gt;% 
-  select(results) %&gt;% 
-  unnest(results) %&gt;% 
-  filter(term == &quot;stars&quot;) %&gt;% 
+    models = map(strap, \(df) lm(price ~ stars + room_type, data = df)),
+    results = map(models, broom::tidy)) |&gt; 
+  select(results) |&gt; 
+  unnest(results) |&gt; 
+  filter(term == &quot;stars&quot;) |&gt; 
   ggplot(aes(x = estimate)) + geom_density()</code></pre>
 <p><img src="bootstrapping_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
 <p>This distribution has a heavy tail extending to low values and a bit
