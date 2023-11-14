@@ -184,13 +184,13 @@ I now have many training and testing datasets, and I'd like to fit my candidate 
 cv_df = 
   cv_df |> 
   mutate(
-    linear_mod  = map(train, ~lm(y ~ x, data = .x)),
-    smooth_mod  = map(train, ~mgcv::gam(y ~ s(x), data = .x)),
-    wiggly_mod  = map(train, ~gam(y ~ s(x, k = 30), sp = 10e-6, data = .x))) |> 
+    linear_mod  = map(train, \(df) lm(y ~ x, data = df)),
+    smooth_mod  = map(train, \(df) mgcv::gam(y ~ s(x), data = df)),
+    wiggly_mod  = map(train, \(df) gam(y ~ s(x, k = 30), sp = 10e-6, data = df))) |> 
   mutate(
-    rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
-    rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)),
-    rmse_wiggly = map2_dbl(wiggly_mod, test, ~rmse(model = .x, data = .y)))
+    rmse_linear = map2_dbl(linear_mod, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_smooth = map2_dbl(smooth_mod, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_wiggly = map2_dbl(wiggly_mod, test, \(mod, df) rmse(model = mod, data = df)))
 ```
 
 I'm mostly focused on RMSE as a way to compare these models, and the plot below shows the distribution of RMSE values for each candidate model. 
@@ -268,13 +268,13 @@ Next I'll use `mutate` + `map` & `map2` to fit models to training data and obtai
 cv_df = 
   cv_df |> 
   mutate(
-    linear_mod  = map(train, ~lm(armc ~ weight, data = .x)),
-    pwl_mod     = map(train, ~lm(armc ~ weight + weight_cp, data = .x)),
-    smooth_mod  = map(train, ~gam(armc ~ s(weight), data = as_tibble(.x)))) |> 
+    linear_mod  = map(train, \(df) lm(armc ~ weight, data = df)),
+    pwl_mod     = map(train, \(df) lm(armc ~ weight + weight_cp, data = df)),
+    smooth_mod  = map(train, \(df) gam(armc ~ s(weight), data = as_tibble(df)))) |> 
   mutate(
-    rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
-    rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
-    rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)))
+    rmse_linear = map2_dbl(linear_mod, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_pwl    = map2_dbl(pwl_mod, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_smooth = map2_dbl(smooth_mod, test, \(mod, df) rmse(model = mod, data = df)))
 ```
 
 Finally, I'll plot the prediction error distribution for each candidate model.
