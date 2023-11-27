@@ -50,22 +50,24 @@ set.seed(11)
 
 ### Lasso
 
-To illustrat the lasso, we'll data from a study of factors that affect birthweight. The code chunk below loads and cleans these data, converts to factors where appropriate, and takes a sample of size 200 from the result.
+To illustrate the lasso, we'll data from a study of factors that affect birthweight. The code chunk below loads and cleans these data, converts to factors where appropriate, and takes a sample of size 200 from the result.
 
 ```{r import}
 bwt_df = 
-  read_csv("./data/birthweight.csv") %>% 
-  janitor::clean_names() %>%
+  read_csv("data/birthweight.csv") |> 
+  janitor::clean_names() |>
   mutate(
     babysex = as.factor(babysex),
     babysex = fct_recode(babysex, "male" = "1", "female" = "2"),
     frace = as.factor(frace),
-    frace = fct_recode(frace, "white" = "1", "black" = "2", "asian" = "3", 
-                       "puerto rican" = "4", "other" = "8"),
+    frace = fct_recode(
+      frace, "white" = "1", "black" = "2", "asian" = "3", 
+      "puerto rican" = "4", "other" = "8"),
     malform = as.logical(malform),
     mrace = as.factor(mrace),
-    mrace = fct_recode(mrace, "white" = "1", "black" = "2", "asian" = "3", 
-                       "puerto rican" = "4")) %>% 
+    mrace = fct_recode(
+      mrace, "white" = "1", "black" = "2", "asian" = "3", 
+      "puerto rican" = "4")) |> 
   sample_n(200)
 ```
 
@@ -73,7 +75,7 @@ To fit a lasso model, we'll use `glmnet`. This package is widely used and broadl
 
 ```{r}
 x = model.matrix(bwt ~ ., bwt_df)[,-1]
-y = bwt_df$bwt
+y = bwt_df |> pull(bwt)
 ```
 
 We fit the lasso model for each tuning parameter in a pre-defined grid `lambda`, and then compare the fits using cross validation. I chose this grid using the trusty "try things until it looks right" method; `glmnet` will pick something reasonable by default if you prefer that.
@@ -93,10 +95,11 @@ lambda_opt = lasso_cv$lambda.min
 The plot below shows coefficient estimates corresponding to a subset of the predictors in the dataset -- these are predictors that have non-zero coefficients for at least one tuning parameter value in the pre-defined grid. As lambda increases, the coefficient values are shrunk to zero and the model becomes more sparse. The optimal tuning parameter, determined using cross validation, is shown by a vertical blue line.
 
 ```{r}
-broom::tidy(lasso_fit) %>% 
-  select(term, lambda, estimate) %>% 
-  complete(term, lambda, fill = list(estimate = 0) ) %>% 
-  filter(term != "(Intercept)") %>% 
+lasso_fit |> 
+  broom::tidy() |> 
+  select(term, lambda, estimate) |> 
+  complete(term, lambda, fill = list(estimate = 0) ) |> 
+  filter(term != "(Intercept)") |> 
   ggplot(aes(x = log(lambda, 10), y = estimate, group = term, color = term)) + 
   geom_path() + 
   geom_vline(xintercept = log(lambda_opt, 10), color = "blue", size = 1.2) +
@@ -106,7 +109,8 @@ broom::tidy(lasso_fit) %>%
 The next plot shows the CV curve itself. This is relatively shallow -- having nothing at all in your model isn't great, but you can get reasonable predictions from models that have "too many" predictors. 
 
 ```{r}
-broom::tidy(lasso_cv) %>% 
+lasso_cv |> 
+  broom::tidy() |> 
   ggplot(aes(x = log(lambda, 10), y = estimate)) + 
   geom_point()  
 ```
@@ -117,7 +121,7 @@ The coefficients from the optimal model are shown below.
 lasso_fit = 
   glmnet(x, y, lambda = lambda_opt)
 
-lasso_fit %>% broom::tidy()
+lasso_fit |> broom::tidy()
 ```
 
 To be clear, these don't come with p-values and it's really challenging to do inference. These are also different from a usual OLS fit for a multiple linear regression model that uses the same predictors: the lasso penalty affects these even if they're retained by the model. 
@@ -126,15 +130,15 @@ A final point is that on the full dataset, lasso doesn't do you much good. With 
 
 ### Clustering: pokemon
 
-For ther first clustering example, we'll use a dataset containing information about pokemon. The full dataset contains several variables (including some that aren't numeric, which is a challenge for clustering we won't address). To make results easy to visualize, we look only at `hp` and `speed`; a scatterplot is below.
+For the first clustering example, we'll use a dataset containing information about pokemon. The full dataset contains several variables (including some that aren't numeric, which is a challenge for clustering we won't address). To make results easy to visualize, we look only at `hp` and `speed`; a scatterplot is below.
 
 ```{r}
 poke_df = 
-  read_csv("./data/pokemon.csv") %>% 
-  janitor::clean_names() %>% 
+  read_csv("./data/pokemon.csv") |> 
+  janitor::clean_names() |> 
   select(hp, speed)
 
-poke_df %>% 
+poke_df |> 
   ggplot(aes(x = hp, y = speed)) + 
   geom_point()
 ```
@@ -152,7 +156,7 @@ More recent tools allow interactions with the `kmeans` output. In particular, we
 poke_df =
   broom::augment(kmeans_fit, poke_df)
 
-poke_df %>% 
+poke_df |> 
   ggplot(aes(x = hp, y = speed, color = .cluster)) +
   geom_point()
 ```
@@ -163,15 +167,15 @@ The code chunk below maps across a few choices for the number of clusters, and t
 
 ```{r}
 clusts =
-  tibble(k = 2:4) %>%
+  tibble(k = 2:4) |>
   mutate(
-    km_fit =    map(k, ~kmeans(poke_df, .x)),
-    augmented = map(km_fit, ~broom::augment(.x, poke_df))
+    km_fit =    map(k, \(n_clust) kmeans(poke_df, centers = n_clust)),
+    augmented = map(km_fit, \(fit) broom::augment(x = fit, poke_df))
   )
 
-clusts %>% 
-  select(-km_fit) %>% 
-  unnest(augmented) %>% 
+clusts |> 
+  select(-km_fit) |> 
+  unnest(augmented) |> 
   ggplot(aes(hp, speed, color = .cluster)) +
   geom_point(aes(color = .cluster)) +
   facet_grid(~k)
@@ -179,9 +183,58 @@ clusts %>%
 
 There are metrics that can suggest which of these is the better choice, but we won't get into that. 
 
+### Clustering: penguins
+
+As a quick example of when clustering is more visually obvious, we'll take a look at [data](https://allisonhorst.github.io/palmerpenguins/) "collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER, a member of the Long Term Ecological Research Network." You may need to install the `palmerpenguins` package to see this example. 
+First we'll load the data and do some initial tidying to keep the variables of interest and remove rows with missing values. We'll then make a quick visualization of bill length vs flipper length. 
+
+```{r}
+library(palmerpenguins)
+
+data("penguins")
+
+penguins = 
+  penguins |> 
+  select(species, bill_length_mm, flipper_length_mm) |> 
+  drop_na() 
+
+penguins |> 
+  ggplot(aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + 
+  geom_point()
+```
+
+We'll again use `kmeans` to identify clusters in a data-driven way. We remove the `species` variable and rescale the remaining columns, since `kmeans` is sensitive to different scales for the input variables. The results are shown in the next plot.
+
+```{r}
+kmeans_fit =
+  penguins |> 
+  select(-species) |> 
+  scale() |> 
+  kmeans(centers = 3)
+
+penguins |> 
+  broom::augment(kmeans_fit, data = _) |> 
+  ggplot(
+    aes(x = bill_length_mm, y = flipper_length_mm,
+        color = .cluster, shape = species)) + 
+  geom_point(size = 2)
+```
+
+As shown in the table below, the data-driven clusters don't perfectly correspond to the penguins' species, but the alignment is pretty good. This is helpful for illustrating a good use-case for clustering -- if the `species` variable didn't exist, clustering would provide a pretty good classification of observed data that simplifies the more complex structure for bill and flipper length.
+
+```{r}
+penguins |> 
+  count(species, .cluster) |> 
+  pivot_wider(
+    names_from = .cluster, 
+    values_from = n, 
+    values_fill = 0)
+```
+
+
 ### Clustering: trajectories
 
-A second clustering example uses longitudinally observed data. The process we'll focus on is: 
+A final clustering example uses longitudinally observed data. The process we'll focus on is: 
 
 * for each subject, estimate a simple linear regression
 * extract the intercept and slope
@@ -193,7 +246,7 @@ Below we import and plot the trajectory data.
 traj_data = 
   read_csv("./data/trajectories.csv")
 
-traj_data %>% 
+traj_data |> 
   ggplot(aes(x = week, y = value, group = subj)) + 
   geom_point() + 
   geom_path()
@@ -203,32 +256,32 @@ Next we'll do some data manipulation. These steps compute the SLRs, extract esti
 
 ```{r}
 int_slope_df = 
-  traj_data %>% 
-  nest(data = week:value) %>% 
+  traj_data |> 
+  nest(data = week:value) |> 
   mutate(
-    models = map(data, ~lm(value ~ week, data = .x)),
+    models = map(data, \(df) lm(value ~ week, data = df)),
     result = map(models, broom::tidy)
-  ) %>% 
-  select(subj, result) %>% 
-  unnest(result) %>% 
-  select(subj, term, estimate) %>% 
+  ) |> 
+  select(subj, result) |> 
+  unnest(result) |> 
+  select(subj, term, estimate) |> 
   pivot_wider(
     names_from = term,
     values_from = estimate
-  ) %>% 
+  ) |> 
   rename(int = "(Intercept)", slope = week)
 ```
 
 A plot of the intercepts and slopes are below. There does seem to be some structure, and we'll use k-means clustering to try to make that concrete.
 
 ```{r}
-int_slope_df %>% 
+int_slope_df |> 
   ggplot(aes(x = int, y = slope)) + 
   geom_point()
 
 km_fit = 
   kmeans(
-    x = int_slope_df %>% select(-subj) %>% scale, 
+    x = int_slope_df |> select(-subj) |> scale(), 
     centers = 2)
 
 int_slope_df =
@@ -238,7 +291,7 @@ int_slope_df =
 The plot below shows the results of k-means based on the intercepts and slopes. This is ... not bad, but honestly maybe not what I'd hoped for. 
 
 ```{r}
-int_slope_df %>% 
+int_slope_df |> 
   ggplot(aes(x = int, y = slope, color = .cluster)) +
   geom_point()
 ```
@@ -246,7 +299,7 @@ int_slope_df %>%
 Finally, we'll add the cluster assignments to the original trajectory data and plot based on this. Again, the cluster assignments are okay but maybe not great. 
 
 ```{r}
-left_join(traj_data, int_slope_df) %>% 
+left_join(traj_data, int_slope_df) |> 
   ggplot(aes(x = week, y = value, group = subj, color = .cluster)) + 
   geom_point() + 
   geom_path() 
