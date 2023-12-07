@@ -630,8 +630,8 @@ clusters, and then plots the results.</p>
 <pre class="r"><code>clusts =
   tibble(k = 2:4) |&gt;
   mutate(
-    km_fit =    map(k, ~kmeans(poke_df, .x)),
-    augmented = map(km_fit, ~broom::augment(.x, poke_df))
+    km_fit =    map(k, \(n_clust) kmeans(poke_df, centers = n_clust)),
+    augmented = map(km_fit, \(fit) broom::augment(x = fit, poke_df))
   )
 
 clusts |&gt; 
@@ -646,37 +646,66 @@ choice, but we won’t get into that.</p>
 </div>
 <div id="clustering-penguins" class="section level3">
 <h3>Clustering: penguins</h3>
+<p>As a quick example of when clustering is more visually obvious, we’ll
+take a look at <a
+href="https://allisonhorst.github.io/palmerpenguins/">data</a>
+“collected and made available by Dr. Kristen Gorman and the Palmer
+Station, Antarctica LTER, a member of the Long Term Ecological Research
+Network.” You may need to install the <code>palmerpenguins</code>
+package to see this example. First we’ll load the data and do some
+initial tidying to keep the variables of interest and remove rows with
+missing values. We’ll then make a quick visualization of bill length vs
+flipper length.</p>
 <pre class="r"><code>library(palmerpenguins)
 
 data(&quot;penguins&quot;)
 
-kmeans_fit =
+penguins = 
   penguins |&gt; 
-  select(bill_length_mm, flipper_length_mm) |&gt; 
-  drop_na() |&gt; scale() |&gt; 
-  kmeans(centers = 3)
+  select(species, bill_length_mm, flipper_length_mm) |&gt; 
+  drop_na() 
 
-
-pengiun_df =
-  penguins |&gt; 
-  drop_na(bill_length_mm, flipper_length_mm) |&gt; 
-  broom::augment(kmeans_fit, data = _)
-
-pengiun_df |&gt; 
-  ggplot(aes(x = bill_length_mm, y = flipper_length_mm,color = .cluster)) + 
+penguins |&gt; 
+  ggplot(aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + 
   geom_point()</code></pre>
 <p><img src="stat_learning_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
-<pre class="r"><code>pengiun_df |&gt; 
+<p>We’ll again use <code>kmeans</code> to identify clusters in a
+data-driven way. We remove the <code>species</code> variable and rescale
+the remaining columns, since <code>kmeans</code> is sensitive to
+different scales for the input variables. The results are shown in the
+next plot.</p>
+<pre class="r"><code>kmeans_fit =
+  penguins |&gt; 
+  select(-species) |&gt; 
+  scale() |&gt; 
+  kmeans(centers = 3)
+
+penguins |&gt; 
+  broom::augment(kmeans_fit, data = _) |&gt; 
+  ggplot(
+    aes(x = bill_length_mm, y = flipper_length_mm,
+        color = .cluster, shape = species)) + 
+  geom_point(size = 2)</code></pre>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<p>As shown in the table below, the data-driven clusters don’t perfectly
+correspond to the penguins’ species, but the alignment is pretty good.
+This is helpful for illustrating a good use-case for clustering – if the
+<code>species</code> variable didn’t exist, clustering would provide a
+pretty good classification of observed data that simplifies the more
+complex structure for bill and flipper length.</p>
+<pre class="r"><code>penguins |&gt; 
+  broom::augment(kmeans_fit, data = _) |&gt; 
   count(species, .cluster) |&gt; 
   pivot_wider(
     names_from = .cluster, 
-    values_from = n)</code></pre>
+    values_from = n, 
+    values_fill = 0)</code></pre>
 <pre><code>## # A tibble: 3 × 4
 ##   species     `1`   `2`   `3`
 ##   &lt;fct&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt;
 ## 1 Adelie        1     4   146
 ## 2 Chinstrap     4    59     5
-## 3 Gentoo      122     1    NA</code></pre>
+## 3 Gentoo      122     1     0</code></pre>
 </div>
 <div id="clustering-trajectories" class="section level3">
 <h3>Clustering: trajectories</h3>
@@ -701,7 +730,7 @@ process we’ll focus on is:</p>
   ggplot(aes(x = week, y = value, group = subj)) + 
   geom_point() + 
   geom_path()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
 <p>Next we’ll do some data manipulation. These steps compute the SLRs,
 extract estimates, and format the data for k-means clustering.</p>
 <pre class="r"><code>int_slope_df = 
@@ -725,7 +754,7 @@ concrete.</p>
 <pre class="r"><code>int_slope_df |&gt; 
   ggplot(aes(x = int, y = slope)) + 
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
 <pre class="r"><code>km_fit = 
   kmeans(
     x = int_slope_df |&gt; select(-subj) |&gt; scale(), 
@@ -739,7 +768,7 @@ for.</p>
 <pre class="r"><code>int_slope_df |&gt; 
   ggplot(aes(x = int, y = slope, color = .cluster)) +
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
 <p>Finally, we’ll add the cluster assignments to the original trajectory
 data and plot based on this. Again, the cluster assignments are okay but
 maybe not great.</p>
@@ -748,7 +777,7 @@ maybe not great.</p>
   geom_point() + 
   geom_path() </code></pre>
 <pre><code>## Joining with `by = join_by(subj)`</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
 <p>This example is very much related to “trajectory analysis”, which has
 become pretty popular recently (maybe because <code>PROC TRAJ</code>
 exists in SAS …). The basic idea is to use tools from longitudinal data
