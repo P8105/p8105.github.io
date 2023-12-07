@@ -574,8 +574,8 @@ estimates of these two quantities. Plot the distribution of your
 estimates, and describe these in words. Using the 5000 bootstrap
 estimates, identify the 2.5% and 97.5% quantiles to provide a 95%
 confidence interval for <span class="math inline">\(\hat{r}^2\)</span>
-and <span class="math inline">\(\log(\hat{\beta}_0 *
-\hat{\beta}_1)\)</span>. Note: <code>broom::glance()</code> is helpful
+and <span class="math inline">\(\log(\hat{\beta}_1 *
+\hat{\beta}_2)\)</span>. Note: <code>broom::glance()</code> is helpful
 for extracting <span class="math inline">\(\hat{r}^2\)</span> from a
 fitted regression, and <code>broom::tidy()</code> (with some additional
 wrangling) should help in computing <span
@@ -619,8 +619,9 @@ during pregnancy</li>
 <li><code>wtgain</code>: mother’s weight gain during pregnancy
 (pounds)</li>
 </ul>
-<p>Load and clean the data for regression analysis (i.e. convert numeric
-to factor where appropriate, check for missing data, etc.).</p>
+<p>Load and clean the data for regression analysis (i.e. use appropriate
+variable names, convert numeric to factor where appropriate, check for
+the presence of missing data, etc.).</p>
 <p>Propose a regression model for birthweight. This model may be based
 on a hypothesized structure for the factors that underly birthweight, on
 a data-driven model-building process, or a combination of the two.
