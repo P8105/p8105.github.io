@@ -124,11 +124,19 @@ The examples below are drawn from previous submissions in the to give an idea of
 
 #### Fall 2022
 
-* [Project 1](https://sopochkon1.github.io/sheroes_finalproject.github.io/About.html)
-* [Project 2](https://st3431.github.io/abortionlaws.github.io/index.html)
-* [Project 3](https://shunxie.github.io/life_expectancy.github.io/)
-* [Project 4](https://yhuan196.github.io/survivor_analysis/index.html)
-* [Project 5](https://els2250.github.io/marathontraining.github.io/)
+* [Project 1](https://fish-carolyn.github.io/p8105_squirrel_final/)
+* [Project 2](https://nishalingam.github.io/p8105_final-project/)
+* [Project 3](https://pengshihui99.github.io/cholesterol.github.io/)
+* [Project 4](https://skulali.github.io/operation_lorax.github.io/)
+* [Project 5](https://mirahk.github.io/p8105_museums_finalproject.github.io/)
+
+#### Fall 2022
+
+* [Inequality in Film](https://sopochkon1.github.io/sheroes_finalproject.github.io/About.html)
+* [Abortion Laws](https://st3431.github.io/abortionlaws.github.io/index.html)
+* [Life Expectancy](https://shunxie.github.io/life_expectancy.github.io/)
+* [Survivor Analysis](https://yhuan196.github.io/survivor_analysis/index.html)
+* [Emma's Marathon Training](https://els2250.github.io/marathontraining.github.io/)
 
 #### Fall 2021
 
