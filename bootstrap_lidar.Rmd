@@ -1,0 +1,44 @@
+---
+title: "LIDAR Bootstrap"
+author: "Jeff Goldsmith"
+date: "2024-11-12"
+output: html_document
+---
+
+### LIDAR
+
+Used LIDAR in cross validation example. This code does the bootstrap version of that, but didn't make it into the bootstrap lecture. Maybe next year. 
+
+As a final example, we'll revisit the LIDAR data from the SemiPar package. The code chunk below loads and tidies the data. 
+
+```{r}
+data("lidar")
+
+lidar_df = 
+	lidar |> 
+	as_tibble()
+```
+
+I'll make a quick plot showing these data, with particular emphasis on the features I'm interested in analyzing: `logratio` as an outcome with `range` as a predictor.
+
+```{r}
+lidar_df |> 
+  ggplot(aes(x = range, y = logratio)) + 
+  geom_point() + 
+	stat_smooth(method = "gam", formula = y ~ s(x))
+```
+
+In this plot (and in [linear models](linear_models.html), saw nonlinearity and increasing variance. Now we'll use the bootstrap to get 1000 fits using GAM, and plot the results. 
+
+```{r}
+lidar_df |> 
+  modelr::bootstrap(n = 100) |> 
+  mutate(
+    models = map(strap, \(df) gam(logratio ~ s(range), data = df)),
+    results = map(models, \(mod) add_predictions(data = lidar_df, model = mod))) |> 
+  select(.id, results) |> 
+  unnest(results) |> 
+  ggplot(aes(x = range, y = pred, group = .id)) + geom_path()
+```
+
+This distribution has a heavy tail extending to low values and a bit of a "shoulder", features that may be related to the frequency with which large outliers are included in the bootstrap sample. 
