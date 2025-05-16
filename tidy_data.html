@@ -480,18 +480,6 @@ href="data_manipulation.html">data manipulation</a>, but create a new
 .Rmd for tidying. I’m also going to load some relevant packages, and
 limit the number of lines printed in a tibble.</p>
 <pre class="r"><code>library(tidyverse)
-## Warning: package &#39;ggplot2&#39; was built under R version 4.3.2
-## Warning: package &#39;tidyr&#39; was built under R version 4.3.2
-## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.2     ✔ tidyr     1.3.1
-## ✔ purrr     1.0.2     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
 
 options(tibble.print_min = 5)</code></pre>
 <div id="pivot_longer" class="section level3">
@@ -627,7 +615,7 @@ Solution
       &quot;gd18_weight&quot; ~ 18
     ))
 ## Rows: 49 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -795,7 +783,7 @@ sex as an ambiguous numeric variable.)</p>
         2 ~ &quot;female&quot;),
     sex = as.factor(sex)) 
 ## Rows: 313 Columns: 6
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Litter Number
 ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
@@ -814,7 +802,7 @@ litter_df =
     wt_gain = gd18_weight - gd0_weight,
     dose = str_to_lower(dose))
 ## Rows: 49 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...

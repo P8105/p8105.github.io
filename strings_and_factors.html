@@ -13,7 +13,7 @@
 
 <title>Strings and factors</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -825,17 +825,17 @@ examples now.</p>
 <pre><code>## Registered S3 method overwritten by &#39;hoardr&#39;:
 ##   method           from
 ##   print.cache_info httr</code></pre>
-<pre><code>## using cached file: /Users/jeff/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00094728.dly</code></pre>
-<pre><code>## date created (size, mb): 2023-11-15 11:33:02.320095 (8.544)</code></pre>
-<pre><code>## file min/max dates: 1869-01-01 / 2023-11-30</code></pre>
-<pre><code>## using cached file: /Users/jeff/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00022534.dly</code></pre>
-<pre><code>## date created (size, mb): 2024-08-23 08:53:49.293889 (3.911)</code></pre>
-<pre><code>## file min/max dates: 1949-10-01 / 2024-08-31</code></pre>
-<pre><code>## using cached file: /Users/jeff/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USS0023B17S.dly</code></pre>
-<pre><code>## date created (size, mb): 2024-08-23 08:53:53.443882 (1.033)</code></pre>
-<pre><code>## file min/max dates: 1999-09-01 / 2024-08-31</code></pre>
+<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00094728.dly</code></pre>
+<pre><code>## date created (size, mb): 2023-09-19 15:41:55.07359 (8.524)</code></pre>
+<pre><code>## file min/max dates: 1869-01-01 / 2023-09-30</code></pre>
+<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00022534.dly</code></pre>
+<pre><code>## date created (size, mb): 2023-09-25 10:06:23.827176 (3.83)</code></pre>
+<pre><code>## file min/max dates: 1949-10-01 / 2023-09-30</code></pre>
+<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USS0023B17S.dly</code></pre>
+<pre><code>## date created (size, mb): 2023-09-19 15:42:03.139582 (0.994)</code></pre>
+<pre><code>## file min/max dates: 1999-09-01 / 2023-09-30</code></pre>
 <pre class="r"><code>weather_df</code></pre>
-<pre><code>## # A tibble: 3,254 × 6
+<pre><code>## # A tibble: 3,009 × 6
 ##   name           id          date        prcp  tmax  tmin
 ##   &lt;chr&gt;          &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6
@@ -844,7 +844,7 @@ examples now.</p>
 ## 4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7
 ## 5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2
 ## 6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1
-## # ℹ 3,248 more rows</code></pre>
+## # ℹ 3,003 more rows</code></pre>
 <p>Our first example reordered <code>name</code> “by hand” using
 <code>fct_relevel</code>:</p>
 <pre class="r"><code>weather_df |&gt;
@@ -874,7 +874,7 @@ something that can be adjusted as needed.</p>
 ## 
 ## Coefficients:
 ##      (Intercept)    nameMolokai_HI  nameWaterhole_WA  
-##            18.22             10.17            -10.66</code></pre>
+##            18.24             10.12            -10.51</code></pre>
 <pre class="r"><code>weather_df |&gt;
   mutate(name = forcats::fct_relevel(name, c(&quot;Molokai_HI&quot;, &quot;CentralPark_NY&quot;, &quot;Waterhole_WA&quot;))) |&gt; 
   lm(tmax ~ name, data = _)</code></pre>
@@ -885,7 +885,7 @@ something that can be adjusted as needed.</p>
 ## 
 ## Coefficients:
 ##        (Intercept)  nameCentralPark_NY    nameWaterhole_WA  
-##              28.40              -10.17              -20.84</code></pre>
+##              28.37              -10.12              -20.63</code></pre>
 <p>In this example, we’re also using a feature of <code>|&gt;</code>
 that allows us to specify where the tibble goes: <code>_</code> is a
 placeholder for the result of the preceding call.</p>

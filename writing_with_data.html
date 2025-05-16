@@ -13,7 +13,7 @@
 
 <title>Writing with data</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -614,7 +614,8 @@ la_df = tibble(
   abs_norm_samp = abs(norm_samp)
 )
 
-ggplot(la_df, aes(x = abs_norm_samp)) + geom_histogram()
+ggplot(la_df, aes(x = abs_norm_samp)) + 
+    geom_histogram()
 
 median_samp = median(pull(la_df, norm_samp))
 ```
@@ -683,9 +684,9 @@ Solution
 </summary>
 <p>The snippet below shows the relevant section of an R Markdown
 document.</p>
-<pre><code>* The mean of the sample is `r mean(pull(ls_df, norm_samp))`
-* The median of the sample is `r median(pull(ls_df, norm_samp))`
-* The median of the sample is `r median(pull(ls_df, norm_samp))`</code></pre>
+<pre><code>* The mean of the sample is `r mean(pull(la_df, norm_samp))`
+* The median of the sample is `r median(pull(la_df, norm_samp))`
+* The standard deviation of the sample is `r sd(pull(la_df, norm_samp))`</code></pre>
 </details>
 </div>
 <div id="yaml-and-output-formats" class="section level3">
@@ -750,7 +751,7 @@ file, <code>knitr</code> uses a new R session to run the included code.
 As a result, knitting is a great way to make sure your analysis is
 self-contained and you should knit frequently!</p>
 <p><strong><em>Learning assessment:</em></strong> Convert the scripts
-for exploring vector classes and producing basic plots (from <a
+for creating a data frame and producing basic plots (from <a
 href="best_practices.html">best practices</a>) to self-contained R
 Markdown files that produce HTML documents.</p>
 <details>
@@ -761,7 +762,7 @@ Solution
 <pre><code>---
 title: &quot;Exploring Vector Classes&quot;
 author: &quot;Jeff Goldsmith&quot;
-date: 2019-09-10
+date: 2024-09-10
 output: html_document
 ---
 
@@ -789,7 +790,7 @@ The variable `vec_numeric` has class `r class(pull(example_df, vec_numeric))`, a
 ---
 title: &quot;Basic Plots&quot;
 author: &quot;Jeff Goldsmith&quot;
-date: 2019-09-10
+date: 2024-09-10
 output: html_document
 ---
 
@@ -813,13 +814,15 @@ plot_df = tibble(
 First we show a histogram of the `x` variable.
 
 ```{r x_hist}
-ggplot(plot_df, aes(x = x)) + geom_histogram()
+ggplot(plot_df, aes(x = x)) + 
+    geom_histogram()
 ```
 
 Next we show a scatterplot of `y` vs `x`. 
 
 ```{r yx_scatter}
-ggplot(plot_df, aes(x = x, y = y)) + geom_point()
+ggplot(plot_df, aes(x = x, y = y)) + 
+    geom_point()
 ```</code></pre>
 </details>
 </div>

@@ -5,6 +5,29 @@ date: "2024-11-12"
 output: html_document
 ---
 
+
+```{r, echo = FALSE,message=FALSE,warning=FALSE}
+library(tidyverse)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
 ### LIDAR
 
 Used LIDAR in cross validation example. This code does the bootstrap version of that, but didn't make it into the bootstrap lecture. Maybe next year. 
@@ -12,6 +35,9 @@ Used LIDAR in cross validation example. This code does the bootstrap version of 
 As a final example, we'll revisit the LIDAR data from the SemiPar package. The code chunk below loads and tidies the data. 
 
 ```{r}
+library(SemiPar)
+library(mgcv)
+
 data("lidar")
 
 lidar_df = 
@@ -35,7 +61,7 @@ lidar_df |>
   modelr::bootstrap(n = 100) |> 
   mutate(
     models = map(strap, \(df) gam(logratio ~ s(range), data = df)),
-    results = map(models, \(mod) add_predictions(data = lidar_df, model = mod))) |> 
+    results = map(models, \(mod) modelr::add_predictions(data = lidar_df, model = mod))) |> 
   select(.id, results) |> 
   unnest(results) |> 
   ggplot(aes(x = range, y = pred, group = .id)) + geom_path()
