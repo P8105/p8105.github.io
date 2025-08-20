@@ -66,13 +66,12 @@ Implement cross validation to assess the predictive value of a model using tools
 
 ## Example
 
-I'll write code for today's content in a new R Markdown document called `cross_validation.Rmd` in the `linear_models` directory / repo. The code chunk below loads the usual packages (plus `mgcv` and `SemiPar`) and sets a seed for reproducibility.
+I'll write code for today's content in a new R Markdown document called `cross_validation.Rmd` in the `linear_models` directory / repo. The code chunk below loads the usual packages (plus `mgcv`) and sets a seed for reproducibility.
 
 ```{r}
 library(tidyverse)
 library(modelr)
 library(mgcv)
-library(SemiPar)
 
 set.seed(1)
 ```
@@ -80,7 +79,7 @@ set.seed(1)
 
 ### CV "by hand"
 
-We'll start with a simulated example. The code chunk below imports data that is non-linear model and shows increasing variance as the predictor increases. I like to use this setting because "model complexity" is easiest for me to understand when I can see it. However, "model complexity" is also an issue when you're dealing with lots of predictors -- you can't "see" overfitting as easily, but it definitely happens. 
+We'll start with a simulated example. The code chunk below imports data that is non-linear and shows increasing variance as the predictor increases. I like to use this setting because "model complexity" is easiest for me to understand when I can see it. However, "model complexity" is also an issue when you're dealing with lots of predictors -- you can't "see" overfitting as easily, but it definitely happens. 
 
 ```{r}
 data(lidar)

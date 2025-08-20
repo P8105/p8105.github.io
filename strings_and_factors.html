@@ -13,7 +13,7 @@
 
 <title>Strings and factors</title>
 
-<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -35,8 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -687,16 +687,16 @@ rest_inspec |&gt;
   pivot_wider(names_from = grade, values_from = n)</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;boro&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<pre><code>## # A tibble: 6 × 8
+<pre><code>## # A tibble: 6 × 9
 ## # Groups:   boro [6]
-##   boro              A     B     C `Not Yet Graded`     P     Z  `NA`
-##   &lt;chr&gt;         &lt;int&gt; &lt;int&gt; &lt;int&gt;            &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-## 1 BRONX         13688  2801   701              200   163   351 16833
-## 2 BROOKLYN      37449  6651  1684              702   416   977 51930
-## 3 MANHATTAN     61608 10532  2689              765   508  1237 80615
-## 4 Missing           4    NA    NA               NA    NA    NA    13
-## 5 QUEENS        35952  6492  1593              604   331   913 45816
-## 6 STATEN ISLAND  5215   933   207               85    47   149  6730</code></pre>
+##   boro              A     B     C  `NA`     N     P     Z     G
+##   &lt;chr&gt;         &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1 0                33     9     6    67    NA    NA    NA    NA
+## 2 Bronx         14071  2611   976 17190   161   236   605    NA
+## 3 Brooklyn      38896  6423  2194 49825   345   782  1168     2
+## 4 Manhattan     61675  9107  3600 76581   591   924  1816     3
+## 5 Queens        36258  5526  1996 44136   350   604  1287    NA
+## 6 Staten Island  5410   855   248  6315    71    61   116    NA</code></pre>
 <p>To simplify things, I’ll remove inspections with scores other than
 <code>A</code>, <code>B</code>, or <code>C</code>, and also remove the
 restaurants with missing boro information. I’ll also clean up boro names
@@ -714,15 +714,14 @@ borough.</p>
   pivot_wider(names_from = grade, values_from = n)</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;boro&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<pre><code>## # A tibble: 5 × 3
-## # Groups:   boro [5]
-##   boro              A     B
-##   &lt;chr&gt;         &lt;int&gt; &lt;int&gt;
-## 1 Bronx             9     3
-## 2 Brooklyn          6    NA
-## 3 Manhattan        26     8
-## 4 Queens           17    NA
-## 5 Staten Island     5    NA</code></pre>
+<pre><code>## # A tibble: 4 × 3
+## # Groups:   boro [4]
+##   boro          A     B
+##   &lt;chr&gt;     &lt;int&gt; &lt;int&gt;
+## 1 Bronx        15     3
+## 2 Brooklyn     15    NA
+## 3 Manhattan    13     3
+## 4 Queens       11     4</code></pre>
 <p>That doesn’t look right – for sure there are more pizza place ratings
 than that! The problem is that the match in <code>str_detect</code> is
 case-sensitive until we tell it not to be:</p>
@@ -737,11 +736,11 @@ case-sensitive until we tell it not to be:</p>
 ## # Groups:   boro [5]
 ##   boro              A     B     C
 ##   &lt;chr&gt;         &lt;int&gt; &lt;int&gt; &lt;int&gt;
-## 1 Bronx          1170   305    56
-## 2 Brooklyn       1948   296    61
-## 3 Manhattan      1983   420    76
-## 4 Queens         1647   259    48
-## 5 Staten Island   323   127    21</code></pre>
+## 1 Bronx          1201   261    98
+## 2 Brooklyn       1919   291    95
+## 3 Manhattan      2091   400    96
+## 4 Queens         1695   239    78
+## 5 Staten Island   328    60    15</code></pre>
 <p>The table is okay but I’d like to visualize this.</p>
 <pre class="r"><code>rest_inspec |&gt; 
   filter(str_detect(dba, &quot;[Pp][Ii][Zz][Zz][Aa]&quot;)) |&gt;

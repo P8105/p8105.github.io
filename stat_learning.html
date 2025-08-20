@@ -13,7 +13,7 @@
 
 <title>Statistical Learning</title>
 
-<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -35,8 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -463,7 +463,7 @@ library(glmnet)</code></pre>
 <pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
 ## 
 ##     expand, pack, unpack</code></pre>
-<pre><code>## Loaded glmnet 4.1-8</code></pre>
+<pre><code>## Loaded glmnet 4.1-10</code></pre>
 <pre class="r"><code>set.seed(11)</code></pre>
 <div id="lasso" class="section level3">
 <h3>Lasso</h3>
@@ -658,9 +658,13 @@ package to see this example. First we’ll load the data and do some
 initial tidying to keep the variables of interest and remove rows with
 missing values. We’ll then make a quick visualization of bill length vs
 flipper length.</p>
-<pre class="r"><code>library(palmerpenguins)
-
-data(&quot;penguins&quot;)
+<pre class="r"><code>library(palmerpenguins)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;palmerpenguins&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:datasets&#39;:
+## 
+##     penguins, penguins_raw</code></pre>
+<pre class="r"><code>data(&quot;penguins&quot;)
 
 penguins = 
   penguins |&gt; 

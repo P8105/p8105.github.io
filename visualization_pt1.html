@@ -13,7 +13,7 @@
 
 <title>Visualization with ggplot2</title>
 
-<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -35,8 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 <script defer src="https://use.fontawesome.com/releases/v5.0.3/js/all.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/v4-shims.js"></script>
@@ -665,7 +665,10 @@ handy:</p>
 <pre class="r"><code>ggplot(weather_df, aes(x = tmax, y = tmin)) + 
   geom_hex()
 ## Warning: Removed 17 rows containing non-finite outside the scale range
-## (`stat_binhex()`).</code></pre>
+## (`stat_binhex()`).
+## Warning: Computation failed in `stat_binhex()`.
+## Caused by error in `compute_group()`:
+## ! The package &quot;hexbin&quot; is required for `stat_bin_hex()`.</code></pre>
 <p><img src="visualization_pt1_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
 <p>There are lots of aesthetics, and these depend to some extent on the
 geom – <code>color</code> worked for both <code>geom_point()</code> and
