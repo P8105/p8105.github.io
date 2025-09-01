@@ -23,12 +23,11 @@ Open RStudio and install several packages (and their dependencies) using the cod
 ```{r eval = FALSE}
 install.packages(
   c("tidyverse", "knitr", "rmarkdown", "janitor", "broom", "here", "readxl", 
-    "haven", "rnoaa", "ggridges", "ggthemes", "leaflet", "viridis", "skimr", 
+    "haven", "ggridges", "ggthemes", "leaflet", "viridis", "skimr", 
     "rvest", "httr", "flexdashboard", "devtools", "usethis", "modelr", "mgcv", 
     "tidytext", "shiny", "patchwork", "glmnet", "plotly"))
 
 remotes::install_github("p8105/p8105.datasets")
-remotes::install_github("ropensci/rnoaa")
 ```
 
 (Note: on a Mac running OSX, you may need to install the [command line tools](http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/) for these packages to install.)
@@ -58,5 +57,5 @@ It is **very strongly recommended** that you register your account with an educa
 
 ### Problem 4
 
-Join the course [Slack channel](https://join.slack.com/t/p8105datascie-m0g3309/shared_invite/zt-2pw3w5ger-fQFDJKidc5JCAh5Wp1aCXQ).
+Join the course [Slack channel](https://join.slack.com/t/p8105datascie-n2t4675/shared_invite/zt-3cgdmb284-PaTr2SFNnuC4qUPoi1hFmw).
 
