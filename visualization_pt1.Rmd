@@ -64,24 +64,11 @@ library(tidyverse)
 library(ggridges)
 ```
 
-We'll be working with NOAA weather data, which is downloaded using `rnoaa::meteo_pull_monitors` function in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I'll cache the code chunk. 
+We'll be working with NOAA weather data, which is available in the `p8105.datasets package`. (Note: these data were previously accessed using the `rnoaa::meteo_pull_monitors` function; due to changes in NOAA's API, this package has been discontinued).
 
-```{r weather_data_create, cache = TRUE, message = FALSE}
-weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USW00022534", "USS0023B17S"),
-    var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2021-01-01",
-    date_max = "2022-12-31") |>
-  mutate(
-    name = case_match(
-      id, 
-      "USW00094728" ~ "CentralPark_NY", 
-      "USW00022534" ~ "Molokai_HI",
-      "USS0023B17S" ~ "Waterhole_WA"),
-    tmin = tmin / 10,
-    tmax = tmax / 10) |>
-  select(name, id, everything())
+```{r}
+library(p8105.datasets)
+data("weather_df")
 ```
 
 As always, I start by looking at the data; below I'm showing the result of printing the dataframe in the console, but would also use `view(weather_df)` to look around a bit.
@@ -89,7 +76,6 @@ As always, I start by looking at the data; below I'm showing the result of print
 ```{r}
 weather_df
 ```
-
 
 We'll start with a basic scatterplot to develop our understanding of `ggplot`'s data + mappings + geoms approach, and build quickly from there. 
 

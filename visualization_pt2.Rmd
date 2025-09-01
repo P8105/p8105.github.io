@@ -65,24 +65,9 @@ library(patchwork)
 
 We'll still work with NOAA weather data, which is loaded using the same code as in [Visualization Pt 1](visualization_pt1.html). 
 
-```{r weather_data_create, cache = TRUE}
-weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USW00022534", "USS0023B17S"),
-    var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2021-01-01",
-    date_max = "2022-12-31") |>
-  mutate(
-    name = case_match(
-      id, 
-      "USW00094728" ~ "CentralPark_NY", 
-      "USW00022534" ~ "Molokai_HI",
-      "USS0023B17S" ~ "Waterhole_WA"),
-    tmin = tmin / 10,
-    tmax = tmax / 10) |>
-  select(name, id, everything())
-
-weather_df
+```{r}
+library(p8105.datasets)
+data("weather_df")
 ```
 
 As a starting point, let's revisit the scatterplot of `tmax` against `tmin` made in [Visualization Pt 1](visualization_pt1.html). 

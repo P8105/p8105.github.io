@@ -63,24 +63,11 @@ Before introducing these, I'll load the `tidyverse`.
 library(tidyverse)
 ```
 
-The next chunk of code loads and tidies an example dataset, which includes daily record of several weather-related variables at each of three weather stations. 
+The next chunk of code loads a tidy example dataset, which includes daily record of several weather-related variables at each of three weather stations. 
 
-```{r weather_data_create, cache = TRUE, message=FALSE}
-weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USW00022534", "USS0023B17S"),
-    var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2021-01-01",
-    date_max = "2022-12-31") |>
-  mutate(
-    name = case_match(
-      id, 
-      "USW00094728" ~ "CentralPark_NY", 
-      "USW00022534" ~ "Molokai_HI",
-      "USS0023B17S" ~ "Waterhole_WA"),
-    tmin = tmin / 10,
-    tmax = tmax / 10) |>
-  relocate(name)
+```{r}
+library(p8105.datasets)
+data("weather_df")
 ```
 
 As we'll discuss, a major element of working with data is producing visualizations. The plot below shows the maximum temperature at each of the three stations, as well as smooth trends over time to illustrate seasonal effects. This is produced using `ggplot`, a package in the `tidyverse` that we'll talk more about soon. 

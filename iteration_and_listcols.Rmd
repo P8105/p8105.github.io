@@ -344,24 +344,11 @@ nsduh_results=
 
 ### Operations on nested data
 
-Shifting gears a bit, let's revisit the weather data from [visualization](visualization.html) and elsewhere; these data consist of one year of observations from three monitoring stations. The code below pulls these data into R (using the `rnoaa` package, which interacts with the NOAA API).
+Shifting gears a bit, let's revisit the weather data from [visualization](visualization.html) and elsewhere; these data consist of one year of observations from three monitoring stations. The code below pulls these data into R using the `p8105.datasets` package.
 
-```{r weather_data_create, cache = TRUE}
-weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USW00022534", "USS0023B17S"),
-    var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2021-01-01",
-    date_max = "2022-12-31") |>
-  mutate(
-    name = recode(
-      id, 
-      USW00094728 = "CentralPark_NY", 
-      USW00022534 = "Molokai_HI",
-      USS0023B17S = "Waterhole_WA"),
-    tmin = tmin / 10,
-    tmax = tmax / 10) |>
-  select(name, id, everything())
+```{r}
+library(p8105.datasets)
+data("weather_df")
 ```
 
 The station name and id are constant across the year's temperature and precipitation data. For that reason, we can reorganize these data into a new data frame with a single row for each station. Weather data will be separated into three station-specific data frames, each of which is the data "observation" for the respective station.

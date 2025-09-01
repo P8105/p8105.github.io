@@ -72,6 +72,7 @@ I'll write code for today's content in a new R Markdown document called `cross_v
 library(tidyverse)
 library(modelr)
 library(mgcv)
+library(p8105.datasets)
 
 set.seed(1)
 ```
@@ -82,7 +83,7 @@ set.seed(1)
 We'll start with a simulated example. The code chunk below imports data that is non-linear and shows increasing variance as the predictor increases. I like to use this setting because "model complexity" is easiest for me to understand when I can see it. However, "model complexity" is also an issue when you're dealing with lots of predictors -- you can't "see" overfitting as easily, but it definitely happens. 
 
 ```{r}
-data(lidar)
+data("lidar")
 
 lidar_df = 
   lidar |> 

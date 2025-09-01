@@ -483,22 +483,13 @@ Goldsmith</a></strong>.
 visualization, and use essentially the same <code>weather_df</code>
 dataset – the only exception is the addition of <code>month</code>
 variable, created using <code>lubridate::floor_date()</code>.</p>
-<pre class="r"><code>weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c(&quot;USW00094728&quot;, &quot;USW00022534&quot;, &quot;USS0023B17S&quot;),
-    var = c(&quot;PRCP&quot;, &quot;TMIN&quot;, &quot;TMAX&quot;), 
-    date_min = &quot;2021-01-01&quot;,
-    date_max = &quot;2022-12-31&quot;) |&gt;
+<pre class="r"><code>library(p8105.datasets)
+data(&quot;weather_df&quot;)
+
+weather_df = 
+  weather_df |&gt;
   mutate(
-    name = case_match(
-      id, 
-      &quot;USW00094728&quot; ~ &quot;CentralPark_NY&quot;, 
-      &quot;USW00022534&quot; ~ &quot;Molokai_HI&quot;,
-      &quot;USS0023B17S&quot; ~ &quot;Waterhole_WA&quot;),
-    tmin = tmin / 10,
-    tmax = tmax / 10,
-    month = lubridate::floor_date(date, unit = &quot;month&quot;)) |&gt;
-  select(name, id, everything())</code></pre>
+    month = lubridate::floor_date(date, unit = &quot;month&quot;))</code></pre>
 <div id="initial-numeric-explorations" class="section level3">
 <h3>Initial numeric explorations</h3>
 <p>Before beginning to summarize data, it can help to use initial
@@ -510,7 +501,7 @@ for example, this histogram of precipitation values:</p>
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## Warning: Removed 15 rows containing non-finite outside the scale range
 ## (`stat_bin()`).</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
 <p>This is clearly a very skewed distribution; any formal analyses
 involving preciptation as a predictor or outcome might be influenced by
 this fact. It’s important to note that the vast majority of days have no
@@ -538,7 +529,7 @@ report temperature values differently from Waterhole …</p>
   filter(tmax &gt;= 20, tmax &lt;= 30) |&gt; 
   ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) + 
   geom_point(alpha = .75)</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
 <p>Depending on the nature of later analyses, understanding how these
 differ and implementing an approach to bring the reports into alignment
 might be necessary.</p>
@@ -790,7 +781,7 @@ plot based on the monthly summary:</p>
     theme(legend.position = &quot;bottom&quot;)
 ## `summarise()` has grouped output by &#39;name&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-16-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
 <p>The results of <code>group_by()</code> and <code>summarize()</code>
 are generally tidy, but presenting reader-friendly results for this kind
 of exploratory analysis often benefits from some un-tidying. For
@@ -978,9 +969,9 @@ result. You could do so using:</p>
     centered_tmax = tmax - mean_tmax) |&gt; 
   ggplot(aes(x = date, y = centered_tmax, color = name)) + 
     geom_point() 
-## Warning: Removed 17 rows containing missing values or values outside the scale
-## range (`geom_point()`).</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+## Warning: Removed 17 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
 </div>
 <div id="window-functions" class="section level3">
 <h3>Window functions</h3>

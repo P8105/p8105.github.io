@@ -487,8 +487,13 @@ also use some datasets in <code>p8105.datasets</code> so I’ll load that
 as well. And finally, we’ll use some of <a
 href="./resources/data_import_examples.zip">these examples</a>, so I’ll
 make sure I have them in a <code>data</code> subdirectory..</p>
-<pre class="r"><code>library(rvest)
-library(p8105.datasets)</code></pre>
+<pre class="r"><code>library(rvest)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rvest&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding</code></pre>
+<pre class="r"><code>library(p8105.datasets)</code></pre>
 <div id="strings-and-regex" class="section level3">
 <h3>Strings and regex</h3>
 <p>Lots of the examples below are drawn from materials by <a
@@ -806,44 +811,8 @@ order to produce clearer plots – <code>ggplot</code> uses factor levels
 to determine the order in which categories appear. Let’s revisit those
 examples now.</p>
 <p>Our first step is to load the data we used.</p>
-<pre class="r"><code>weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c(&quot;USW00094728&quot;, &quot;USW00022534&quot;, &quot;USS0023B17S&quot;),
-    var = c(&quot;PRCP&quot;, &quot;TMIN&quot;, &quot;TMAX&quot;), 
-    date_min = &quot;2021-01-01&quot;,
-    date_max = &quot;2023-12-31&quot;) |&gt;
-  mutate(
-    name = recode(
-      id, 
-      USW00094728 = &quot;CentralPark_NY&quot;, 
-      USW00022534 = &quot;Molokai_HI&quot;,
-      USS0023B17S = &quot;Waterhole_WA&quot;),
-    tmin = tmin / 10,
-    tmax = tmax / 10) |&gt;
-  select(name, id, everything())</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;hoardr&#39;:
-##   method           from
-##   print.cache_info httr</code></pre>
-<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00094728.dly</code></pre>
-<pre><code>## date created (size, mb): 2023-09-19 15:41:55.07359 (8.524)</code></pre>
-<pre><code>## file min/max dates: 1869-01-01 / 2023-09-30</code></pre>
-<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USW00022534.dly</code></pre>
-<pre><code>## date created (size, mb): 2023-09-25 10:06:23.827176 (3.83)</code></pre>
-<pre><code>## file min/max dates: 1949-10-01 / 2023-09-30</code></pre>
-<pre><code>## using cached file: /Users/jeffgoldsmith/Library/Caches/org.R-project.R/R/rnoaa/noaa_ghcnd/USS0023B17S.dly</code></pre>
-<pre><code>## date created (size, mb): 2023-09-19 15:42:03.139582 (0.994)</code></pre>
-<pre><code>## file min/max dates: 1999-09-01 / 2023-09-30</code></pre>
-<pre class="r"><code>weather_df</code></pre>
-<pre><code>## # A tibble: 3,009 × 6
-##   name           id          date        prcp  tmax  tmin
-##   &lt;chr&gt;          &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6
-## 2 CentralPark_NY USW00094728 2021-01-02    13  10.6   2.2
-## 3 CentralPark_NY USW00094728 2021-01-03    56   3.3   1.1
-## 4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7
-## 5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2
-## 6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1
-## # ℹ 3,003 more rows</code></pre>
+<pre class="r"><code>library(p8105.datasets)
+data(&quot;weather_df&quot;)</code></pre>
 <p>Our first example reordered <code>name</code> “by hand” using
 <code>fct_relevel</code>:</p>
 <pre class="r"><code>weather_df |&gt;
@@ -851,7 +820,7 @@ examples now.</p>
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-22-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
 <p>We could instead reorder <code>name</code> according to
 <code>tmax</code> values in each name using
 <code>fct_reorder</code>:</p>
@@ -860,7 +829,7 @@ examples now.</p>
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
 <p>Although you may not have seen linear regression previously, the
 ordering of factor variables play an important in this case as well.
 Specifically, the ordering determines the “reference” category, and is
@@ -873,7 +842,7 @@ something that can be adjusted as needed.</p>
 ## 
 ## Coefficients:
 ##      (Intercept)    nameMolokai_HI  nameWaterhole_WA  
-##            18.24             10.12            -10.51</code></pre>
+##            17.66             10.66            -10.28</code></pre>
 <pre class="r"><code>weather_df |&gt;
   mutate(name = forcats::fct_relevel(name, c(&quot;Molokai_HI&quot;, &quot;CentralPark_NY&quot;, &quot;Waterhole_WA&quot;))) |&gt; 
   lm(tmax ~ name, data = _)</code></pre>
@@ -884,7 +853,7 @@ something that can be adjusted as needed.</p>
 ## 
 ## Coefficients:
 ##        (Intercept)  nameCentralPark_NY    nameWaterhole_WA  
-##              28.37              -10.12              -20.63</code></pre>
+##              28.32              -10.66              -20.94</code></pre>
 <p>In this example, we’re also using a feature of <code>|&gt;</code>
 that allows us to specify where the tibble goes: <code>_</code> is a
 placeholder for the result of the preceding call.</p>
@@ -949,7 +918,7 @@ nyc_airbnb |&gt;
   geom_boxplot() +
   coord_flip() + 
   ylim(0, 1000)</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-26-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-27-1.png" width="90%" /></p>
 </div>
 </div>
 <div id="other-materials" class="section level2">
