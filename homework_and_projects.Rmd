@@ -13,14 +13,14 @@ In addition to grading for content, we reserve the right to deduct points for st
 
 |                      | Available              | Due                    | Assignment   | Solution     |
 |:---------------------|:---------------------- |:---------------------- |:------------:|:------------:|
-| Homework 0           | Sept 3, 10am           | Sept 5, 10:00 am       | [<i class="far fa-file-code fa-lg"></i>](homework_0.html) | [<i class="fas fa-check fa-lg"></i>]()                                     |
-| Homework 1           | Sept 12, 10am          | Sept 21, 11:59 pm      | [<i class="far fa-file-code fa-lg"></i>](homework_1.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw1_ajg2202.zip)    |
-| Homework 2           | Sept 24, 10am          | Oct 2, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_2.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw2_ajg2202.zip)    |
-| Homework 3           | Oct 3, 10am            | Oct 14, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_3.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw3_ajg2202.zip)    |
-| Homework 4           | Oct 22, 10am           | Oct 30, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_4.html) | [<i class="fas fa-check fa-lg"></i>]()                                     |
-| Homework 5           | Oct 31, 10am           | Nov 15, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_5.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw5_ajg2202.zip)    |
-| Homework 6           | Nov 14, 10am           | Dec 2, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_6.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw6_ajg2202.zip)    |
-| Homework 7           | Dec 3, 10am            | Dec 12, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_7.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw7_ajg2202.zip)    |
+| Homework 0           | Sept 2, 10am           | Sept 4, 10:00 am       | [<i class="far fa-file-code fa-lg"></i>](homework_0.html) | [<i class="fas fa-check fa-lg"></i>]()                                     |
+| Homework 1           | Sept 11, 10am          | Sept 20, 11:59 pm      | [<i class="far fa-file-code fa-lg"></i>](homework_1.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw1_ajg2202.zip)    |
+| Homework 2           | Sept 23, 10am          | Oct 1, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_2.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw2_ajg2202.zip)    |
+| Homework 3           | Oct 2, 10am            | Oct 13, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_3.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw3_ajg2202.zip)    |
+| Homework 4           | Oct 21, 10am           | Oct 29, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_4.html) | [<i class="fas fa-check fa-lg"></i>]()                                     |
+| Homework 5           | Oct 30, 10am           | Nov 14, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_5.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw5_ajg2202.zip)    |
+| Homework 6           | Nov 13, 10am           | Dec 1, 11:59 pm        | [<i class="far fa-file-code fa-lg"></i>](homework_6.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw6_ajg2202.zip)    |
+| Homework 7           | Dec 2, 10am            | Dec 11, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](homework_7.html) | [<i class="fas fa-check fa-lg"></i>](./resources/p8105_hw7_ajg2202.zip)    |
 
 ### Midterm
 
@@ -28,7 +28,7 @@ The midterm project is not covered by the course policy on collaboration -- you 
 
 |                      | Available              | Due                    | Assignment   | Solution     |
 |:---------------------|:---------------------- |:---------------------- |:------------:|:------------:|
-| Midterm Project      | Oct 15, 10am           | Oct 23, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](midterm_project.html) | [<i class="fas fa-check fa-lg"></i>](link)      |
+| Midterm Project      | Oct 14, 10am           | Oct 22, 11:59 pm       | [<i class="far fa-file-code fa-lg"></i>](midterm_project.html) | [<i class="fas fa-check fa-lg"></i>](link)      |
 
 ### Final
     
