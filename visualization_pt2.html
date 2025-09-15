@@ -930,7 +930,7 @@ Here we add some data tidying steps to view pup-level outcomes
 (post-natal day on which ears “work”, on which the pup can walk, etc)
 across values of dose category and treatment day.</p>
 <pre class="r"><code>pup_data = 
-  read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;)) |&gt;
+  read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;), skip = 3) |&gt;
   janitor::clean_names() |&gt;
   mutate(
     sex = 

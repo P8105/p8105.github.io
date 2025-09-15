@@ -482,7 +482,17 @@ start an R Markdown; I’m reusing this <a
 href="resources/template.Rmd">template</a>. We’re also going to be
 making extensive use of the <code>tidyverse</code> package, so go ahead
 and load that in a “setup” code chunk.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>library(tidyverse)
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.1.0     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <div id="paths" class="section level3">
 <h3>Paths</h3>
 <p>We’ve mentioned paths and your working directory in passing (when
@@ -503,7 +513,7 @@ your code extremely fragile: if you move your directory, or share your
 project with someone else, the <strong>absolute</strong> path to files
 will change and your code won’t work.</p>
 <p>An absolute path example is below:</p>
-<pre><code>&quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/fall_2024/p8105.github.io/data/FAS_litters.csv&quot;</code></pre>
+<pre><code>&quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/fall_2025/p8105.github.io/data/FAS_litters.csv&quot;</code></pre>
 <p>Relative paths, meanwhile, navigate from your current working
 directory. Relative paths are portable, in that if you move your
 directory or share it with someone else, the <strong>relative</strong>
@@ -583,7 +593,7 @@ handled in basically the same way. To import a CSV, we’ll use a function
 from <code>readr</code> (included in the tidyverse):</p>
 <pre class="r"><code>litters_df = read_csv(file = &quot;./data/FAS_litters.csv&quot;)
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (4): Group, Litter Number, GD0 weight, GD18 weight
 ## dbl (4): GD of Birth, Pups born alive, Pups dead @ birth, Pups survive
@@ -888,7 +898,7 @@ not assume the first row are variable names:</p>
     read_csv(file = &quot;./data/FAS_litters.csv&quot;,
     skip = 10, col_names = FALSE)
 ## Rows: 40 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (4): X1, X2, X3, X4
 ## dbl (4): X5, X6, X7, X8
@@ -922,7 +932,7 @@ cells as missing.</p>
         file = &quot;./data/FAS_litters.csv&quot;,
         na = c(&quot;.&quot;, &quot;NA&quot;, &quot;&quot;))
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...

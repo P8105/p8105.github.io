@@ -397,7 +397,7 @@ As a final example, we'll revisit the FAS data. We've seen code for data import 
 
 ```{r}
 pup_data = 
-  read_csv("./data/FAS_pups.csv", na = c("NA", ".", "")) |>
+  read_csv("./data/FAS_pups.csv", na = c("NA", ".", ""), skip = 3) |>
   janitor::clean_names() |>
   mutate(
     sex = 

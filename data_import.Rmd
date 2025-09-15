@@ -73,7 +73,7 @@ Absolute paths are often conceptually easier, because you don't really have to _
 An absolute path example is below:
 
 ```
-"/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/fall_2024/p8105.github.io/data/FAS_litters.csv"
+"/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/fall_2025/p8105.github.io/data/FAS_litters.csv"
 ```
 
 Relative paths, meanwhile, navigate from your current working directory. Relative paths are portable, in that if you move your directory or share it with someone else, the **relative** path to files in the directory will stay the same and your code will work. For both of these reasons, relative paths are preferred in almost every setting. 
@@ -141,8 +141,13 @@ The `package::function` syntax lets you use a function from a package without lo
 For me, loading the data with absolute and relative paths might look like the following:
 
 ```{r, eval = FALSE}
-pups_df = read_csv(file = "./data/FAS_pups.csv")
-pups_df = read_csv(file = "~/Desktop/data_wranging_i/data/FAS_litters.csv")
+pups_df = 
+	read_csv(file = "./data/FAS_pups.csv", skip = 3)
+
+pups_df = 
+	read_csv(
+		file = "~/Desktop/data_wranging_i/data/FAS_litters.csv",
+		skip = 3)
 ```
 
 If I move the directory holding this example, the relative path works and the absolute path is broken.
@@ -254,7 +259,9 @@ After some tinkering, the code I'd use to import and view the pups dataset is be
 
 ```{r, eval = FALSE}
 pups_df = 
-	read_csv("./data/FAS_pups.csv",
+	read_csv(
+		file = "./data/FAS_pups.csv",
+		skip = 3,
 		na = c(".", "NA"), col_types = "fddddd")
 
 skimr::skim(pups_df)
@@ -303,8 +310,8 @@ The functions in `readr` are relatively new, and can be used in place of base R'
 The code below shows how I might load the dataset using different import functions, and how I might compare the results.
 
 ```{r, eval = FALSE}
-pups_base = read.csv("./data/FAS_pups.csv")
-pups_readr = read_csv("./data/FAS_pups.csv")
+pups_base = read.csv("./data/FAS_pups.csv", skip = 3)
+pups_readr = read_csv("./data/FAS_pups.csv", skip = 3)
 
 View(pups_base)
 View(pups_readr)

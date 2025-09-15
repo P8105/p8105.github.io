@@ -488,13 +488,23 @@ Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and
 column names using what we learned in <a href="data_import.html">Data
 Import</a>.</p>
 <pre class="r"><code>library(tidyverse)
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.1.0     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
 
 options(tibble.print_min = 3)
 
 litters_df = 
     read_csv(&quot;./data/FAS_litters.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;))
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -505,9 +515,9 @@ litters_df =
     janitor::clean_names(litters_df)
 
 pups_df = 
-    read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;))
+    read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;), skip = 3)
 ## Rows: 313 Columns: 6
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Litter Number
 ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
@@ -795,7 +805,7 @@ manipulation:</p>
 <pre class="r"><code>litters_df_raw = 
     read_csv(&quot;./data/FAS_litters.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;))
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -836,7 +846,7 @@ litters_df_with_vars_without_missing
   wt_gain
   )
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -867,7 +877,7 @@ argument to the next function call:</p>
     group = str_to_lower(group)) |&gt; 
   drop_na(wt_gain)
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -935,13 +945,13 @@ Solution
 </summary>
 <p>The chunk below performs these actions:</p>
 <pre class="r"><code>pups_df = 
-    read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;)) |&gt;
+    read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;), skip = 3) |&gt;
   janitor::clean_names() |&gt; 
   filter(sex == 1) |&gt; 
   select(-pd_ears) |&gt; 
   mutate(pd_pivot_gt7 = pd_pivot &gt; 7)
 ## Rows: 313 Columns: 6
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Litter Number
 ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
