@@ -385,7 +385,7 @@ The code chunk below imports the litters and pups data, joins them, produces the
 
 ```{r, eval = FALSE}
 pup_data = 
-  read_csv("./data/FAS_pups.csv") |>
+  read_csv("./data/FAS_pups.csv", na = c("NA", "."), skip = 3) |>
   janitor::clean_names() |>
   mutate(sex = recode(sex, `1` = "male", `2` = "female")) 
 

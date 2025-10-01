@@ -1128,7 +1128,7 @@ Solution
 produces the desired information, un-tidies the result, and exports a
 table using <code>knitr::kable</code>.</p>
 <pre class="r"><code>pup_data = 
-  read_csv(&quot;./data/FAS_pups.csv&quot;) |&gt;
+  read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;), skip = 3) |&gt;
   janitor::clean_names() |&gt;
   mutate(sex = recode(sex, `1` = &quot;male&quot;, `2` = &quot;female&quot;)) 
 
