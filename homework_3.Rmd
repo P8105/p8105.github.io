@@ -1,0 +1,100 @@
+---
+title: "Homework 3"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Context
+
+This assignment reinforces ideas in [Visualization and EDA](topic_visualization_and_eda.html). 
+
+### Due date and submission
+
+Due: October 13 at 11:59pm. 
+
+Please submit (via courseworks) the web address of the GitHub repo containing your work for this assignment; git commits after the due date will cause the assignment to be considered late.
+
+R Markdown documents included as part of your solutions must not install packages, and should only load the packages necessary for your submission to knit. 
+
+
+### Points
+
+| Problem         | Points    |
+|:--------------- |:--------- |
+| Problem 0       | 20        |
+| Problem 1       | --        |
+| Problem 2       | 40        |
+| Problem 3       | 40        |
+| Optional survey | No points |
+
+
+### Problem 0
+
+This "problem" focuses on structure of your submission, especially the use git and GitHub for reproducibility, R Projects to organize your work, R Markdown to write reproducible reports, relative paths to load data from local files, and reasonable naming structures for your files. 
+
+To that end: 
+
+* create a public GitHub repo + local R Project; we suggest naming this repo / directory `p8105_hw3_YOURUNI` (e.g. `p8105_hw3_ajg2202` for Jeff), but that's not required
+* create a single .Rmd file named `p8105_hw3_YOURUNI.Rmd` that renders to `github_document`
+* create a subdirectory to store any local data files, and use relative paths to access these data files
+* submit a link to your repo via Courseworks
+
+Your solutions to Problems 1, 2, and 3 should be implemented in your .Rmd file, and your git commit history should reflect the process you used to solve these Problems. 
+
+For this Problem, we will assess adherence to the instructions above regarding repo structure, git commit history, and whether we are able to knit your .Rmd to ensure that your work is reproducible. Adherence to appropriate styling and clarity of code will be assessed in Problems 1+ using the [style rubric](homework_style_rubric.html).
+
+**This homework includes figures; the readability of your embedded plots (e.g. font sizes, axis labels, titles) will be assessed in Problems 1+.**
+
+### Problem 1 
+
+This problem uses the [Instacart](dataset_instacart.html) data. DO NOT include this dataset in your local data directory; instead, load the data from the [`p8105.datasets`](https://github.com/P8105/p8105.datasets) using:
+
+```{r, eval = FALSE}
+library(p8105.datasets)
+data("instacart")
+```
+
+The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and giving illstrative examples of observations. Then, do or answer the following (commenting on the results of each):
+
+* How many aisles are there, and which aisles are the most items ordered from? 
+* Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it. 
+* Make a table showing the three most popular items **in each of the aisles** "baking ingredients", "dog food care", and "packaged vegetables fruits". Include the number of times each item is ordered in your table.
+* Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
+
+
+### Problem 2
+
+
+This Problem uses the [Zillow](https://www.zillow.com) datasets introduced in Homework 2. Both datasets are available [here](data/zillow_data.zip). Import, clean, and otherwise tidy these datasets. 
+
+There are 116 months between January 2015 and August 2024. How many ZIP codes are observed 116 times? How many are observed fewer than 10 times? Why are some ZIP codes are observed rarely and others observed in each month?
+
+Create a reader-friendly table showing the average rental price in each borough and *year* (not month). Comment on trends in this table.
+
+Make a plot showing NYC Rental Prices within ZIP codes for all available years. Your plot should facilitate comparisons across boroughs. Comment on any significant elements of this plot.
+
+Compute the average rental price within each ZIP code over each month in 2023. Make a reader-friendly plot showing the distribution of ZIP-code-level rental prices across boroughs; put differently, your plot should facilitate the comparison of the distribution of average rental prices across boroughs. Comment on this plot.
+
+Combine the two previous plots into a single graphic, and export this to a `results` folder in your repository.
+
+### Problem 3
+
+Accelerometers have become an appealing alternative to self-report techniques for studying physical activity in observational studies and clinical trials, largely because of their relative objectivity. During observation periods, the devices can measure [MIMS](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8301210/) in a short period; one-minute intervals are common. Because accelerometers can be worn comfortably and unobtrusively, they produce around-the-clock observations.
+
+This problem uses accelerometer data collected on 250 participants in the NHANES study. The participants' demographic data can be downloaded [here](data/nhanes_covar.csv), and their accelerometer data can be downloaded [here](data/nhanes_accel.csv). **Variables `*MIMS` are the MIMS values for each minute of a 24-hour day starting at midnight.**
+
+Load, tidy, merge, and otherwise organize the data sets. Your final dataset should include all originally observed variables; exclude participants less than 21 years of age, and those with missing demographic data; and encode data with reasonable variable classes (i.e. not numeric, and using factors with the ordering of tables and plots in mind). 
+
+Produce a reader-friendly table for the number of men and women in each education category, and create a visualization of the age distributions for men and women in each education category. Comment on these items. 
+
+Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. Comment on your plot. 
+
+Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences.
+
+
+
+### Optional post-assignment survey
+
+If you'd like, a you can complete [this short survey](https://forms.gle/3BVcBA1ix91oc4Mk9) after you've finished the assignment.
