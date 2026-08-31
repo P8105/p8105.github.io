@@ -16,7 +16,7 @@ Due: September 4 at 10:00am.
 
 ### Problem 1
 
-Download and install the latest versions of [R](https://cran.r-project.org) (4.5.1) and [RStudio](https://posit.co/download/rstudio-desktop/) (2025.05.1+513). 
+Download and install the latest versions of [R](https://cran.r-project.org) (4.6.1) and [RStudio](https://posit.co/download/rstudio-desktop/) (2026.08.2+200). 
 
 Open RStudio and install several packages (and their dependencies) using the code below:
 
@@ -25,7 +25,7 @@ install.packages(
   c("tidyverse", "knitr", "rmarkdown", "janitor", "broom", "here", "readxl", 
     "haven", "ggridges", "ggthemes", "leaflet", "viridis", "skimr", 
     "rvest", "httr", "flexdashboard", "devtools", "usethis", "modelr", "mgcv", 
-    "tidytext", "shiny", "patchwork", "glmnet", "plotly"))
+    "tidytext", "shiny", "patchwork", "glmnet", "plotly", "remotes"))
 
 remotes::install_github("p8105/p8105.datasets")
 ```

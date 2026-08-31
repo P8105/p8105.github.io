@@ -13,7 +13,7 @@
 
 <title>Homework 0</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -446,16 +446,16 @@ installed relevant software and packages.</p>
 <div id="problem-1" class="section level3">
 <h3>Problem 1</h3>
 <p>Download and install the latest versions of <a
-href="https://cran.r-project.org">R</a> (4.5.1) and <a
+href="https://cran.r-project.org">R</a> (4.6.1) and <a
 href="https://posit.co/download/rstudio-desktop/">RStudio</a>
-(2025.05.1+513).</p>
+(2026.08.2+200).</p>
 <p>Open RStudio and install several packages (and their dependencies)
 using the code below:</p>
 <pre class="r"><code>install.packages(
   c(&quot;tidyverse&quot;, &quot;knitr&quot;, &quot;rmarkdown&quot;, &quot;janitor&quot;, &quot;broom&quot;, &quot;here&quot;, &quot;readxl&quot;, 
     &quot;haven&quot;, &quot;ggridges&quot;, &quot;ggthemes&quot;, &quot;leaflet&quot;, &quot;viridis&quot;, &quot;skimr&quot;, 
     &quot;rvest&quot;, &quot;httr&quot;, &quot;flexdashboard&quot;, &quot;devtools&quot;, &quot;usethis&quot;, &quot;modelr&quot;, &quot;mgcv&quot;, 
-    &quot;tidytext&quot;, &quot;shiny&quot;, &quot;patchwork&quot;, &quot;glmnet&quot;, &quot;plotly&quot;))
+    &quot;tidytext&quot;, &quot;shiny&quot;, &quot;patchwork&quot;, &quot;glmnet&quot;, &quot;plotly&quot;, &quot;remotes&quot;))
 
 remotes::install_github(&quot;p8105/p8105.datasets&quot;)</code></pre>
 <p>(Note: on a Mac running OSX, you may need to install the <a
