@@ -13,7 +13,7 @@
 
 <title>Bootstrapping</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -548,8 +548,9 @@ sim_df |&gt;
   geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;) +
   facet_grid(~data_source) </code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="bootstrapping_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+<pre><code>## `geom_smooth()` using formula
+## = &#39;y ~ x&#39;</code></pre>
+<p><img src="bootstrapping_files/figure-html/unnamed-chunk-4-1.png" alt="" width="90%" /></p>
 <p>These datasets have roughly the same overall variance, but the left
 panel shows data with constant variance and the right panel shows data
 with non-constant variance. For this reason, ordinary least squares
@@ -639,8 +640,9 @@ sample from that dataframe drawn with replacement.</p>
   ggplot(aes(x = x, y = y)) + 
   geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;)</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="bootstrapping_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
+<pre><code>## `geom_smooth()` using formula
+## = &#39;y ~ x&#39;</code></pre>
+<p><img src="bootstrapping_files/figure-html/unnamed-chunk-7-1.png" alt="" width="90%" /></p>
 <p>That looks about right. In comparison with the original data, the
 bootstrap sample has the same characteristics but isn’t a perfect
 duplicate – some original data points appear more than once, others
@@ -737,8 +739,9 @@ datasets, and to include a linear fit for each.</p>
   geom_point(alpha = .5) +
   stat_smooth(method = &quot;lm&quot;, se = FALSE) +
   facet_grid(~strap_number) </code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="bootstrapping_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
+<pre><code>## `geom_smooth()` using formula
+## = &#39;y ~ x&#39;</code></pre>
+<p><img src="bootstrapping_files/figure-html/unnamed-chunk-10-1.png" alt="" width="90%" /></p>
 <p>This shows some of the differences across bootstrap samples, and
 shows that the fitted regression lines aren’t the same for every
 bootstrap sample.</p>
@@ -810,8 +813,9 @@ bootstrap sample to build intuition for these results.</p>
   ggplot(aes(x = x, y = y)) + 
   geom_line(aes(group = strap_number), stat = &quot;smooth&quot;, method = &quot;lm&quot;, se = FALSE, alpha = .1, color = &quot;blue&quot;) +
   geom_point(data = sim_df_nonconst, alpha = .5)</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="bootstrapping_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<pre><code>## `geom_smooth()` using formula
+## = &#39;y ~ x&#39;</code></pre>
+<p><img src="bootstrapping_files/figure-html/unnamed-chunk-13-1.png" alt="" width="90%" /></p>
 <p>In comparison to the standard error bands in our previous plot (which
 are based on OLS), the distribution of regression lines is narrower near
 <span class="math inline">\(x = 0\)</span> and wider at the ends of the
@@ -908,7 +912,7 @@ covariates.</p>
 <pre class="r"><code>nyc_airbnb |&gt; 
   ggplot(aes(x = stars, y = price, color = room_type)) + 
   geom_point() </code></pre>
-<p><img src="bootstrapping_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><img src="bootstrapping_files/figure-html/unnamed-chunk-18-1.png" alt="" width="90%" /></p>
 <p>In this plot (and in <a href="linear_models.html">linear models</a>,
 we noticed that some large outliers in price might affect estimates and
 inference for the association between star rating and price. Because
@@ -926,7 +930,7 @@ sampling.</p>
   unnest(results) |&gt; 
   filter(term == &quot;stars&quot;) |&gt; 
   ggplot(aes(x = estimate)) + geom_density()</code></pre>
-<p><img src="bootstrapping_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p><img src="bootstrapping_files/figure-html/unnamed-chunk-19-1.png" alt="" width="90%" /></p>
 <p>This distribution has a heavy tail extending to low values and a bit
 of a “shoulder”, features that may be related to the frequency with
 which large outliers are included in the bootstrap sample.</p>

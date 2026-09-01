@@ -76,6 +76,8 @@ library(rvest)
 library(httr)
 ```
 
+One important caveat: this is the lecture that requires the most work from one year to the next. Pages move around: NSDUH gets reorganized from time to time. Major websites (Amazon, IMDB) build and implement anti-scraping measures and CSS tags can change during website upgrades. Sites shift from scrapable to API-reliant; public APIs become private, and then require payment. This content is still important, but getting data can be really hard!
+
 ### Extracting tables
 
 [This page](http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm) contains data from the National Survey on Drug Use and Health; it includes tables for drug use in the past year or month, separately for specific kinds of drug use. These data are potentially useful for analysis, and we'd like to be able to read in the first table. 
@@ -83,7 +85,7 @@ library(httr)
 First, let's make sure we can load the data from the web. 
 
 ```{r}
-url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+url = "https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm"
 drug_use_html = read_html(url)
 
 drug_use_html
@@ -145,7 +147,7 @@ Suppose we'd like to scrape the data about the [Star Wars Movies](https://www.im
 
 ```{r}
 swm_html = 
-  read_html("https://www.imdb.com/list/ls070150896/")
+  read_html_live("https://www.imdb.com/list/ls070150896/")
 ```
 
 The information isn't stored in a handy table, so we're going to isolate the CSS selector for elements we care about. A bit of clicking around gets me something like below. 
@@ -167,7 +169,7 @@ metascore_vec =
 
 runtime_vec = 
   swm_html |>
-  html_elements(".dli-title-metadata-item:nth-child(2)") |>
+  html_elements(".base .ipc-inline-list__item:nth-child(2)") |>
   html_text()
 
 swm_df = 

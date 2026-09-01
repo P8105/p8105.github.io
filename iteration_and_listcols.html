@@ -13,7 +13,7 @@
 
 <title>Iteration and List Columns</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -817,7 +817,7 @@ chunk, which downloads and extracts the page HTML and then iterates over
 table numbers. The results are combined using <code>bind_rows()</code>.
 Note that, because this version of our function doesn’t include
 <code>table_name</code>, that information is lost for now.</p>
-<pre class="r"><code>nsduh_url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
+<pre class="r"><code>nsduh_url = &quot;https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm&quot;
 
 nsduh_html = read_html(nsduh_url)
 
@@ -893,69 +893,53 @@ lot like <code>listcol_df</code>, in that the columns in
 <pre class="r"><code>weather_nest |&gt; pull(data)</code></pre>
 <pre><code>## [[1]]
 ## # A tibble: 730 × 4
-##    date        prcp  tmax  tmin
-##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2021-01-01   157   4.4   0.6
-##  2 2021-01-02    13  10.6   2.2
-##  3 2021-01-03    56   3.3   1.1
-##  4 2021-01-04     5   6.1   1.7
-##  5 2021-01-05     0   5.6   2.2
-##  6 2021-01-06     0   5     1.1
-##  7 2021-01-07     0   5    -1  
-##  8 2021-01-08     0   2.8  -2.7
-##  9 2021-01-09     0   2.8  -4.3
-## 10 2021-01-10     0   5    -1.6
-## # ℹ 720 more rows
+##   date        prcp  tmax  tmin
+##   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2021-01-01   157   4.4   0.6
+## 2 2021-01-02    13  10.6   2.2
+## 3 2021-01-03    56   3.3   1.1
+## 4 2021-01-04     5   6.1   1.7
+## 5 2021-01-05     0   5.6   2.2
+## 6 2021-01-06     0   5     1.1
+## # ℹ 724 more rows
 ## 
 ## [[2]]
 ## # A tibble: 730 × 4
-##    date        prcp  tmax  tmin
-##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2021-01-01     0  27.8  22.2
-##  2 2021-01-02     0  28.3  23.9
-##  3 2021-01-03     0  28.3  23.3
-##  4 2021-01-04     0  30    18.9
-##  5 2021-01-05     0  28.9  21.7
-##  6 2021-01-06     0  27.8  20  
-##  7 2021-01-07     0  29.4  21.7
-##  8 2021-01-08     0  28.3  18.3
-##  9 2021-01-09     0  27.8  18.9
-## 10 2021-01-10     0  28.3  18.9
-## # ℹ 720 more rows
+##   date        prcp  tmax  tmin
+##   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2021-01-01     0  27.8  22.2
+## 2 2021-01-02     0  28.3  23.9
+## 3 2021-01-03     0  28.3  23.3
+## 4 2021-01-04     0  30    18.9
+## 5 2021-01-05     0  28.9  21.7
+## 6 2021-01-06     0  27.8  20  
+## # ℹ 724 more rows
 ## 
 ## [[3]]
 ## # A tibble: 730 × 4
-##    date        prcp  tmax  tmin
-##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2021-01-01   254   3.2   0  
-##  2 2021-01-02   152   0.9  -3.2
-##  3 2021-01-03     0   0.2  -4.2
-##  4 2021-01-04   559   0.9  -3.2
-##  5 2021-01-05    25   0.5  -3.3
-##  6 2021-01-06    51   0.8  -4.8
-##  7 2021-01-07     0   0.2  -5.8
-##  8 2021-01-08    25   0.5  -8.3
-##  9 2021-01-09     0   0.1  -7.7
-## 10 2021-01-10   203   0.9  -0.1
-## # ℹ 720 more rows</code></pre>
+##   date        prcp  tmax  tmin
+##   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2021-01-01   254   3.2   0  
+## 2 2021-01-02   152   0.9  -3.2
+## 3 2021-01-03     0   0.2  -4.2
+## 4 2021-01-04   559   0.9  -3.2
+## 5 2021-01-05    25   0.5  -3.3
+## 6 2021-01-06    51   0.8  -4.8
+## # ℹ 724 more rows</code></pre>
 <p>Of course, if you can <code>nest</code> data you should be able to
 <code>unnest</code> it as well, and you can (with the caveat that you’re
 unnesting a list column that contains a data frame).</p>
 <pre class="r"><code>unnest(weather_nest, cols = data)</code></pre>
 <pre><code>## # A tibble: 2,190 × 6
-##    name           id          date        prcp  tmax  tmin
-##    &lt;chr&gt;          &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6
-##  2 CentralPark_NY USW00094728 2021-01-02    13  10.6   2.2
-##  3 CentralPark_NY USW00094728 2021-01-03    56   3.3   1.1
-##  4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7
-##  5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2
-##  6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1
-##  7 CentralPark_NY USW00094728 2021-01-07     0   5    -1  
-##  8 CentralPark_NY USW00094728 2021-01-08     0   2.8  -2.7
-##  9 CentralPark_NY USW00094728 2021-01-09     0   2.8  -4.3
-## 10 CentralPark_NY USW00094728 2021-01-10     0   5    -1.6
-## # ℹ 2,180 more rows</code></pre>
+##   name           id          date        prcp  tmax  tmin
+##   &lt;chr&gt;          &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6
+## 2 CentralPark_NY USW00094728 2021-01-02    13  10.6   2.2
+## 3 CentralPark_NY USW00094728 2021-01-03    56   3.3   1.1
+## 4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7
+## 5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2
+## 6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1
+## # ℹ 2,184 more rows</code></pre>
 <p>Nesting columns can help with data organization and comprehension by
 masking complexity you’re less concerned about right now and clarifying
 the things you are concerned about. In the weather data, it can be
@@ -1091,140 +1075,140 @@ I <code>unnest</code> the result of <code>map</code>.</p>
   mutate(data = map(path, read_csv)) %&gt;% 
   unnest()</code></pre>
 <pre><code>## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## Rows: 1 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (8): week_1, week_2, week_3, week_4, week_5, week_6, week_7, week_8
 ## 
@@ -1254,7 +1238,7 @@ faceted by group.</p>
   geom_point() + 
   geom_path() + 
   facet_grid(~group)</code></pre>
-<p><img src="iteration_and_listcols_files/figure-html/unnamed-chunk-37-1.png" width="90%" /></p>
+<p><img src="iteration_and_listcols_files/figure-html/unnamed-chunk-37-1.png" alt="" width="90%" /></p>
 <p>This plot suggests high within-subject correlation – subjects who
 start above average end up above average, and those that start below
 average end up below average. Subjects in the control group generally

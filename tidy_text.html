@@ -13,7 +13,7 @@
 
 <title>Tidy text</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -542,7 +542,7 @@ below. It’s not perfectly current but can illustrate the main ideas in
 <pre class="r"><code>dynamite_reviews = 
   read_csv(&quot;data/dynamite_reviews.csv&quot;)</code></pre>
 <pre><code>## Rows: 1000 Columns: 4
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (2): title, text
 ## dbl (2): review_num, stars
@@ -567,7 +567,8 @@ you want to remove might be different.</p>
 
 dynamite_words = 
   anti_join(dynamite_words, stop_words)</code></pre>
-<pre><code>## Joining with `by = join_by(word)`</code></pre>
+<pre><code>## Joining with `by =
+## join_by(word)`</code></pre>
 <p>Great! Let’s take a look at the most commonly used (informative)
 words in this dataset.</p>
 <pre class="r"><code>dynamite_words |&gt; 
@@ -578,7 +579,7 @@ words in this dataset.</p>
   geom_bar(stat = &quot;identity&quot;, fill = &quot;blue&quot;, alpha = .6) + 
   coord_flip()</code></pre>
 <pre><code>## Selecting by n</code></pre>
-<p><img src="tidy_text_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><img src="tidy_text_files/figure-html/unnamed-chunk-6-1.png" alt="" width="90%" /></p>
 </div>
 <div id="comparing-words-across-groups" class="section level3">
 <h3>Comparing words across groups</h3>
@@ -698,7 +699,7 @@ that appear much more frequently in one group than the other) below.</p>
   coord_flip() +
   ylab(&quot;log odds ratio (5/1)&quot;) +
   scale_fill_discrete(name = &quot;&quot;)</code></pre>
-<p><img src="tidy_text_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
+<p><img src="tidy_text_files/figure-html/unnamed-chunk-8-1.png" alt="" width="90%" /></p>
 <p>Words like “classic”, “awesome”, and “love” have high relative
 frequency in the 5-star reviews and “boring”, “dumb”, and “bad” have
 high relative frequency in the 1-star reviews. This seems to be a
@@ -732,7 +733,8 @@ between the number of positive words and negative words.</p>
     values_fill = 0) |&gt; 
   mutate(review_sentiment = positive - negative) |&gt; 
   select(review_num, review_sentiment)</code></pre>
-<pre><code>## Joining with `by = join_by(word)`</code></pre>
+<pre><code>## Joining with `by =
+## join_by(word)`</code></pre>
 <p>We now have sentiment scores for each inspection. We’ll combine these
 with our original dataset, which had inspections in each row rather than
 words in each row – the data tidied for text analysis aren’t really
@@ -753,7 +755,7 @@ stars.</p>
     axis.title.x=element_blank(),
     axis.text.x=element_blank(),
     axis.ticks.x=element_blank())</code></pre>
-<p><img src="tidy_text_files/figure-html/sentiment_plot-1.png" width="90%" /></p>
+<p><img src="tidy_text_files/figure-html/sentiment_plot-1.png" alt="" width="90%" /></p>
 <p>Sentiment seems to be at least somewhat associated with star rating
 in that more positive sentiments are more yellow-green (4-5 stars) and
 more negative sentiments are more blue-purple.</p>

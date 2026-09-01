@@ -13,7 +13,7 @@
 
 <title>Exploratory analysis using data summaries</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -498,10 +498,13 @@ for example, this histogram of precipitation values:</p>
 <pre class="r"><code>weather_df |&gt; 
   ggplot(aes(x = prcp)) + 
   geom_histogram()
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## Warning: Removed 15 rows containing non-finite outside the scale range
-## (`stat_bin()`).</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
+## `stat_bin()` using `bins =
+## 30`. Pick better value
+## `binwidth`.
+## Warning: Removed 15 rows containing
+## non-finite outside the scale
+## range (`stat_bin()`).</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-3-1.png" alt="" width="90%" /></p>
 <p>This is clearly a very skewed distribution; any formal analyses
 involving preciptation as a predictor or outcome might be influenced by
 this fact. It’s important to note that the vast majority of days have no
@@ -529,7 +532,7 @@ report temperature values differently from Waterhole …</p>
   filter(tmax &gt;= 20, tmax &lt;= 30) |&gt; 
   ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) + 
   geom_point(alpha = .75)</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" alt="" width="90%" /></p>
 <p>Depending on the nature of later analyses, understanding how these
 differ and implementing an approach to bring the reports into alignment
 might be necessary.</p>
@@ -584,8 +587,19 @@ dataset.</p>
 <pre class="r"><code>weather_df |&gt;
   group_by(name, month) |&gt;
   summarize(n_obs = n())
-## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.
+## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by name and month.
+## ℹ Output is grouped by name.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(name, month))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.
 ## # A tibble: 72 × 3
 ## # Groups:   name [3]
 ##   name           month      n_obs
@@ -664,8 +678,19 @@ manipulation steps and <code>group_by</code> +
   filter(name != &quot;Molokai_HI&quot;) |&gt; 
   group_by(name, cold) |&gt; 
   summarize(count = n())
-## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.
+## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by name and cold.
+## ℹ Output is grouped by name.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(name, cold))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.
 ## # A tibble: 4 × 3
 ## # Groups:   name [2]
 ##   name           cold     count
@@ -737,8 +762,19 @@ they apply and include any additional arguments as necessary.</p>
   summarize(
     mean_tmax = mean(tmax),
     median_tmax = median(tmax))
-## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.
+## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by name and month.
+## ℹ Output is grouped by name.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(name, month))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.
 ## # A tibble: 72 × 4
 ## # Groups:   name [3]
 ##   name           month      mean_tmax median_tmax
@@ -755,8 +791,19 @@ they apply and include any additional arguments as necessary.</p>
 <pre class="r"><code>weather_df |&gt;
   group_by(name, month) |&gt;
   summarize(across(tmin:prcp, mean))
-## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.
+## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by name and month.
+## ℹ Output is grouped by name.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(name, month))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.
 ## # A tibble: 72 × 5
 ## # Groups:   name [3]
 ##   name           month       tmin  tmax  prcp
@@ -779,9 +826,20 @@ plot based on the monthly summary:</p>
   ggplot(aes(x = month, y = mean_tmax, color = name)) + 
     geom_point() + geom_line() + 
     theme(legend.position = &quot;bottom&quot;)
-## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by name and month.
+## ℹ Output is grouped by name.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(name, month))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.</code></pre>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-17-1.png" alt="" width="90%" /></p>
 <p>The results of <code>group_by()</code> and <code>summarize()</code>
 are generally tidy, but presenting reader-friendly results for this kind
 of exploratory analysis often benefits from some un-tidying. For
@@ -794,8 +852,19 @@ in a more human-readable format.</p>
     names_from = name,
     values_from = mean_tmax) |&gt; 
   knitr::kable(digits = 1)
-## `summarise()` has grouped output by &#39;name&#39;. You can override using the
-## `.groups` argument.</code></pre>
+## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by name and month.
+## ℹ Output is grouped by name.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(name, month))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -969,9 +1038,11 @@ result. You could do so using:</p>
     centered_tmax = tmax - mean_tmax) |&gt; 
   ggplot(aes(x = date, y = centered_tmax, color = name)) + 
     geom_point() 
-## Warning: Removed 17 rows containing missing values or values outside the scale range
+## Warning: Removed 17 rows containing
+## missing values or values
+## outside the scale range
 ## (`geom_point()`).</code></pre>
-<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-19-1.png" alt="" width="90%" /></p>
 </div>
 <div id="window-functions" class="section level3">
 <h3>Window functions</h3>

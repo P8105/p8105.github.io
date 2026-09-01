@@ -13,7 +13,7 @@
 
 <title>Statistical Learning</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -463,7 +463,7 @@ library(glmnet)</code></pre>
 <pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
 ## 
 ##     expand, pack, unpack</code></pre>
-<pre><code>## Loaded glmnet 4.1-10</code></pre>
+<pre><code>## Loaded glmnet 5.0</code></pre>
 <pre class="r"><code>set.seed(11)</code></pre>
 <div id="lasso" class="section level3">
 <h3>Lasso</h3>
@@ -500,7 +500,7 @@ from the result.</p>
     malform = as.logical(malform)) |&gt; 
   sample_n(200)</code></pre>
 <pre><code>## Rows: 4342 Columns: 20
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (20): babysex, bhead, blength, bwt, delwt, fincome, frace, gaweeks, malf...
 ## 
@@ -544,7 +544,7 @@ determined using cross validation, is shown by a vertical blue line.</p>
   geom_path() + 
   geom_vline(xintercept = lambda_opt, color = &quot;blue&quot;, size = 1.2) +
   theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-5-1.png" alt="" width="90%" /></p>
 <p>The next plot shows the CV curve itself. This is relatively shallow –
 having nothing at all in your model isn’t great, but you can get
 reasonable predictions from models that have “too many” predictors.</p>
@@ -552,7 +552,7 @@ reasonable predictions from models that have “too many” predictors.</p>
   broom::tidy() |&gt; 
   ggplot(aes(x = log(lambda, 10), y = estimate)) + 
   geom_point()  </code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-6-1.png" alt="" width="90%" /></p>
 <p>The coefficients from the optimal model are shown below.</p>
 <pre class="r"><code>lasso_fit = 
   glmnet(x, y, lambda = lambda_opt)
@@ -595,7 +595,7 @@ we won’t address). To make results easy to visualize, we look only at
   janitor::clean_names() |&gt; 
   select(hp, speed)</code></pre>
 <pre><code>## Rows: 800 Columns: 13
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (3): Name, Type 1, Type 2
 ## dbl (9): #, Total, HP, Attack, Defense, Sp. Atk, Sp. Def, Speed, Generation
@@ -606,7 +606,7 @@ we won’t address). To make results easy to visualize, we look only at
 <pre class="r"><code>poke_df |&gt; 
   ggplot(aes(x = hp, y = speed)) + 
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-8-1.png" alt="" width="90%" /></p>
 <p>K-means clustering is established enough that it’s implemented in the
 base R <code>stats</code> package in the <code>kmeans</code> function.
 This also has a bit of an outdated interface, but there you go. The code
@@ -623,7 +623,7 @@ cluster assignments to the data, and plot the results.</p>
 poke_df |&gt; 
   ggplot(aes(x = hp, y = speed, color = .cluster)) +
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-10-1.png" alt="" width="90%" /></p>
 <p>Clusters are broadly interpretable, but this still doesn’t come with
 inference. Also, at boundaries between clusters, the distinctions can
 seem a bit … arbitrary.</p>
@@ -642,7 +642,7 @@ clusts |&gt;
   ggplot(aes(hp, speed, color = .cluster)) +
   geom_point(aes(color = .cluster)) +
   facet_grid(~k)</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-11-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-11-1.png" alt="" width="90%" /></p>
 <p>There are metrics that can suggest which of these is the better
 choice, but we won’t get into that.</p>
 </div>
@@ -674,7 +674,7 @@ penguins =
 penguins |&gt; 
   ggplot(aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + 
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-12-1.png" alt="" width="90%" /></p>
 <p>We’ll again use <code>kmeans</code> to identify clusters in a
 data-driven way. We remove the <code>species</code> variable and rescale
 the remaining columns, since <code>kmeans</code> is sensitive to
@@ -692,7 +692,7 @@ penguins |&gt;
     aes(x = bill_length_mm, y = flipper_length_mm,
         color = .cluster, shape = species)) + 
   geom_point(size = 2)</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-13-1.png" alt="" width="90%" /></p>
 <p>As shown in the table below, the data-driven clusters don’t perfectly
 correspond to the penguins’ species, but the alignment is pretty good.
 This is helpful for illustrating a good use-case for clustering – if the
@@ -726,7 +726,7 @@ process we’ll focus on is:</p>
 <pre class="r"><code>traj_data = 
   read_csv(&quot;data/trajectories.csv&quot;)</code></pre>
 <pre><code>## Rows: 1600 Columns: 3
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## dbl (3): subj, week, value
 ## 
@@ -736,7 +736,7 @@ process we’ll focus on is:</p>
   ggplot(aes(x = week, y = value, group = subj)) + 
   geom_point() + 
   geom_path()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-15-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-15-1.png" alt="" width="90%" /></p>
 <p>Next we’ll do some data manipulation. These steps compute the SLRs,
 extract estimates, and format the data for k-means clustering.</p>
 <pre class="r"><code>int_slope_df = 
@@ -760,7 +760,7 @@ concrete.</p>
 <pre class="r"><code>int_slope_df |&gt; 
   ggplot(aes(x = int, y = slope)) + 
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-17-1.png" alt="" width="90%" /></p>
 <pre class="r"><code>km_fit = 
   kmeans(
     x = int_slope_df |&gt; select(-subj) |&gt; scale(), 
@@ -774,7 +774,7 @@ for.</p>
 <pre class="r"><code>int_slope_df |&gt; 
   ggplot(aes(x = int, y = slope, color = .cluster)) +
   geom_point()</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-18-1.png" alt="" width="90%" /></p>
 <p>Finally, we’ll add the cluster assignments to the original trajectory
 data and plot based on this. Again, the cluster assignments are okay but
 maybe not great.</p>
@@ -782,8 +782,9 @@ maybe not great.</p>
   ggplot(aes(x = week, y = value, group = subj, color = .cluster)) + 
   geom_point() + 
   geom_path() </code></pre>
-<pre><code>## Joining with `by = join_by(subj)`</code></pre>
-<p><img src="stat_learning_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<pre><code>## Joining with `by =
+## join_by(subj)`</code></pre>
+<p><img src="stat_learning_files/figure-html/unnamed-chunk-19-1.png" alt="" width="90%" /></p>
 <p>This example is very much related to “trajectory analysis”, which has
 become pretty popular recently (maybe because <code>PROC TRAJ</code>
 exists in SAS …). The basic idea is to use tools from longitudinal data

@@ -13,7 +13,7 @@
 
 <title>Linear models</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -651,11 +651,11 @@ pipeline of commands to conduct inspections and perform diagnostics.</p>
 <pre class="r"><code>nyc_airbnb |&gt; 
   modelr::add_residuals(fit) |&gt; 
   ggplot(aes(x = borough, y = resid)) + geom_violin()</code></pre>
-<p><img src="linear_models_files/figure-html/unnamed-chunk-10-1.png" width="90%" /></p>
+<p><img src="linear_models_files/figure-html/unnamed-chunk-10-1.png" alt="" width="90%" /></p>
 <pre class="r"><code>nyc_airbnb |&gt; 
   modelr::add_residuals(fit) |&gt; 
   ggplot(aes(x = stars, y = resid)) + geom_point()</code></pre>
-<p><img src="linear_models_files/figure-html/unnamed-chunk-10-2.png" width="90%" /></p>
+<p><img src="linear_models_files/figure-html/unnamed-chunk-10-2.png" alt="" width="90%" /></p>
 <p>This example has some obvious issues, most notably the presence of
 extremely large outliers in price and a generally skewed residual
 distribution. There are a few things we might try to do here – including
@@ -948,7 +948,7 @@ coefficients related to room type.</p>
   geom_point() + 
   facet_wrap(~term) + 
   theme(axis.text.x = element_text(angle = 80, hjust = 1))</code></pre>
-<p><img src="linear_models_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+<p><img src="linear_models_files/figure-html/unnamed-chunk-17-1.png" alt="" width="90%" /></p>
 <p>There is, generally speaking, a reduction in room price for a private
 room or a shared room compared to an entire apartment, but this varies
 quite a bit across neighborhoods.</p>
@@ -970,11 +970,11 @@ using a mixed-model spinoff of the <code>broom</code> package.</p>
 ##  3 fixed    &lt;NA&gt;         room_typePrivate room      -124.         7.80   -15.9  
 ##  4 fixed    &lt;NA&gt;         room_typeShared room       -157.        12.9    -12.2  
 ##  5 ran_pars neighborhood sd__(Intercept)              59.3       NA       NA    
-##  6 ran_pars neighborhood cor__(Intercept).room_typ…   -0.987     NA       NA    
-##  7 ran_pars neighborhood cor__(Intercept).room_typ…   -1.000     NA       NA    
-##  8 ran_pars neighborhood sd__room_typePrivate room    36.7       NA       NA    
-##  9 ran_pars neighborhood cor__room_typePrivate roo…    0.992     NA       NA    
-## 10 ran_pars neighborhood sd__room_typeShared room     43.6       NA       NA    
+##  6 ran_pars neighborhood sd__room_typePrivate room    36.7       NA       NA    
+##  7 ran_pars neighborhood sd__room_typeShared room     43.6       NA       NA    
+##  8 ran_pars neighborhood cor__(Intercept).room_typ…   -0.987     NA       NA    
+##  9 ran_pars neighborhood cor__(Intercept).room_typ…   -1.000     NA       NA    
+## 10 ran_pars neighborhood cor__room_typePrivate roo…    0.992     NA       NA    
 ## 11 ran_pars Residual     sd__Observation             198.        NA       NA</code></pre>
 <p>Mixed models are pretty great!</p>
 </div>
@@ -1002,7 +1002,7 @@ wrangles the data for analysis.</p>
     victim_race = fct_relevel(victim_race, &quot;White&quot;)) |&gt; 
   select(resolved, victim_age, victim_race, victim_sex)</code></pre>
 <pre><code>## Rows: 52179 Columns: 12
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (9): uid, victim_last, victim_first, victim_race, victim_age, victim_sex...
 ## dbl (3): reported_date, lat, lon

@@ -308,7 +308,7 @@ nsduh_table <- function(html, table_num) {
 We can use this function to import three tables using the next code chunk, which downloads and extracts the page HTML and then iterates over table numbers. The results are combined using `bind_rows()`. Note that, because this version of our function doesn't include `table_name`, that information is lost for now. 
 
 ```{r}
-nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+nsduh_url = "https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm"
 
 nsduh_html = read_html(nsduh_url)
 

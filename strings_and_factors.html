@@ -13,7 +13,7 @@
 
 <title>Strings and factors</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -487,13 +487,8 @@ also use some datasets in <code>p8105.datasets</code> so I’ll load that
 as well. And finally, we’ll use some of <a
 href="./resources/data_import_examples.zip">these examples</a>, so I’ll
 make sure I have them in a <code>data</code> subdirectory..</p>
-<pre class="r"><code>library(rvest)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;rvest&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:readr&#39;:
-## 
-##     guess_encoding</code></pre>
-<pre class="r"><code>library(p8105.datasets)</code></pre>
+<pre class="r"><code>library(rvest)
+library(p8105.datasets)</code></pre>
 <div id="strings-and-regex" class="section level3">
 <h3>Strings and regex</h3>
 <p>Lots of the examples below are drawn from materials by <a
@@ -630,7 +625,7 @@ href="http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k1
 page</a>. In <a href="reading_data_from_the_web.html">reading data from
 the web</a>, we loaded this data using the code below, but noted it
 wasn’t tidy.</p>
-<pre class="r"><code>nsduh_url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
+<pre class="r"><code>nsduh_url = &quot;https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm&quot;
 
 table_marj = 
   read_html(nsduh_url) |&gt; 
@@ -674,7 +669,7 @@ reorder according to the median <code>percent</code> value.</p>
   ggplot(aes(x = State, y = percent, color = year)) + 
     geom_point() + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-12-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-12-1.png" alt="" width="90%" /></p>
 </div>
 <div id="restaurant-inspections" class="section level3">
 <h3>Restaurant inspections</h3>
@@ -696,8 +691,21 @@ rest_inspec |&gt;
   group_by(borough, grade) |&gt; 
   summarize(n = n()) |&gt; 
   pivot_wider(names_from = grade, values_from = n)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;borough&#39;. You can override using the
-## `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by borough and
+##   grade.
+## ℹ Output is grouped by
+##   borough.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(borough, grade))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.</code></pre>
 <pre><code>## # A tibble: 6 × 9
 ## # Groups:   borough [6]
 ##   borough           A     B     C  `NA`     N     P     Z     G
@@ -723,8 +731,21 @@ borough.</p>
   group_by(borough, grade) |&gt; 
   summarize(n = n()) |&gt; 
   pivot_wider(names_from = grade, values_from = n)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;borough&#39;. You can override using the
-## `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by borough and
+##   grade.
+## ℹ Output is grouped by
+##   borough.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(borough, grade))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.</code></pre>
 <pre><code>## # A tibble: 4 × 3
 ## # Groups:   borough [4]
 ##   borough       A     B
@@ -741,8 +762,21 @@ case-sensitive until we tell it not to be:</p>
   group_by(borough, grade) |&gt; 
   summarize(n = n()) |&gt; 
   pivot_wider(names_from = grade, values_from = n)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;borough&#39;. You can override using the
-## `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by borough and
+##   grade.
+## ℹ Output is grouped by
+##   borough.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(borough, grade))` for
+##   per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.</code></pre>
 <pre><code>## # A tibble: 5 × 4
 ## # Groups:   borough [5]
 ##   borough           A     B     C
@@ -757,7 +791,7 @@ case-sensitive until we tell it not to be:</p>
   filter(str_detect(dba, &quot;[Pp][Ii][Zz][Zz][Aa]&quot;)) |&gt;
   ggplot(aes(x = borough, fill = grade)) + 
   geom_bar() </code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-17-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-17-1.png" alt="" width="90%" /></p>
 <p>Might help to have things in a different order – maybe number of
 pizza places? Fortunately this can be done using
 <code>fct_infreq</code>.</p>
@@ -766,7 +800,7 @@ pizza places? Fortunately this can be done using
   mutate(borough = fct_infreq(borough)) |&gt;
   ggplot(aes(x = borough, fill = grade)) + 
   geom_bar() </code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-18-1.png" alt="" width="90%" /></p>
 <p>Suppose I want to rename a borough. I could try using
 <code>str_replace</code>.</p>
 <pre class="r"><code>rest_inspec |&gt; 
@@ -776,7 +810,7 @@ pizza places? Fortunately this can be done using
     borough = str_replace(borough, &quot;Manhattan&quot;, &quot;The City&quot;)) |&gt;
   ggplot(aes(x = borough, fill = grade)) + 
   geom_bar() </code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-19-1.png" alt="" width="90%" /></p>
 <p>This renamed the borough, but then converted the result back to a
 string – which, when plotted, was implicitly made a factor and ordered
 alphabetically. I could switch the order in which I rename and encode
@@ -790,12 +824,15 @@ try to do this using <code>replace</code>.</p>
     borough = replace(borough, which(borough == &quot;Manhattan&quot;), &quot;The City&quot;)) |&gt;
   ggplot(aes(x = borough, fill = grade)) + 
   geom_bar()</code></pre>
-<pre><code>## Warning: There was 1 warning in `mutate()`.
-## ℹ In argument: `borough = replace(borough, which(borough == &quot;Manhattan&quot;), &quot;The
-##   City&quot;)`.
+<pre><code>## Warning: There was 1 warning in
+## `mutate()`.
+## ℹ In argument: `borough =
+##   replace(borough,
+##   which(borough ==
+##   &quot;Manhattan&quot;), &quot;The City&quot;)`.
 ## Caused by warning in `[&lt;-.factor`:
 ## ! invalid factor level, NA generated</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-20-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-20-1.png" alt="" width="90%" /></p>
 <p>That didn’t work at all! Factors have very specific values, trying to
 use a value that is not an existing factor level won’t work.</p>
 <p>Fortunately there is a dedicated function for renaming factor
@@ -807,7 +844,7 @@ levels:</p>
     borough = fct_recode(borough, &quot;The City&quot; = &quot;Manhattan&quot;)) |&gt;
   ggplot(aes(x = borough, fill = grade)) + 
   geom_bar()</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-21-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-21-1.png" alt="" width="90%" /></p>
 <p>Success!</p>
 </div>
 <div id="weather-data" class="section level3">
@@ -827,7 +864,7 @@ data(&quot;weather_df&quot;)</code></pre>
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-23-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-23-1.png" alt="" width="90%" /></p>
 <p>We could instead reorder <code>name</code> according to
 <code>tmax</code> values in each name using
 <code>fct_reorder</code>:</p>
@@ -836,7 +873,7 @@ data(&quot;weather_df&quot;)</code></pre>
   ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), color = &quot;blue&quot;, alpha = .5) + 
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-24-1.png" alt="" width="90%" /></p>
 <p>Although you may not have seen linear regression previously, the
 ordering of factor variables play an important in this case as well.
 Specifically, the ordering determines the “reference” category, and is
@@ -925,7 +962,7 @@ nyc_airbnb |&gt;
   geom_boxplot() +
   coord_flip() + 
   ylim(0, 1000)</code></pre>
-<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-27-1.png" width="90%" /></p>
+<p><img src="strings_and_factors_files/figure-html/unnamed-chunk-27-1.png" alt="" width="90%" /></p>
 </div>
 </div>
 <div id="other-materials" class="section level2">

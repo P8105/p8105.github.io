@@ -183,7 +183,7 @@ For this reason, it's important to be deliberate factors, particularly by using 
 We'll revisit the table scraped from the National Survey on Drug Use and Health data on [this page](http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm). In [reading data from the web](reading_data_from_the_web.html), we loaded this data using the code below, but noted it wasn't tidy. 
 
 ```{r}
-nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+nsduh_url = "https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm"
 
 table_marj = 
   read_html(nsduh_url) |> 

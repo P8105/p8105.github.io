@@ -13,7 +13,7 @@
 
 <title>Data Import</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -482,17 +482,7 @@ start an R Markdown; I’m reusing this <a
 href="resources/template.Rmd">template</a>. We’re also going to be
 making extensive use of the <code>tidyverse</code> package, so go ahead
 and load that in a “setup” code chunk.</p>
-<pre class="r"><code>library(tidyverse)
-## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-## ✔ purrr     1.1.0     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <div id="paths" class="section level3">
 <h3>Paths</h3>
 <p>We’ve mentioned paths and your working directory in passing (when
@@ -526,7 +516,7 @@ href="https://twitter.com/hadleywickham/status/940021008764846080">taking
 big risks</a>…)</p>
 <p>The code below finds my current working directory:</p>
 <pre class="r"><code>getwd()
-## [1] &quot;/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/fall_2025/p8105.github.io&quot;</code></pre>
+## [1] &quot;/Users/jeffgoldsmith/Library/CloudStorage/OneDrive-cumc.columbia.edu/Work/Teaching/P8105/fall_2026/p8105.github.io&quot;</code></pre>
 <p>A relative path to the same file as the absolute path above is</p>
 <pre><code>&quot;./data/FAS_litters.csv&quot;</code></pre>
 <p>The table below, copied from <a
@@ -593,7 +583,7 @@ handled in basically the same way. To import a CSV, we’ll use a function
 from <code>readr</code> (included in the tidyverse):</p>
 <pre class="r"><code>litters_df = read_csv(file = &quot;./data/FAS_litters.csv&quot;)
 ## Rows: 49 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (4): Group, Litter Number, GD0 weight, GD18 weight
 ## dbl (4): GD of Birth, Pups born alive, Pups dead @ birth, Pups survive
@@ -635,8 +625,13 @@ Solution
 </summary>
 <p>For me, loading the data with absolute and relative paths might look
 like the following:</p>
-<pre class="r"><code>pups_df = read_csv(file = &quot;./data/FAS_pups.csv&quot;)
-pups_df = read_csv(file = &quot;~/Desktop/data_wranging_i/data/FAS_litters.csv&quot;)</code></pre>
+<pre class="r"><code>pups_df = 
+    read_csv(file = &quot;./data/FAS_pups.csv&quot;, skip = 3)
+
+pups_df = 
+    read_csv(
+        file = &quot;~/Desktop/data_wranging_i/data/FAS_litters.csv&quot;,
+        skip = 3)</code></pre>
 <p>If I move the directory holding this example, the relative path works
 and the absolute path is broken.</p>
 </details>
@@ -898,7 +893,7 @@ not assume the first row are variable names:</p>
     read_csv(file = &quot;./data/FAS_litters.csv&quot;,
     skip = 10, col_names = FALSE)
 ## Rows: 40 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (4): X1, X2, X3, X4
 ## dbl (4): X5, X6, X7, X8
@@ -932,7 +927,7 @@ cells as missing.</p>
         file = &quot;./data/FAS_litters.csv&quot;,
         na = c(&quot;.&quot;, &quot;NA&quot;, &quot;&quot;))
 ## Rows: 49 Columns: 8
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -1027,7 +1022,9 @@ Solution
 <p>After some tinkering, the code I’d use to import and view the pups
 dataset is below.</p>
 <pre class="r"><code>pups_df = 
-    read_csv(&quot;./data/FAS_pups.csv&quot;,
+    read_csv(
+        file = &quot;./data/FAS_pups.csv&quot;,
+        skip = 3,
         na = c(&quot;.&quot;, &quot;NA&quot;), col_types = &quot;fddddd&quot;)
 
 skimr::skim(pups_df)</code></pre>
@@ -1109,8 +1106,8 @@ Solution
 </summary>
 <p>The code below shows how I might load the dataset using different
 import functions, and how I might compare the results.</p>
-<pre class="r"><code>pups_base = read.csv(&quot;./data/FAS_pups.csv&quot;)
-pups_readr = read_csv(&quot;./data/FAS_pups.csv&quot;)
+<pre class="r"><code>pups_base = read.csv(&quot;./data/FAS_pups.csv&quot;, skip = 3)
+pups_readr = read_csv(&quot;./data/FAS_pups.csv&quot;, skip = 3)
 
 View(pups_base)
 View(pups_readr)

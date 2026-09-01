@@ -13,7 +13,7 @@
 
 <title>Tidy data and relational datasets</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -615,7 +615,7 @@ Solution
       &quot;gd18_weight&quot; ~ 18
     ))
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -773,6 +773,7 @@ sex as an ambiguous numeric variable.)</p>
 <pre class="r"><code>pup_df = 
   read_csv(
     &quot;./data/FAS_pups.csv&quot;,
+    skip = 3,
     na = c(&quot;NA&quot;, &quot;&quot;, &quot;.&quot;)) |&gt;
   janitor::clean_names() |&gt;
   mutate(
@@ -783,7 +784,7 @@ sex as an ambiguous numeric variable.)</p>
         2 ~ &quot;female&quot;),
     sex = as.factor(sex)) 
 ## Rows: 313 Columns: 6
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Litter Number
 ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
@@ -802,7 +803,7 @@ litter_df =
     wt_gain = gd18_weight - gd0_weight,
     dose = str_to_lower(dose))
 ## Rows: 49 Columns: 8
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...

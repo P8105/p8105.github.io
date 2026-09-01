@@ -13,7 +13,7 @@
 
 <title>Writing Functions</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -522,9 +522,11 @@ a variety of inputs to see what happens.</p>
 <pre class="r"><code>z_scores(3)</code></pre>
 <pre><code>## [1] NA</code></pre>
 <pre class="r"><code>z_scores(&quot;my name is jeff&quot;)</code></pre>
-<pre><code>## Error in x - mean(x): non-numeric argument to binary operator</code></pre>
+<pre><code>## Error in `x - mean(x)`:
+## ! non-numeric argument to binary operator</code></pre>
 <pre class="r"><code>z_scores(iris)</code></pre>
-<pre><code>## Error in is.data.frame(x): &#39;list&#39; object cannot be coerced to type &#39;double&#39;</code></pre>
+<pre><code>## Error in `is.data.frame()`:
+## ! &#39;list&#39; object cannot be coerced to type &#39;double&#39;</code></pre>
 <pre class="r"><code>z_scores(sample(c(TRUE, FALSE), 25, replace = TRUE))</code></pre>
 <pre><code>##  [1] -0.7348469  1.3063945 -0.7348469 -0.7348469  1.3063945  1.3063945
 ##  [7] -0.7348469 -0.7348469 -0.7348469  1.3063945  1.3063945 -0.7348469
@@ -736,7 +738,7 @@ web</a>, we wrote code that allowed us to scrape information in from a
 page containing NSDUH results. We refined the resulting table in <a
 href="strings_and_factors.html">strings and factors</a>. A version of
 our prior code is below.</p>
-<pre class="r"><code>nsduh_url = &quot;http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm&quot;
+<pre class="r"><code>nsduh_url = &quot;https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm&quot;
 
 nsduh_html = read_html(nsduh_url)
 

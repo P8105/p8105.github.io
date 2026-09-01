@@ -13,7 +13,7 @@
 
 <title>Simulation</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -562,7 +562,7 @@ and compute some summaries for our simulation results.</p>
 <pre class="r"><code>sim_results_df |&gt; 
   ggplot(aes(x = mu_hat)) + 
   geom_density()</code></pre>
-<p><img src="simulation_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
+<p><img src="simulation_files/figure-html/unnamed-chunk-5-1.png" alt="" width="90%" /></p>
 <pre class="r"><code>sim_results_df |&gt; 
   pivot_longer(
     mu_hat:sigma_hat,
@@ -638,7 +638,7 @@ sample sizes.</p>
     sample_size = fct_inorder(sample_size)) |&gt; 
   ggplot(aes(x = sample_size, y = mu_hat, fill = sample_size)) + 
   geom_violin()</code></pre>
-<p><img src="simulation_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
+<p><img src="simulation_files/figure-html/unnamed-chunk-8-1.png" alt="" width="90%" /></p>
 <p>These estimates are centered around the truth (2) for each sample
 size, and the width of the distribution shrinks as sample size
 grows.</p>
@@ -654,8 +654,21 @@ estimates.</p>
     emp_mean = mean(estimate),
     emp_var = var(estimate)) |&gt; 
   knitr::kable(digits = 3)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;parameter&#39;. You can override using the
-## `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has regrouped
+## the output.
+## ℹ Summaries were computed
+##   grouped by parameter and
+##   sample_size.
+## ℹ Output is grouped by
+##   parameter.
+## ℹ Use `summarise(.groups =
+##   &quot;drop_last&quot;)` to silence
+##   this message.
+## ℹ Use `summarise(.by =
+##   c(parameter, sample_size))`
+##   for per-operation grouping
+##   (`?dplyr::dplyr_by`)
+##   instead.</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -792,7 +805,7 @@ intercept tends to imply a higher estimate of the slope.</p>
 <pre class="r"><code>sim_results_df |&gt; 
   ggplot(aes(x = beta0_hat, y = beta1_hat)) + 
   geom_point()</code></pre>
-<p><img src="simulation_files/figure-html/unnamed-chunk-11-1.png" width="90%" /></p>
+<p><img src="simulation_files/figure-html/unnamed-chunk-11-1.png" alt="" width="90%" /></p>
 </div>
 <div id="varying-two-simulation-parameters" class="section level3">
 <h3>Varying two simulation parameters</h3>
@@ -831,7 +844,7 @@ of the sample mean is wider when the true SD is larger.</p>
   ggplot(aes(x = sample_size, y = mu_hat, fill = sample_size)) + 
   geom_violin() + 
   facet_grid(. ~ true_sd)</code></pre>
-<p><img src="simulation_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+<p><img src="simulation_files/figure-html/unnamed-chunk-13-1.png" alt="" width="90%" /></p>
 </div>
 </div>
 <div id="other-materials" class="section level2">

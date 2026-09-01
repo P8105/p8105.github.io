@@ -244,6 +244,7 @@ As an example, consider the data tables in `FAS_pups.csv` and `FAS_litters.csv`,
 pup_df = 
   read_csv(
     "./data/FAS_pups.csv",
+    skip = 3,
     na = c("NA", "", ".")) |>
   janitor::clean_names() |>
   mutate(

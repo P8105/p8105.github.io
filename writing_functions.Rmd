@@ -284,7 +284,7 @@ Having a function that handles the loading and cleaning is great -- if I decide 
 In [reading data from the web](reading_data_from_the_web.html), we wrote code that allowed us to scrape information in from a page containing NSDUH results. We refined the resulting table in [strings and factors](strings_and_factors.html). A version of our prior code is below.
 
 ```{r}
-nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+nsduh_url = "https://www.samhsa.gov/data/sites/default/files/NSDUHsaeShortTermCHG2015/NSDUHsaeShortTermCHG2015.htm"
 
 nsduh_html = read_html(nsduh_url)
 
