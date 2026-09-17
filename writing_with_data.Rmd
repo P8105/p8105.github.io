@@ -174,7 +174,7 @@ output:
   word_document: default
 ```
 
-The formatting for both PDF and Word documents can be controlled through options as well, although these can be tricky to control (especially for Word documents). If you're really interested in generating reports using Word, you may want to read up on the [`redoc`](https://noamross.github.io/redoc/index.html) package!
+The formatting for both PDF and Word documents can be controlled through options as well, although these can be tricky to control (especially for Word documents). If you're really interested in generating reports using Word, you may want to read up on the [`redoc`](https://github.com/tribalxg/redoc) package!
 
 We use the `github_document` format extensively in this course, and talk more about why in [git and github](git.html). Later in the course we'll talk about some other output formats -- especially dashboards and websites -- introducing other YAML options as needed.
 
