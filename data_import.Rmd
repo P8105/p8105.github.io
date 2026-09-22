@@ -73,7 +73,7 @@ Absolute paths are often conceptually easier, because you don't really have to _
 An absolute path example is below:
 
 ```
-"/Users/jeffgoldsmith/Dropbox/Work/Teaching/P8105/fall_2025/p8105.github.io/data/FAS_litters.csv"
+"/Users/jeffgoldsmith/Library/CloudStorage/OneDrive-cumc.columbia.edu/Work/Teaching/P8105/fall_2026/data/FAS_litters.csv"
 ```
 
 Relative paths, meanwhile, navigate from your current working directory. Relative paths are portable, in that if you move your directory or share it with someone else, the **relative** path to files in the directory will stay the same and your code will work. For both of these reasons, relative paths are preferred in almost every setting. 
@@ -300,7 +300,7 @@ You can read in data that isn't coming as a flat file (think data rectangle), bu
 
 ### Comparison with Base R
 
-The functions in `readr` are relatively new, and can be used in place of base R's `read.csv`, `read.table`, and so on. The base R versions tend to be slower (very noticeably for large datasets), and the default options can make less sense for modern datasets. Meanwhile, the `readr` functions export tibbles, and keep characters as characters (instead of converting to factors ...).
+The functions in `readr` are relatively new, and can be used in place of base R's `read.csv`, `read.table`, and so on. The base R versions tend to be slower (very noticeably for large datasets), and the default options can make less sense for modern datasets. Meanwhile, the `readr` functions export tibbles, does reasonable things with column names, and has always kept characters as characters.
 
 **_Learning Assessment:_** Import the `FAS_pups.csv` dataset using `read.csv`. Compare the class of this dataset to the one produced by `read_csv`. Try printing both in the console -- what happens? After cleaning up the names, try accessing the `Sex` variable using `S` (e.g., `pups_df$S`). What happens?
 
