@@ -436,7 +436,7 @@ div.tocify {
 <p>Once you’ve imported data, you’re going to need to do some cleaning
 up.</p>
 <p>This is the secode module in the <a
-href="topic_df_wrangling_i.html">Data Wrangling I</a> topic.</p>
+href="topic_data_wrangling_i.html">Data Wrangling I</a> topic.</p>
 <div id="overview" class="section level2 tabset tabset-pills">
 <h2 class="tabset tabset-pills">Overview</h2>
 <div id="learning-objectives" class="section level3">
@@ -488,32 +488,49 @@ Lastly, we’ll focus on the data in <code>FAS_litters.csv</code> and
 column names using what we learned in <a href="data_import.html">Data
 Import</a>.</p>
 <pre class="r"><code>library(tidyverse)
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.2.1     ✔ readr     2.2.0
+## ✔ forcats   1.0.1     ✔ stringr   1.6.0
+## ✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+## ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+## ✔ purrr     1.2.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
 
 options(tibble.print_min = 3)
 
 litters_df = 
-    read_csv(&quot;./data/FAS_litters.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;))
+    read_csv(
+      &quot;./data/FAS_litters.csv&quot;, 
+      na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;))
 ## Rows: 49 Columns: 8
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
 litters_df = 
     janitor::clean_names(litters_df)
 
 pups_df = 
-    read_csv(&quot;./data/FAS_pups.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;), skip = 3)
+    read_csv(
+      &quot;./data/FAS_pups.csv&quot;, 
+      skip = 3, 
+      na = c(&quot;NA&quot;, &quot;.&quot;))
 ## Rows: 313 Columns: 6
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Litter Number
 ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
 pups_df = 
     janitor::clean_names(pups_df)</code></pre>
 <div id="select" class="section level3">
@@ -795,7 +812,7 @@ manipulation:</p>
 <pre class="r"><code>litters_df_raw = 
     read_csv(&quot;./data/FAS_litters.csv&quot;, na = c(&quot;NA&quot;, &quot;.&quot;, &quot;&quot;))
 ## Rows: 49 Columns: 8
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -836,7 +853,7 @@ litters_df_with_vars_without_missing
   wt_gain
   )
 ## Rows: 49 Columns: 8
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -867,7 +884,7 @@ argument to the next function call:</p>
     group = str_to_lower(group)) |&gt; 
   drop_na(wt_gain)
 ## Rows: 49 Columns: 8
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (2): Group, Litter Number
 ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
@@ -941,7 +958,7 @@ Solution
   select(-pd_ears) |&gt; 
   mutate(pd_pivot_gt7 = pd_pivot &gt; 7)
 ## Rows: 313 Columns: 6
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Litter Number
 ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk

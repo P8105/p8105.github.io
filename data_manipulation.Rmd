@@ -8,7 +8,7 @@ output:
 
 Once you've imported data, you're going to need to do some cleaning up.
 
-This is the secode module in the [Data Wrangling I](topic_df_wrangling_i.html) topic.
+This is the secode module in the [Data Wrangling I](topic_data_wrangling_i.html) topic.
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -63,12 +63,19 @@ library(tidyverse)
 options(tibble.print_min = 3)
 
 litters_df = 
-	read_csv("./data/FAS_litters.csv", na = c("NA", ".", ""))
+	read_csv(
+	  "./data/FAS_litters.csv", 
+	  na = c("NA", ".", ""))
+
 litters_df = 
 	janitor::clean_names(litters_df)
 
 pups_df = 
-	read_csv("./data/FAS_pups.csv", na = c("NA", "."), skip = 3)
+	read_csv(
+	  "./data/FAS_pups.csv", 
+	  skip = 3, 
+	  na = c("NA", "."))
+
 pups_df = 
 	janitor::clean_names(pups_df)
 ```
