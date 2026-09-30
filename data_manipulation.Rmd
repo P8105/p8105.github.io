@@ -8,7 +8,7 @@ output:
 
 Once you've imported data, you're going to need to do some cleaning up.
 
-This is the secode module in the [Data Wrangling I](topic_data_wrangling_i.html) topic.
+This is the second module in the [Data Wrangling I](topic_data_wrangling_i.html) topic.
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -53,7 +53,7 @@ Clean and organize data using `dplyr` verbs and piping.
 
 ## Example
 
-For this example, I'll start a new R Markdown file to the repo / project I started for the [Data Wrangling I](topic_df_wrangling_i.html) topic; this will make it easy to load example data sets using the code I wrote in [Data Import](data_import.html).
+For this example, I'll start a new R Markdown file to the repo / project I started for the [Data Wrangling I](topic_data_wrangling_i.html) topic; this will make it easy to load example data sets using the code I wrote in [Data Import](data_import.html).
 
 Once again we're going to be using the `tidyverse`, so we'll load that at the outset. We're going to be looking at a lot of output, so I'll print only three lines of each tibble by default. Lastly, we'll focus on the data in `FAS_litters.csv` and `FAS_pups.csv`, so we'll load those data and clean up the column names using what we learned in [Data Import](data_import.html).
 
