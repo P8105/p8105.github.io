@@ -94,7 +94,9 @@ ggplot(weather_df, aes(x = tmin, y = tmax)) +
   geom_point()
 ```
 
-The code below could be used instead to produce the same figure. Using this style can be helpful if you want to do some pre-processing before making your plot but don't want to save the intermediate data. It's also consistent with many other pipelines: you start with a data frame, *and then* do stuff by piping the dataframe into the next function. Most of my plotting code is written like this. 
+Great! Love scatterplots. Also note that there's a warning message: if you hadn't realized before, `ggplot` is letting you know about missing data. 
+
+Because `ggplot` is part of the tidyverse, it expects a dataframe as the first argument. Piping a dataframe is is possible, and can be helpful if you want to do some pre-processing before making your plot but don't want to save the intermediate data. It's also consistent with many other pipelines: you start with a data frame, *and then* do stuff by piping the dataframe into the next function. Most of my plotting code is written like this. 
 
 ```{r eval = FALSE}
 weather_df |>
@@ -121,22 +123,25 @@ The basic scatterplot gave some useful information -- the variables are related 
 Let's start with `name`, which I can incorporate using the `color` aesthetic:
 
 ```{r}
-ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name))
 ```
 
 Nice! We get colors and have a handly legend. Maybe next I'll add a smooth curve and make the data points a bit transparent.
 
 ```{r}
-ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) +
   geom_smooth(se = FALSE)
 ```
 
-Neat! The curve gives a sense of the relationship between variables, and the transparency shows where data are overlapping. I can't help but notice, though, that the smooth curve is for all the data but the colors are only for the scatterplot. Turns out that this is due to where I defined the mappings. The X and Y mappings apply to the whole graphic, but color is currently geom-specific. Sometimes you want or need to do this, but for now I don't like it. If I'm honest, I'm also having a hard time seeing everything on one plot, so I'm going to add facet based on name as well. 
+Neat! The curve gives a sense of the relationship between variables, and the transparency shows where data are overlapping. I can't help but notice, though, that the smooth curve is for all the data but the colors are only for the scatterplot. Turns out that this is due to where I defined the mappings. The X and Y mappings apply to the whole graphic, but color is currently geom-specific. Sometimes you want or need to do this, but for now I don't like it. If I'm honest, I'm also having a hard time seeing everything on one plot, so I'm going to add facet based on name as well. (Here I'm using the "classic" `rows ~ cols` specification, but I could do this with `cols = vars(name)` if I wanted to get with the times.)
 
 ```{r}
-ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) + 
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
   geom_point(alpha = .5) +
   geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
@@ -145,7 +150,8 @@ ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) +
 Awesome! I've learned a lot about these data. However, the relationship between minimum and maximum temperature is now kinda boring, so I'd prefer something that shows the time of year. Also I want to learn about precipitation, so let's do that. 
 
 ```{r}
-ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
+weather_df |> 
+  ggplot(aes(x = date, y = tmax, color = name)) + 
   geom_point(aes(size = prcp), alpha = .5) +
   geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
@@ -180,14 +186,16 @@ Looks like there's a pretty linear relationship between min and max temperatures
 There are lots of ways you can mix and match elements, depending on your goals. I don't like the following plot as much (it doesn't show the data and omits precipitation), but it illustrates that you have lots of freedom in determining which geoms to include and how to compare your groups. If nothing else, you should be starting to get a sense for why you create way more plots for yourself than for others.
 
 ```{r}
-ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
+weather_df |>  
+  ggplot(aes(x = date, y = tmax, color = name)) + 
   geom_smooth(se = FALSE) 
 ```
 
-When you're making a scatterplot with lots of data, there's a limit to how much you can avoid overplotting using alpha levels and transparency. In these cases `geom_hex()`, `geom_bin2d()`, or `geom_density2d()` can be handy:
+When you're making a scatterplot with lots of data, there's a limit to how much you can avoid overplotting using alpha levels and transparency. In these cases `geom_hex()`, `geom_bin2d()`, or `geom_density2d()` can be handy (you'll need to install `hexbin` if you haven't):
 
 ```{r}
-ggplot(weather_df, aes(x = tmax, y = tmin)) + 
+weather_df |> 
+  ggplot(aes(x = tmax, y = tmin)) + 
   geom_hex()
 ```
 
@@ -196,8 +204,8 @@ There are lots of aesthetics, and these depend to some extent on the geom -- `co
 **_Learning Assessment:_** In the preceding, we set the alpha aesthetic "by hand" instead of mapping it to a variable. This is possible for other aesthetics too. To check your understanding of this point, try to explain why the two lines below don't produce the same result:
 
 ```{r, eval = FALSE}
-ggplot(weather_df) + geom_point(aes(x = tmax, y = tmin), color = "blue")
-ggplot(weather_df) + geom_point(aes(x = tmax, y = tmin, color = "blue"))
+weather_df |> ggplot() + geom_point(aes(x = tmax, y = tmin), color = "blue")
+weather_df |> ggplot() + geom_point(aes(x = tmax, y = tmin, color = "blue"))
 ```
 
 <details>
@@ -215,21 +223,24 @@ Scatterplots are great, but sometimes you need to carefully understand the distr
 First up is the histogram.
 
 ```{r}
-ggplot(weather_df, aes(x = tmax)) + 
+weather_df |> 
+  ggplot(aes(x = tmax)) + 
   geom_histogram()
 ```
 
 You can play around with things like the bin width and set the fill color using an aesthetic mapping.
 
 ```{r}
-ggplot(weather_df, aes(x = tmax, fill = name)) + 
+weather_df |> 
+  ggplot(aes(x = tmax, fill = name)) + 
   geom_histogram(position = "dodge", binwidth = 2)
 ```
 
 The `position = "dodge"` places the bars for each group side-by-side, but this gets sort of hard to understand. I often prefer density plots in place of histograms.
 
 ```{r}
-ggplot(weather_df, aes(x = tmax, fill = name)) + 
+weather_df |> 
+  ggplot(aes(x = tmax, fill = name)) + 
   geom_density(alpha = .4, adjust = .5, color = "blue")
 ```
 
@@ -238,14 +249,16 @@ The `adjust` parameter in density plots is similar to the `binwidth` parameter i
 Histograms and densities are one way of investigating univariate distributions; boxplots are another.
 
 ```{r}
-ggplot(weather_df, aes(x = name, y = tmax)) + 
+weather_df |> 
+  ggplot(aes(x = name, y = tmax)) + 
   geom_boxplot()
 ```
 
 Violin plots are sometimes nice, but folks complain that they don't [look like violins](https://simplystatistics.org/posts/2017-07-13-the-joy-of-no-more-violin-plots/). 
 
 ```{r}
-ggplot(weather_df, aes(x = name, y = tmax)) + 
+weather_df |> 
+  ggplot(aes(x = name, y = tmax)) + 
   geom_violin(aes(fill = name), alpha = .5) + 
   stat_summary(fun = "median", color = "blue")
 ```
@@ -253,7 +266,8 @@ ggplot(weather_df, aes(x = name, y = tmax)) +
 Ridge plots were the trendiest plot of 2017, and were a replacement for both boxplots and violin plots. They're implemented in the [`ggridges`](https://github.com/clauswilke/ggridges) package, and are nice if you have lots of categories in which the shape of the distribution matters. There are both [good](https://twitter.com/mtkonczal/status/1701948872648454644) and [bad](https://twitter.com/chiproytx/status/1293924831029800961) examples of ridge plots out there ... 
 
 ```{r}
-ggplot(weather_df, aes(x = tmax, y = name)) + 
+weather_df |> 
+  ggplot(aes(x = tmax, y = name)) + 
   geom_density_ridges(scale = .85)
 ```
 
@@ -267,21 +281,24 @@ I'll show a few possibilities, although this is by no means exhaustive!
 First a density plot:
 
 ```{r, eval = FALSE}
-ggplot(weather_df, aes(x = prcp)) + 
+weather_df |> 
+  ggplot(aes(x = prcp)) + 
   geom_density(aes(fill = name), alpha = .5) 
 ```
 
 Next a ridge plot:
 
 ```{r, eval = FALSE}
-ggplot(weather_df, aes(x = prcp, y = name)) + 
+weather_df |> 
+  ggplot(aes(x = prcp, y = name)) + 
   geom_density_ridges(scale = .85)
 ```
 
 Last a boxplot:
 
 ```{r, eval = FALSE}
-ggplot(weather_df, aes(y = prcp, x = name)) + 
+weather_df |> 
+  ggplot(aes(y = prcp, x = name)) + 
   geom_boxplot() 
 ```
 
@@ -303,7 +320,8 @@ You will, on occasion, need to save a plot to a specific file. **Don't** use the
 
 ```{r, eval = FALSE}
 ggp_weather = 
-  ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name), alpha = .5) 
 
 ggsave("ggp_weather.pdf", ggp_weather, width = 8, height = 5)
@@ -322,7 +340,8 @@ knitr::opts_chunk$set(
 What makes embedding figures difficult at first is that things like the font and point size in the figures generated by R are constant -- that is, they don't scale with the overall size of the figure. As a result, text in a figure with width 12 will _look_ smaller than text in a figure with width 6 after both have been embedded in a document. As an example, the code chunk below has set `fig.width = 12`.
 
 ```{r, fig.width = 12}
-ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) + 
   geom_point(aes(color = name))
 ```
 
