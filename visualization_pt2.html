@@ -794,27 +794,27 @@ to create each of the panels you want separately and combine panels
 using tools in the <a
 href="https://github.com/thomasp85/patchwork"><code>patchwork</code></a>
 package:</p>
-<pre class="r"><code>tmax_tmin_p = 
+<pre class="r"><code>ggp_tmax_tmin = 
   weather_df |&gt; 
   ggplot(aes(x = tmax, y = tmin, color = name)) + 
   geom_point(alpha = .5) +
   theme(legend.position = &quot;none&quot;)
 
-prcp_dens_p = 
+ggp_prcp_dens = 
   weather_df |&gt; 
   filter(prcp &gt; 0) |&gt; 
   ggplot(aes(x = prcp, fill = name)) + 
   geom_density(alpha = .5) + 
   theme(legend.position = &quot;none&quot;)
 
-tmax_date_p = 
+ggp_tmax_date = 
   weather_df |&gt; 
   ggplot(aes(x = date, y = tmax, color = name)) + 
   geom_point(alpha = .5) +
   geom_smooth(se = FALSE) + 
   theme(legend.position = &quot;bottom&quot;)
 
-(tmax_tmin_p + prcp_dens_p) / tmax_date_p
+(ggp_tmax_tmin + ggp_prcp_dens) / ggp_tmax_date
 ## Warning: Removed 17 rows containing missing values or values outside the scale range
 ## (`geom_point()`).
 ## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;

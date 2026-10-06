@@ -302,27 +302,27 @@ More realistically, it's sometimes necessary to overlay data summaries on a plot
 We've seen facetting as an approach to create the "same plot" for several levels of a categorical variable, and this can get you pretty far. Sometimes, though, you want to show two or three fundamentally different plots in the same graphic: you may want to juxtapose a scatterplot and a boxplot, or show scatterplots illustrating relationships between different variables. In this case, a solution is to create each of the panels you want separately and combine panels using tools in the [`patchwork`](https://github.com/thomasp85/patchwork) package:
 
 ```{r, fig.asp = 1}
-tmax_tmin_p = 
+ggp_tmax_tmin = 
   weather_df |> 
   ggplot(aes(x = tmax, y = tmin, color = name)) + 
   geom_point(alpha = .5) +
   theme(legend.position = "none")
 
-prcp_dens_p = 
+ggp_prcp_dens = 
   weather_df |> 
   filter(prcp > 0) |> 
   ggplot(aes(x = prcp, fill = name)) + 
   geom_density(alpha = .5) + 
   theme(legend.position = "none")
 
-tmax_date_p = 
+ggp_tmax_date = 
   weather_df |> 
   ggplot(aes(x = date, y = tmax, color = name)) + 
   geom_point(alpha = .5) +
   geom_smooth(se = FALSE) + 
   theme(legend.position = "bottom")
 
-(tmax_tmin_p + prcp_dens_p) / tmax_date_p
+(ggp_tmax_tmin + ggp_prcp_dens) / ggp_tmax_date
 ```
 
 The package is already very helpful but is under active development -- some features may change or be added over time -- so check the package webstie periodically to stay up-to-date. This does require some amount of work for each panel, and you should keep in mind that this is intended to help combine panels into a plot that couldn't be created better using data tidying steps. 
