@@ -124,11 +124,11 @@ The examples below are drawn from previous submissions in the to give an idea of
 
 #### Fall 2025
 
-* [Project 1](https://a-l-collins.github.io/manhattan_shootings.github.io/index.html)
-* [Project 2](https://shivalikachavan.github.io/house-always-wins/screencast.html)
-* [Project 3](https://nycmta.github.io)
-* [Project 4](https://pineappleeater.github.io/P8105---Final-Project-Pokemon/)
-* [Project 5](https://erix-s.github.io/breast_cancer_analysis/)
+* [Gun Violence in NYC](https://a-l-collins.github.io/manhattan_shootings.github.io/index.html)
+* [Costs of Gambling](https://shivalikachavan.github.io/house-always-wins/screencast.html)
+* [Weather, Events, and the Subway](https://nycmta.github.io)
+* [The Story and Mystery of Pokemon](https://pineappleeater.github.io/P8105---Final-Project-Pokemon/)
+* [Breast Cancer vs The People](https://erix-s.github.io/breast_cancer_analysis/)
 
 #### Fall 2024
 
@@ -179,16 +179,13 @@ The examples below are drawn from previous submissions in the to give an idea of
 * [Factors Influencing Candidate Performance ... ](https://tlayouni.github.io/debate_impact.github.io/index)
 * [Climate Change & Natural Disasters in the United States](https://ilz2105.github.io/disasters.github.io/index.html)
 
-
 #### Fall 2018
 
 * [The Heart Project](https://alc2279.github.io/p8105_final_project/)
 * [Gun violence in the United States](https://eshea6.github.io/us_gun_violence.github.io/index.html)
 * [I thought you said your dog did not bite!](https://nevilleq.github.io/p8105_fp_qzal/index.html)
 * [Influential Factors in Colectomy Complications](https://tiffttu.github.io/P8105_final_website/)
-* [Hot and Humid Baseball: 
-Pitch Speed and Heat in the MLB](https://vdl2103.github.io/hot_humid_baseball.github.io/)
-
+* [Hot and Humid Baseball: Pitch Speed and Heat in the MLB](https://vdl2103.github.io/hot_humid_baseball.github.io/)
 
 #### Fall 2017 
 
