@@ -125,7 +125,7 @@ The examples below are drawn from previous submissions in the to give an idea of
 #### Fall 2025
 
 * [Gun Violence in NYC](https://a-l-collins.github.io/manhattan_shootings.github.io/index.html)
-* [Costs of Gambling](https://shivalikachavan.github.io/house-always-wins/screencast.html)
+* [Costs of Gambling](https://shivalikachavan.github.io/house-always-wins/index.html)
 * [Weather, Events, and the Subway](https://nycmta.github.io)
 * [The Story and Mystery of Pokemon](https://pineappleeater.github.io/P8105---Final-Project-Pokemon/)
 * [Breast Cancer vs The People](https://erix-s.github.io/breast_cancer_analysis/)
