@@ -68,7 +68,7 @@ Gather data from online sources (i.e. “scrape”) using APIs, rvest, and httr.
 
 As always, I'll create a new GH Repo + local project called `data_wrangling_ii`, and open a new R Markdown file called `reading_data_from_the_web.Rmd`. Although we'll mostly be getting data from the web, we'll revisit some of [these examples](./resources/data_import_examples.zip), so I'll create a `data` subdirectory and put those in it.
 
-There are some new additions to our standard packages (`rvest` and `httr`); I'm loading everything we need now. Now's also the time to "install" the [Selector Gadget](http://selectorgadget.com). 
+There are some new additions to our standard packages (`rvest` and `httr`), so I'm loading everything we need now. Now's also the time to "install" the [Selector Gadget](http://selectorgadget.com). Also, for some examples you'll need to have Chrome installed; more on that later. 
 
 ```{r, message = FALSE}
 library(tidyverse)
@@ -132,7 +132,7 @@ The code below shows one approach to this data cleaning process:
 
 ```{r, eval = FALSE}
 nyc_cost = 
-  read_html("https://www.bestplaces.net/cost_of_living/city/new_york/new_york") |>
+  read_html_live("https://www.bestplaces.net/cost_of_living/city/new_york/new_york") |>
   html_table(header = TRUE) |>
   first()
 ```
@@ -143,7 +143,7 @@ In case you hadn't known, NYC is kind of expensive.
 
 ### CSS Selectors
 
-Suppose we'd like to scrape the data about the [Star Wars Movies](https://www.imdb.com/list/ls070150896/) from the IMDB page. The first step is the same as before -- we need to get the HTML.
+Suppose we'd like to scrape the data about the [Star Wars Movies](https://www.imdb.com/list/ls070150896/) from the IMDB page. The first step is the same as before -- we need to get the HTML. Note that here we're using `read_html_live()` instead of `read_html()`. This is because IMDB, like an increasing number of websites, uses Javascript to generate HTML dynamically rather than having a static HTML file that is returned from the server; the goal is to create a more responsive user experience, but it does make scraping harder. Importantly, `read_html_live()` requests HTML by running a live web browser in the background -- so you have to have Chrome installed for this to work.
 
 ```{r}
 swm_html = 
@@ -227,7 +227,7 @@ As a simple example, [this page](https://data.cityofnewyork.us/Environment/Water
 
 ```{r}
 nyc_water = 
-  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.csv") |> 
+  GET("https://data.cityofnewyork.us/api/v3/views/ia2d-e54m/query.csv") |> 
   content("parsed")
 ```
 
@@ -235,7 +235,7 @@ We can also import this dataset as a JSON file. This takes a bit more work (and 
 
 ```{r}
 nyc_water = 
-  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.json") |> 
+  GET("https://data.cityofnewyork.us/api/v3/views/ia2d-e54m/query.json") |> 
   content("text") |>
   jsonlite::fromJSON() |>
   as_tibble()
@@ -261,15 +261,15 @@ Both the NYC Water and BRFSS examples are, actually, _pretty easy_ -- we accesse
 To get a sense of how this becomes complicated, let's look at the [Pokemon API](https://pokeapi.co) (which is also pretty nice).
 
 ```{r}
-poke = 
+pokemon = 
   GET("http://pokeapi.co/api/v2/pokemon/1") |>
   content()
 
-poke[["name"]]
+pokemon[["name"]]
 
-poke[["height"]]
+pokemon[["height"]]
 
-poke[["abilities"]]
+pokemon[["abilities"]]
 ```
 
 To build a Pokemon dataset for analysis, you'd need to distill the data returned from the API into a useful format; iterate across all pokemon; and combine the results. 
@@ -288,7 +288,7 @@ Similarly, API developers can (and will) limit the number of database entries th
 * A recent short course presented similar topics to those above; a GitHub repo for the course is [here](https://github.com/ropensci/user2016-tutorial)
 * A lot of [NYC data](https://opendata.cityofnewyork.us) is public; [this](https://www.opendatanetwork.com/search?q=new+york+city) is a good place to start looking for interesting data
 * There are some cool projects based on scraped data; the RStudio community collected some [here](https://community.rstudio.com/t/whats-the-most-interesting-use-of-rvest-youve-seen-in-the-wild/745)
-* Check out the [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.co) (from the maker of the Pokemon API).
-* Some really helpful R packages are wrappers for APIs -- the `rnoaa` package we've used is an example, and so is `rtweet`
+* Check out the [R file](https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.R) used to create the `starwars` dataset (in the `tidyverse`) using the [Star Wars API](https://swapi.py4e.com) (formerly from the maker of the Pokemon API).
+* Some really helpful R packages are (or were) wrappers for APIs -- the `rnoaa` package is an example, and so is `rtweet`
 
 The code that I produced working examples in lecture is [here](https://github.com/P8105/data_wrangling_ii).
