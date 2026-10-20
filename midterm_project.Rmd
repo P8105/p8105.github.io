@@ -1,0 +1,78 @@
+---
+title: "Midterm project"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+---
+
+### Independence
+
+In contrast to Homework assignments, you must work completely independently on this project -- do not discuss your approach, your code, or your results with any other students, and do not use the discussion board for questions related to this project. If questions do arise, please email the instructor and lead TAs.
+
+### Context
+
+At this point, we've covered [Building Blocks](topic_building_blocks.html), [Data Wrangling I](topic_data_wrangling_i.html), [Visualization and EDA](topic_visualization_and_eda.html), and [Data Wrangling II](topic_data_wrangling_ii.html). These three topics give a broad introduction into the commonly-used tools of data science, and are the main focus of this project.
+
+### Due date
+
+Due: October 28 at 11:59pm. 
+
+### Reproducibility
+
+The course's emphasis on workflow -- especially the use git and GitHub for reproducibility, R Projects to organize your work, R Markdown to write reproducible reports, relative paths to load data from local files, and reasonable naming structures for your files -- will be reflected in your Midterm Project submission. 
+
+To that end: 
+
+* create a **private** GitHub repo + local R Project; we suggest naming this repo / directory `p8105_mtp_YOURUNI` (e.g. `p8105_mtp_ajg2202` for Jeff), but that's not required
+    * non-private repos will be treated as inconsistent with the independent work requirement and as violations of the academic integrity policy
+* add the GitHub user "bst-p8105" as a collaborator on the project, which will give us (and only us) access to your repo
+* create a **single** .Rmd file named `p8105_mtp_YOURUNI.Rmd` that renders to `github_document`
+* submit a link to your repo via Courseworks
+
+We will assess adherence to the instructions above and whether we are able to knit your .Rmd in the grading of this project. Adherence to appropriate styling and clarity of code will be assessed. This project includes figures; the readability of your embedded plots (e.g. font sizes, axis labels, titles) will be assessed.
+
+
+## Deliverable
+
+For this project, you should write a report describing your work in a way that targets a reasonably sophisticated collaborator – not an expert data scientist, but an interested observer. Structure your report to include an introduction and three sections corresponding to the problems below. **_You should include discussions of results and outputs, even when not explicitly asked._** Write in a reproducible way (e.g. using inline R code where necessary) and include relevant code chunks and their output. 
+
+Include only relevant information, and adhere to **_a strict-500 word limit_** (this excludes figures and tables, code chunks, inline code, YAML, and other non-text elements). You can check your word count using `wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")`; installation instructions can be found on the [`wordcountaddin` package website](https://github.com/benmarwick/wordcountaddin). We'll use the "koRpus" count.
+
+## Data
+
+Literally every single person in the United States knows the frustration of hoping to order a McFlurry from McDonald's only to discover that the machine is broken. The reasons for this are [well](https://www.foodandwine.com/mcdonalds-ice-cream-machine-broken-8627641) [documented](https://www.youtube.com/watch?v=lr1-HqgPZvY), although that doesn't always address the pain associated with missing your soft serve. 
+
+An enterprising [data scientist](https://x.com/rashiq/status/1319346264992026624) has gone to great efforts to identify, in almost real time, which machines across the United States are broken. The [McBroken Map](https://mcbroken.com) illustrates these data; longer-term [data archives](https://github.com/MrFlynn/mcbroken-archive) are also available as JSON files. 
+
+For this project, we'll use snapshots taken at roughly noon on the first of the each month between November 2025 and October 2026. Additional datasets include information about stores, and a categorization of US States and Territories into regions. Data necessary for this project are available [here](data/p8105_mtp.zip).
+
+
+## Problems
+
+### Problem 1 -- Data Import 
+
+Import, organize, tidy, and clean the data as needed. 
+
+Briefly describe the data cleaning process and the resulting dataset, identifying key variables based on your understanding of the project goals. How many stores are there? Which state has the most stores? The fewest? When the machine is active, what is the rate of brokenness? 
+
+
+### Problem 2 -- Exploratory Analysis
+
+Examine the dataset, looking for anomalies or unexpected observations. Which stores have few observations? Are there extremely high rates of inactivity or brokenness at specific locations (with at least 9 observations)? Do geographic coordinates make sense? 
+
+Find the location closest to the Mailman School of Public Health, and summarize the record of brokenness. Of locations in NYC, which have the highest rate of brokenness? 
+
+Understanding which working machines break, and which broken machines are fixed, is a key goal for these data. Create a table that answers: of machines that worked in the previous month, how many are working now and how many are broken? And of machines that were broken in the previous month, how many are working now and how many are broken?
+
+Generate a reader-friendly table showing the monthly average brokenness in each geographic region across months. 
+
+
+### Problem 3 -- Visualizations
+
+Plot the average brokenness for each state across months.
+
+Compute the average rate of brokenness across months for each store. Create a visualization showing the distribution of these averages across states. 
+
+Make a two-panel plot that uses geographic coordinates to show the distribution of all stores in the continental United States, and of stores in New York City. In both, show the average rate of brokenness for each store. (Note: these are not required to be "maps" but your comments should draw on relevant geographic and related considerations.)
+
