@@ -12,7 +12,7 @@ In contrast to Homework assignments, you must work completely independently on t
 
 ### Context
 
-At this point, we've covered [Building Blocks](topic_building_blocks.html), [Data Wrangling I](topic_data_wrangling_i.html), [Visualization and EDA](topic_visualization_and_eda.html), and [Data Wrangling II](topic_data_wrangling_ii.html). These three topics give a broad introduction into the commonly-used tools of data science, and are the main focus of this project.
+At this point, we've covered [Building Blocks](topic_building_blocks.html), [Data Wrangling I](topic_data_wrangling_i.html), [Visualization and EDA](topic_visualization_and_eda.html), and [Data Wrangling II](topic_data_wrangling_ii.html). These topics give a broad introduction into the commonly-used tools of data science, and are the main focus of this project.
 
 ### Due date
 
@@ -35,7 +35,7 @@ We will assess adherence to the instructions above and whether we are able to kn
 
 ## Deliverable
 
-For this project, you should write a report describing your work in a way that targets a reasonably sophisticated collaborator – not an expert data scientist, but an interested observer. Structure your report to include an introduction and three sections corresponding to the problems below. **_You should include discussions of results and outputs, even when not explicitly asked._** Write in a reproducible way (e.g. using inline R code where necessary) and include relevant code chunks and their output. 
+For this project, you should write a report describing your work in a way that targets a reasonably sophisticated collaborator – not an expert data scientist, but an interested observer. Structure your report to include an introduction and three sections corresponding to the problems below. **_You should include discussions of results and outputs, even when not explicitly asked._** Write in a reproducible way (e.g., using inline R code where necessary) and include relevant code chunks and their output. 
 
 Include only relevant information, and adhere to **_a strict-500 word limit_** (this excludes figures and tables, code chunks, inline code, YAML, and other non-text elements). You can check your word count using `wordcountaddin::text_stats("p8105_mtp_YOURUNI.Rmd")`; installation instructions can be found on the [`wordcountaddin` package website](https://github.com/benmarwick/wordcountaddin). We'll use the "koRpus" count.
 
@@ -43,7 +43,7 @@ Include only relevant information, and adhere to **_a strict-500 word limit_** (
 
 Literally every single person in the United States knows the frustration of hoping to order a McFlurry from McDonald's only to discover that the machine is broken. The reasons for this are [well](https://www.foodandwine.com/mcdonalds-ice-cream-machine-broken-8627641) [documented](https://www.youtube.com/watch?v=lr1-HqgPZvY), although that doesn't always address the pain associated with missing your soft serve. 
 
-An enterprising [data scientist](https://x.com/rashiq/status/1319346264992026624) has gone to great efforts to identify, in almost real time, which machines across the United States are broken. The [McBroken Map](https://mcbroken.com) illustrates these data; longer-term [data archives](https://github.com/MrFlynn/mcbroken-archive) are also available as JSON files. 
+An enterprising [data scientist](https://x.com/rashiq/status/1319346264992026624) has gone to great efforts to identify, in effectively real time, which machines across the United States are broken. The [McBroken Map](https://mcbroken.com) illustrates these data; longer-term [data archives](https://github.com/MrFlynn/mcbroken-archive) are also available as JSON files. 
 
 For this project, we'll use snapshots taken at roughly noon on the first of the each month between November 2025 and October 2026. Additional datasets include information about stores, and a categorization of US States and Territories into regions. Data necessary for this project are available [here](data/p8105_mtp.zip).
 
@@ -54,12 +54,14 @@ For this project, we'll use snapshots taken at roughly noon on the first of the 
 
 Import, organize, tidy, and clean the data as needed. 
 
-Briefly describe the data cleaning process and the resulting dataset, identifying key variables based on your understanding of the project goals. How many stores are there? Which state has the most stores? The fewest? When the machine is active, what is the rate of brokenness? 
+Briefly describe the data cleaning process and the resulting dataset, identifying key variables based on your understanding of the project goals. 
+
+How many stores are there? Which state has the most stores? The fewest? When the machine is active, what is the rate of brokenness? 
 
 
 ### Problem 2 -- Exploratory Analysis
 
-Examine the dataset, looking for anomalies or unexpected observations. Which stores have few observations? Are there extremely high rates of inactivity or brokenness at specific locations (with at least 9 observations)? Do geographic coordinates make sense? 
+Examine the dataset, looking for anomalies or unexpected observations. Which stores have few observations? Are there extremely high rates of inactivity or brokenness at specific locations with at least 9 observations? Do geographic coordinates make sense? 
 
 Find the location closest to the Mailman School of Public Health, and summarize the record of brokenness. Of locations in NYC, which have the highest rate of brokenness? 
 
