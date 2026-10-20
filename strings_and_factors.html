@@ -487,8 +487,13 @@ also use some datasets in <code>p8105.datasets</code> so I’ll load that
 as well. And finally, we’ll use some of <a
 href="./resources/data_import_examples.zip">these examples</a>, so I’ll
 make sure I have them in a <code>data</code> subdirectory..</p>
-<pre class="r"><code>library(rvest)
-library(p8105.datasets)</code></pre>
+<pre class="r"><code>library(rvest)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rvest&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     guess_encoding</code></pre>
+<pre class="r"><code>library(p8105.datasets)</code></pre>
 <div id="strings-and-regex" class="section level3">
 <h3>Strings and regex</h3>
 <p>Lots of the examples below are drawn from materials by <a
@@ -691,21 +696,12 @@ rest_inspec |&gt;
   group_by(borough, grade) |&gt; 
   summarize(n = n()) |&gt; 
   pivot_wider(names_from = grade, values_from = n)</code></pre>
-<pre><code>## `summarise()` has regrouped
-## the output.
-## ℹ Summaries were computed
-##   grouped by borough and
-##   grade.
-## ℹ Output is grouped by
-##   borough.
-## ℹ Use `summarise(.groups =
-##   &quot;drop_last&quot;)` to silence
-##   this message.
-## ℹ Use `summarise(.by =
-##   c(borough, grade))` for
-##   per-operation grouping
-##   (`?dplyr::dplyr_by`)
-##   instead.</code></pre>
+<pre><code>## `summarise()` has regrouped the output.
+## ℹ Summaries were computed grouped by borough and grade.
+## ℹ Output is grouped by borough.
+## ℹ Use `summarise(.groups = &quot;drop_last&quot;)` to silence this message.
+## ℹ Use `summarise(.by = c(borough, grade))` for per-operation grouping
+##   (`?dplyr::dplyr_by`) instead.</code></pre>
 <pre><code>## # A tibble: 6 × 9
 ## # Groups:   borough [6]
 ##   borough           A     B     C  `NA`     N     P     Z     G
@@ -731,21 +727,12 @@ borough.</p>
   group_by(borough, grade) |&gt; 
   summarize(n = n()) |&gt; 
   pivot_wider(names_from = grade, values_from = n)</code></pre>
-<pre><code>## `summarise()` has regrouped
-## the output.
-## ℹ Summaries were computed
-##   grouped by borough and
-##   grade.
-## ℹ Output is grouped by
-##   borough.
-## ℹ Use `summarise(.groups =
-##   &quot;drop_last&quot;)` to silence
-##   this message.
-## ℹ Use `summarise(.by =
-##   c(borough, grade))` for
-##   per-operation grouping
-##   (`?dplyr::dplyr_by`)
-##   instead.</code></pre>
+<pre><code>## `summarise()` has regrouped the output.
+## ℹ Summaries were computed grouped by borough and grade.
+## ℹ Output is grouped by borough.
+## ℹ Use `summarise(.groups = &quot;drop_last&quot;)` to silence this message.
+## ℹ Use `summarise(.by = c(borough, grade))` for per-operation grouping
+##   (`?dplyr::dplyr_by`) instead.</code></pre>
 <pre><code>## # A tibble: 4 × 3
 ## # Groups:   borough [4]
 ##   borough       A     B
@@ -762,21 +749,12 @@ case-sensitive until we tell it not to be:</p>
   group_by(borough, grade) |&gt; 
   summarize(n = n()) |&gt; 
   pivot_wider(names_from = grade, values_from = n)</code></pre>
-<pre><code>## `summarise()` has regrouped
-## the output.
-## ℹ Summaries were computed
-##   grouped by borough and
-##   grade.
-## ℹ Output is grouped by
-##   borough.
-## ℹ Use `summarise(.groups =
-##   &quot;drop_last&quot;)` to silence
-##   this message.
-## ℹ Use `summarise(.by =
-##   c(borough, grade))` for
-##   per-operation grouping
-##   (`?dplyr::dplyr_by`)
-##   instead.</code></pre>
+<pre><code>## `summarise()` has regrouped the output.
+## ℹ Summaries were computed grouped by borough and grade.
+## ℹ Output is grouped by borough.
+## ℹ Use `summarise(.groups = &quot;drop_last&quot;)` to silence this message.
+## ℹ Use `summarise(.by = c(borough, grade))` for per-operation grouping
+##   (`?dplyr::dplyr_by`) instead.</code></pre>
 <pre><code>## # A tibble: 5 × 4
 ## # Groups:   borough [5]
 ##   borough           A     B     C
@@ -824,12 +802,9 @@ try to do this using <code>replace</code>.</p>
     borough = replace(borough, which(borough == &quot;Manhattan&quot;), &quot;The City&quot;)) |&gt;
   ggplot(aes(x = borough, fill = grade)) + 
   geom_bar()</code></pre>
-<pre><code>## Warning: There was 1 warning in
-## `mutate()`.
-## ℹ In argument: `borough =
-##   replace(borough,
-##   which(borough ==
-##   &quot;Manhattan&quot;), &quot;The City&quot;)`.
+<pre><code>## Warning: There was 1 warning in `mutate()`.
+## ℹ In argument: `borough = replace(borough, which(borough == &quot;Manhattan&quot;), &quot;The
+##   City&quot;)`.
 ## Caused by warning in `[&lt;-.factor`:
 ## ! invalid factor level, NA generated</code></pre>
 <p><img src="strings_and_factors_files/figure-html/unnamed-chunk-20-1.png" alt="" width="90%" /></p>
