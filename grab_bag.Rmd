@@ -13,3 +13,5 @@ At the end of the year, we take suggestions for Extra Topics; each year there ar
 * LLMs in data science
 
 We'll revisit some examples from the course, and also take a look at the data in this [zip file](data/jury_data.zip) (described [here](https://github.com/APM-Reports/jury-data)). 
+
+For LLMs in data science, [this](https://www.tandfonline.com/doi/full/10.1080/26939169.2024.2432397) could be useful reading?
