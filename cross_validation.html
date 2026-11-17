@@ -13,7 +13,7 @@
 
 <title>Cross Validation</title>
 
-<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -439,7 +439,7 @@ applications, the emphasis lies on prediction accuracy rather than on
 statistical significance. In these cases, cross validation provides a
 way to compare the predictive performance of competing methods.</p>
 <p>This is the second module in the <a
-href="topic_iteration.html">Linear Models</a> topic.</p>
+href="topic_linear_models.html">Linear Models</a> topic.</p>
 <div id="overview" class="section level2 tabset tabset-pills">
 <h2 class="tabset tabset-pills">Overview</h2>
 <div id="learning-objectives" class="section level3">
@@ -492,7 +492,7 @@ library(mgcv)</code></pre>
 <pre><code>## The following object is masked from &#39;package:dplyr&#39;:
 ## 
 ##     collapse</code></pre>
-<pre><code>## This is mgcv 1.9-4. For overview type &#39;?mgcv&#39;.</code></pre>
+<pre><code>## This is mgcv 1.9-5. For overview type &#39;?mgcv&#39;.</code></pre>
 <pre class="r"><code>library(p8105.datasets)
 
 set.seed(1)</code></pre>
@@ -687,7 +687,7 @@ data <a href="./data/nepalese_children.csv">here</a>; the code chunk
 below imports the data and plots the variables we’ll focus on.</p>
 <pre class="r"><code>child_growth = read_csv(&quot;./data/nepalese_children.csv&quot;)</code></pre>
 <pre><code>## Rows: 2705 Columns: 5
-## ── Column specification ──────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## dbl (5): age, sex, weight, height, armc
 ## 
