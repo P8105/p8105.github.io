@@ -191,9 +191,10 @@ cv_df =
     smooth_mod  = map(train, \(df) gam(logratio ~ s(range), data = df)),
     wiggly_mod  = map(train, \(df) gam(logratio ~ s(range, k = 30), sp = 10e-6, data = df))) |> 
   mutate(
-    rmse_linear = map2_dbl(linear_mod, test, \(mod, df) rmse(model = mod, data = df)),
-    rmse_smooth = map2_dbl(smooth_mod, test, \(mod, df) rmse(model = mod, data = df)),
-    rmse_wiggly = map2_dbl(wiggly_mod, test, \(mod, df) rmse(model = mod, data = df)))
+    rmse_linear = map2_dbl(linear_mod, test, rmse),
+    rmse_smooth = map2_dbl(smooth_mod, test, rmse),
+    rmse_wiggly = map2_dbl(wiggly_mod, test, rmse)
+  )
 ```
 
 I'm mostly focused on RMSE as a way to compare these models, and the plot below shows the distribution of RMSE values for each candidate model. 
