@@ -70,6 +70,7 @@ I'll write code for today's content in a new R Markdown document called `bootstr
 
 ```{r}
 library(tidyverse)
+library(mgcv)
 library(p8105.datasets)
 
 set.seed(1)
@@ -333,6 +334,37 @@ nyc_airbnb |>
 
 This distribution has a heavy tail extending to low values and a bit of a "shoulder", features that may be related to the frequency with which large outliers are included in the bootstrap sample. 
 
+### LIDAR
+
+As a final example, we'll revisit the LIDAR data we saw in [Cross Validation](cross_validation.html) The code chunk below loads and tidies the data. 
+
+I'll import these data make a quick plot of `logratio` as an outcome with `range` as a predictor.
+
+```{r}
+data("lidar")
+
+lidar |> 
+  ggplot(aes(x = range, y = logratio)) + 
+  geom_point() + 
+	stat_smooth(method = "gam", formula = y ~ s(x))
+```
+
+From this plot, we can identify both nonlinearity and non-constant variance as potential modeling issues to address. Now we'll use the bootstrap to get 1000 fits using GAM, and plot the results. Notably, the default SE band has roughly the same width across the `range` variable, which is implausible.
+
+```{r}
+lidar |> 
+  modelr::bootstrap(n = 250) |> 
+  mutate(
+    models = map(strap, \(df) gam(logratio ~ s(range), data = df)),
+    results = map(models, \(mod) modelr::add_predictions(data = lidar, model = mod))) |> 
+  select(.id, results) |> 
+  unnest(results) |> 
+  ggplot(aes(x = range, y = pred, group = .id)) + 
+  geom_path(color = "blue", alpha = .5) + 
+  geom_point(data = lidar, aes(y = logratio, group = NULL))
+```
+
+The fits from each bootstrap sample differ, and there's more variance for large values of `range` than for small values. Constructing actual CIs is a bit involved, but can be done by computing separate CIs for each range value. 
 
 ## Other materials
 
